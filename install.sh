@@ -3,6 +3,7 @@ set -euo pipefail
 
 REPO="abelcondev/spectre"
 INSTALL_DIR="${SPECTRE_INSTALL_DIR:-$HOME/.local/bin}"
+VERSION="${SPECTRE_VERSION:-latest}"
 
 detect_target() {
   local os arch
@@ -24,11 +25,31 @@ detect_target() {
   echo "${os}-${arch}"
 }
 
+verify_checksum() {
+  local file=$1
+  local checksum_file=$2
+  local dir
+  dir=$(dirname "$file")
+
+  if command -v sha256sum >/dev/null 2>&1; then
+    (cd "$dir" && sha256sum -c "$(basename "$checksum_file")")
+  elif command -v shasum >/dev/null 2>&1; then
+    (cd "$dir" && shasum -a 256 -c "$(basename "$checksum_file")")
+  else
+    echo "warning: neither sha256sum nor shasum found; skipping checksum verification" >&2
+  fi
+}
+
 main() {
   local target zip url checksum_url tmpdir
   target=$(detect_target)
   zip="spectre-${target}.zip"
-  url="https://github.com/${REPO}/releases/latest/download/${zip}"
+
+  if [ "$VERSION" = "latest" ]; then
+    url="https://github.com/${REPO}/releases/latest/download/${zip}"
+  else
+    url="https://github.com/${REPO}/releases/download/${VERSION}/${zip}"
+  fi
   checksum_url="${url}.sha256"
 
   tmpdir=$(mktemp -d)
@@ -39,10 +60,7 @@ main() {
   curl -fsSL -o "${tmpdir}/${zip}.sha256" "${checksum_url}"
 
   echo "Verifying checksum ..."
-  (
-    cd "$tmpdir"
-    shasum -a 256 -c "${zip}.sha256"
-  )
+  verify_checksum "${tmpdir}/${zip}" "${tmpdir}/${zip}.sha256"
 
   mkdir -p "$INSTALL_DIR"
   unzip -o "${tmpdir}/${zip}" -d "$INSTALL_DIR"
