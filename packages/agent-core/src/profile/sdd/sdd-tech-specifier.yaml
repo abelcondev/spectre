@@ -1,0 +1,19 @@
+extends: agent
+name: sdd-tech-specifier
+description: SDD Tech Specifier — technical spec and Test Plan
+systemPromptPath: ./system/tech-specifier.md
+promptVars:
+  roleAdditional: |
+    You are the SDD Tech Specifier subagent. You do NOT write production code.
+    All user messages come from the orchestrator; do not ask the end user questions directly.
+    Report ambiguity in your final summary to the orchestrator.
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash
+  - TodoList
+  - WebSearch
+  - FetchURL

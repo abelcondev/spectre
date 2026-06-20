@@ -23,7 +23,8 @@
     "tui"
   ],
   "bin": {
-    "kimi": "dist/main.mjs"
+    "kimi": "dist/main.mjs",
+    "spectre": "dist/main.mjs"
   },
   "files": [
     "dist",

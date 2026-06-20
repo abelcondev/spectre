@@ -55,7 +55,7 @@ describe('TabbedModelSelectorComponent', () => {
   it('renders an "All" + per-provider tab strip', () => {
     const out = strip(make().component.render(120).join('\n'));
     expect(out).toContain('All');
-    expect(out).toContain('Kimi Code');
+    expect(out).toContain('Specter');
     expect(out).toContain('openai');
   });
 

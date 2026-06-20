@@ -1,0 +1,20 @@
+extends: agent
+name: sdd-product-manager
+description: SDD Product Manager — discovers and defines the problem
+systemPromptPath: ./system/product-manager.md
+promptVars:
+  roleAdditional: |
+    You are the SDD Product Manager subagent. You do NOT write code or design pixels.
+    All user messages come from the orchestrator; do not ask the end user questions directly.
+    Report ambiguity in your final summary to the orchestrator.
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash
+  - AskUserQuestion
+  - TodoList
+  - WebSearch
+  - FetchURL

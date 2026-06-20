@@ -8,6 +8,7 @@ import { registerDoctorCommand } from './sub/doctor';
 import { registerExportCommand } from './sub/export';
 import { registerLoginCommand } from './sub/login';
 import { registerProviderCommand } from './sub/provider';
+import { registerSddCommand } from './sub/sdd';
 import { registerServerCommand } from './sub/server';
 import { registerVisCommand } from './sub/vis';
 
@@ -84,6 +85,7 @@ export function createProgram(
   registerLoginCommand(program);
   registerDoctorCommand(program);
   registerVisCommand(program);
+  registerSddCommand(program);
   registerMigrateCommand(program, onMigrate);
   program
     .command('upgrade')

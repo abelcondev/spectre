@@ -1,0 +1,47 @@
+extends: agent
+name: sdd-orchestrator
+description: SDD orchestrator for product/design/dev workflow
+systemPromptPath: ./system/orchestrator.md
+promptVars:
+  roleAdditional: |
+    You are the SDD Orchestrator. You orchestrate the Specter SDD flow.
+    You do NOT write production source code.
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash
+  - Agent
+  - AgentSwarm
+  - AskUserQuestion
+  - TodoList
+  - TaskList
+  - TaskOutput
+  - TaskStop
+  - CronCreate
+  - CronList
+  - CronDelete
+  - EnterPlanMode
+  - ExitPlanMode
+  - CreateGoal
+  - GetGoal
+  - UpdateGoal
+  - SddInit
+  - SddStatus
+  - SddWorktree
+  - SddMove
+  - WebSearch
+  - FetchURL
+subagents:
+  sdd-product-manager:
+    description: Discovers the problem and writes the [Product] spec + BDD scenarios.
+  sdd-designer:
+    description: Writes the [Design] functional + UI/UX spec based on approved [Product].
+  sdd-tech-specifier:
+    description: Writes the [Dev] technical spec + Test Plan based on approved [Design].
+  sdd-developer:
+    description: Implements with TDD in the feature worktree.
+  sdd-auditor:
+    description: Audits against quality gates C1–C7 and emits a verdict.

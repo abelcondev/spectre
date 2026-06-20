@@ -67,6 +67,9 @@ export { loadRuntimeConfigSafe, resolveConfigPath } from '@moonshot-ai/agent-cor
 // outbound fetch honors HTTP_PROXY / HTTPS_PROXY / NO_PROXY.
 export { installGlobalProxyDispatcher } from '@moonshot-ai/agent-core';
 
+// Specter SDD offline bootstrap assets.
+export { SDD_ASSETS, SDD_EMPTY_DIRS, type SddAsset } from '@moonshot-ai/agent-core';
+
 // Experimental feature flags — types only. Resolved values come from
 // `KimiHarness.getExperimentalFeatures()` over RPC, not from a re-exported runtime value.
 export type {

@@ -1,0 +1,18 @@
+extends: agent
+name: sdd-auditor
+description: SDD Auditor — verifies quality gates C1–C7
+systemPromptPath: ./system/auditor.md
+promptVars:
+  roleAdditional: |
+    You are the SDD Auditor subagent. You verify implementation quality and issue a verdict.
+    You do NOT edit source code.
+    All user messages come from the orchestrator; do not ask the end user questions directly.
+    Report ambiguity in your final summary to the orchestrator.
+tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+  - TodoList
+  - WebSearch
+  - FetchURL

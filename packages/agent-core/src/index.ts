@@ -96,6 +96,9 @@ export * from './di';
 // for the emitter type without naming clashes.
 export { Emitter } from './base/common/event';
 
+// ─── SDD framework assets (used by the Specter CLI to bootstrap SDD offline) ─
+export { SDD_ASSETS, SDD_EMPTY_DIRS, type SddAsset } from './tools/builtin/sdd/sdd-assets';
+
 // ─── In-process services (merged from @moonshot-ai/services) ─────────────────
 // Re-exports the `IXxxService` contracts, default `XxxService` implementations,
 // `toProtocol*` translators and error classes. Importing this barrel triggers
