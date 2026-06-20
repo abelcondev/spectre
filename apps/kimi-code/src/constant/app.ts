@@ -2,10 +2,10 @@ import { ErrorCodes } from '@moonshot-ai/kimi-code-sdk';
 
 export const PRODUCT_NAME = 'Specter';
 export const CLI_COMMAND_NAME = 'spectre';
-export const PROCESS_NAME = 'kimi-code';
+export const PROCESS_NAME = 'spectre';
 
 // Used in telemetry app names and HTTP User-Agent headers.
-export const CLI_USER_AGENT_PRODUCT = 'kimi-code-cli';
+export const CLI_USER_AGENT_PRODUCT = 'spectre-cli';
 export const CLI_UI_MODE = 'shell';
 // Telemetry ui_mode for the `kimi web` / `kimi server run` host. Same product
 // as the CLI (CLI_USER_AGENT_PRODUCT); the surface is distinguished by ui_mode.
@@ -18,8 +18,8 @@ export const CLI_SHUTDOWN_TIMEOUT_MS = 3000;
 export const NPM_PACKAGE_NAME = '@moonshot-ai/kimi-code';
 
 // App-owned data paths. SDK/core runtime config is intentionally not routed here.
-export const KIMI_CODE_HOME_ENV = 'KIMI_CODE_HOME';
-export const KIMI_CODE_DATA_DIR_NAME = '.kimi-code';
+export const KIMI_CODE_HOME_ENV = 'SPECTRE_HOME';
+export const KIMI_CODE_DATA_DIR_NAME = '.spectre';
 export const KIMI_CODE_LOG_DIR_NAME = 'logs';
 export const KIMI_CODE_CACHE_DIR_NAME = 'cache';
 export const KIMI_CODE_UPDATE_DIR_NAME = 'updates';
@@ -33,6 +33,7 @@ export const KIMI_CODE_BANNER_DIR_NAME = 'banner';
 export const KIMI_CODE_BANNER_STATE_FILE_NAME = 'state.json';
 
 // Managed Kimi auth provider key shared with OAuth/SDK config.
+// Keep as 'managed:kimi-code' so Specter continues to use your existing Kimi login/subscription.
 export const DEFAULT_OAUTH_PROVIDER_NAME = 'managed:kimi-code';
 
 // SDK/core error code that tells the TUI to show a login-required startup
@@ -44,12 +45,14 @@ export const FEEDBACK_ISSUE_URL = 'https://github.com/MoonshotAI/kimi-code/issue
 
 // Sent in the feedback `version` field so the backend can distinguish this
 // TypeScript client from clients that send a bare version.
-export const FEEDBACK_VERSION_PREFIX = 'kimi-code-';
+export const FEEDBACK_VERSION_PREFIX = 'spectre-';
 
 // Telemetry event name; keep stable for dashboard queries.
 export const FEEDBACK_TELEMETRY_EVENT = 'feedback_submitted';
 
 // CDN source of truth: all version checks and native install scripts pull from here.
+// TODO(abelcondev): point this to your own host (e.g. https://get.spectre.dev)
+// before distributing binaries, otherwise `spectre upgrade` will fetch Kimi Code.
 export const KIMI_CODE_CDN_BASE = 'https://code.kimi.com/kimi-code';
 export const KIMI_CODE_CDN_LATEST_URL = `${KIMI_CODE_CDN_BASE}/latest`;
 // Rollout manifest consumed by update checks; the plain-text `/latest` above
