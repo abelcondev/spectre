@@ -68,13 +68,13 @@ const versionOutput = await runKimi(['--version']);
 assertIncludes(versionOutput, expectedVersion, '--version');
 
 const helpOutput = await runKimi(['--help']);
-assertIncludes(helpOutput, 'Usage: kimi', '--help');
+assertIncludes(helpOutput, 'Usage: spectre', '--help');
 
 const exportHelpOutput = await runKimi(['export', '--help']);
-assertIncludes(exportHelpOutput, 'Usage: kimi export', 'export --help');
+assertIncludes(exportHelpOutput, 'Usage: spectre export', 'export --help');
 
 const nativeAssetOutput = await runKimiWithEnv(['--version'], {
-  KIMI_CODE_HOME: smokeHome,
+  SPECTRE_HOME: smokeHome,
   KIMI_CODE_NATIVE_ASSET_SMOKE: '1',
 });
 assertIncludes(nativeAssetOutput, `Native asset smoke passed: ${target}`, 'native asset smoke');
