@@ -312,13 +312,13 @@ function countOccurrences(haystack: string, needle: string): number {
 }
 
 const tempDirs: string[] = [];
-const originalKimiCodeHome = process.env['KIMI_CODE_HOME'];
+const originalSpectreHome = process.env['SPECTRE_HOME'];
 const originalPluginMarketplaceUrl = process.env['KIMI_CODE_PLUGIN_MARKETPLACE_URL'];
 const originalVisual = process.env['VISUAL'];
 const originalEditor = process.env['EDITOR'];
 
 async function makeTempHome(): Promise<string> {
-  const dir = await mkdtemp(join(tmpdir(), 'kimi-code-tui-'));
+  const dir = await mkdtemp(join(tmpdir(), 'spectre-tui-'));
   tempDirs.push(dir);
   return dir;
 }
@@ -328,10 +328,10 @@ afterEach(async () => {
   for (const dir of tempDirs.splice(0)) {
     await rm(dir, { recursive: true, force: true });
   }
-  if (originalKimiCodeHome === undefined) {
-    delete process.env['KIMI_CODE_HOME'];
+  if (originalSpectreHome === undefined) {
+    delete process.env['SPECTRE_HOME'];
   } else {
-    process.env['KIMI_CODE_HOME'] = originalKimiCodeHome;
+    process.env['SPECTRE_HOME'] = originalSpectreHome;
   }
   if (originalVisual === undefined) {
     delete process.env['VISUAL'];
@@ -386,7 +386,7 @@ describe('KimiTUI message flow', () => {
   });
 
   it('tracks theme changes from slash commands', async () => {
-    process.env['KIMI_CODE_HOME'] = await makeTempHome();
+    process.env['SPECTRE_HOME'] = await makeTempHome();
     const { driver, harness } = await makeDriver();
     harness.track.mockClear();
 
@@ -401,7 +401,7 @@ describe('KimiTUI message flow', () => {
 
   it('dispatches /reload-tui without reloading the active session', async () => {
     const homeDir = await makeTempHome();
-    process.env['KIMI_CODE_HOME'] = homeDir;
+    process.env['SPECTRE_HOME'] = homeDir;
     await writeFile(
       join(homeDir, 'tui.toml'),
       `
@@ -428,7 +428,7 @@ command = "vim"
 
   it('dispatches /reload through session reload and applies tui.toml', async () => {
     const homeDir = await makeTempHome();
-    process.env['KIMI_CODE_HOME'] = homeDir;
+    process.env['SPECTRE_HOME'] = homeDir;
     await writeFile(join(homeDir, 'tui.toml'), 'theme = "light"\n', 'utf-8');
     const { driver, session, harness } = await makeDriver();
     harness.track.mockClear();
@@ -476,7 +476,7 @@ command = "vim"
       expect.objectContaining({
         content: 'useful feedback',
         sessionId: 'ses-1',
-        version: 'kimi-code-0.0.0-test',
+        version: 'spectre-0.0.0-test',
         model: 'k2',
       }),
     );

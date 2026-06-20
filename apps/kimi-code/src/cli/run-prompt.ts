@@ -85,7 +85,7 @@ export async function runPrompt(
     },
     sessionStartedProperties: { yolo: false, plan: false, afk: true },
   });
-  log.info('kimi-code starting', {
+  log.info('spectre starting', {
     version,
     uiMode: PROMPT_UI_MODE,
     nodeVersion: process.version,

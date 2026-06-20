@@ -16,17 +16,17 @@ import {
 } from '#/tui/commands/experimental-flags';
 
 const tempDirs: string[] = [];
-const originalKimiCodeHome = process.env['KIMI_CODE_HOME'];
+const originalSpectreHome = process.env['SPECTRE_HOME'];
 
 afterEach(async () => {
   setExperimentalFeatures([]);
   for (const dir of tempDirs.splice(0)) {
     await rm(dir, { recursive: true, force: true });
   }
-  if (originalKimiCodeHome === undefined) {
-    delete process.env['KIMI_CODE_HOME'];
+  if (originalSpectreHome === undefined) {
+    delete process.env['SPECTRE_HOME'];
   } else {
-    process.env['KIMI_CODE_HOME'] = originalKimiCodeHome;
+    process.env['SPECTRE_HOME'] = originalSpectreHome;
   }
 });
 
@@ -114,10 +114,10 @@ auto_install = false
 });
 
 async function writeTuiConfig(text: string): Promise<void> {
-  const dir = join(tmpdir(), `kimi-tui-reload-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+  const dir = join(tmpdir(), `spectre-tui-reload-${Date.now()}-${Math.random().toString(36).slice(2)}`);
   tempDirs.push(dir);
   await mkdir(dir, { recursive: true });
-  process.env['KIMI_CODE_HOME'] = dir;
+  process.env['SPECTRE_HOME'] = dir;
   await writeFile(join(dir, 'tui.toml'), text, 'utf-8');
 }
 

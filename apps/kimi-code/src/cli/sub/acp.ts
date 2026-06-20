@@ -1,12 +1,12 @@
 /**
- * `kimi acp` sub-command.
+ * `spectre acp` sub-command.
  *
  * Starts the Agent Client Protocol (ACP) server over stdio so that
  * ACP-compatible clients (editors, IDEs, custom front-ends) can drive
- * a kimi-code session.
+ * a spectre session.
  *
  * Wire-up:
- *  - A {@link KimiHarness} is constructed with the kimi-code host identity
+ *  - A {@link KimiHarness} is constructed with the spectre host identity
  *    and a dedicated `uiMode: 'acp'` so downstream telemetry can
  *    distinguish ACP sessions from the TUI.
  *  - {@link runAcpServer} owns the JSON-RPC stdio bridge and redirects
@@ -54,10 +54,10 @@ export function registerAcpCommand(parent: Command): void {
         identity,
         uiMode: 'acp',
       });
-      // Forward `KIMI_CODE_HOME` (if set) into `authMethods[0].env` so the
-      // `kimi login` subprocess clients spawn for terminal-auth writes its
+      // Forward `SPECTRE_HOME` (if set) into `authMethods[0].env` so the
+      // `spectre login` subprocess clients spawn for terminal-auth writes its
       // token under the same data root the ACP server reads from. Used for
-      // sandboxed test setups (Zed's `agent_servers.*.env.KIMI_CODE_HOME =
+      // sandboxed test setups (Zed's `agent_servers.*.env.SPECTRE_HOME =
       // /tmp/...`). Production runs leave the env unset and the field stays
       // empty.
       const sandboxHome = process.env[KIMI_CODE_HOME_ENV];

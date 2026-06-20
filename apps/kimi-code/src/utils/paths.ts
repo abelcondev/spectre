@@ -26,9 +26,9 @@ import {
 } from '#/constant/app';
 
 /**
- * Return the root data directory for Kimi Code.
+ * Return the root data directory for Specter.
  *
- * Priority: `KIMI_CODE_HOME` env var > `~/.kimi-code`.
+ * Priority: `SPECTRE_HOME` env var > `~/.spectre`.
  */
 export function getDataDir(): string {
   const envDir = process.env[KIMI_CODE_HOME_ENV];

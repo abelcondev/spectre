@@ -263,10 +263,10 @@ describe('main entry command handling', () => {
   it('sets the process title during startup', () => {
     const originalTitle = process.title;
     try {
-      process.title = 'kimi-test-runner';
+      process.title = 'spectre-test-runner';
       main();
 
-      expect(process.title).toBe('kimi-code');
+      expect(process.title).toBe('spectre');
     } finally {
       process.title = originalTitle;
     }

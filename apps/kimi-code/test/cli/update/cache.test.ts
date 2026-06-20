@@ -18,8 +18,8 @@ const originalEnv = { ...process.env };
 let dir: string;
 
 beforeEach(() => {
-  dir = mkdtempSync(join(tmpdir(), 'kimi-update-cache-'));
-  process.env['KIMI_CODE_HOME'] = dir;
+  dir = mkdtempSync(join(tmpdir(), 'spectre-update-cache-'));
+  process.env['SPECTRE_HOME'] = dir;
 });
 
 afterEach(() => {

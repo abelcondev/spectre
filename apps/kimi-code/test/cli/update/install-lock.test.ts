@@ -12,8 +12,8 @@ const originalEnv = { ...process.env };
 let dir: string;
 
 beforeEach(() => {
-  dir = mkdtempSync(join(tmpdir(), 'kimi-update-install-lock-'));
-  process.env['KIMI_CODE_HOME'] = dir;
+  dir = mkdtempSync(join(tmpdir(), 'spectre-update-install-lock-'));
+  process.env['SPECTRE_HOME'] = dir;
 });
 
 afterEach(() => {

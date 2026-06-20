@@ -1634,8 +1634,8 @@ describe('KimiTUI startup', () => {
 
   it('writes display state after rendering a once banner', async () => {
     const originalEnv = { ...process.env };
-    const dir = mkdtempSync(join(tmpdir(), 'kimi-startup-banner-'));
-    process.env['KIMI_CODE_HOME'] = dir;
+    const dir = mkdtempSync(join(tmpdir(), 'spectre-startup-banner-'));
+    process.env['SPECTRE_HOME'] = dir;
 
     try {
       const banner = {
@@ -1681,8 +1681,8 @@ describe('KimiTUI startup', () => {
 
   it('does not write display state for an always banner', async () => {
     const originalEnv = { ...process.env };
-    const dir = mkdtempSync(join(tmpdir(), 'kimi-startup-banner-'));
-    process.env['KIMI_CODE_HOME'] = dir;
+    const dir = mkdtempSync(join(tmpdir(), 'spectre-startup-banner-'));
+    process.env['SPECTRE_HOME'] = dir;
 
     try {
       const banner = {

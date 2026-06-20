@@ -20,7 +20,7 @@ const mocks = vi.hoisted(() => {
     readonly fallback: TuiConfigFallback;
 
     constructor(fallback: TuiConfigFallback) {
-      super('Invalid TUI config in ~/.kimi-code/tui.toml; using defaults.');
+      super('Invalid TUI config in ~/.spectre/tui.toml; using defaults.');
       this.fallback = fallback;
     }
   }
@@ -188,7 +188,7 @@ describe('runShell', () => {
     expect(mocks.kimiHarnessConstructor).toHaveBeenCalledWith(
       expect.objectContaining({
         identity: expect.objectContaining({
-          userAgentProduct: 'kimi-code-cli',
+          userAgentProduct: 'spectre-cli',
           version: '1.2.3-test',
         }),
         sessionStartedProperties: { yolo: true, auto: false, plan: true, afk: false },
@@ -208,7 +208,7 @@ describe('runShell', () => {
       homeDir: '/tmp/kimi-code-test-home',
       deviceId: 'device-1',
       enabled: true,
-      appName: 'kimi-code-cli',
+      appName: 'spectre-cli',
       version: '1.2.3-test',
       uiMode: 'shell',
       model: 'k2',
@@ -436,7 +436,7 @@ describe('runShell', () => {
     expect(mocks.detectTerminalTheme).toHaveBeenCalledOnce();
     const [, , startupInput] = mocks.kimiTuiConstructor.mock.calls[0]!;
     expect(startupInput).toMatchObject({
-      startupNotice: 'Invalid TUI config in ~/.kimi-code/tui.toml; using defaults.',
+      startupNotice: 'Invalid TUI config in ~/.spectre/tui.toml; using defaults.',
       tuiConfig: {
         theme: 'auto',
         editorCommand: 'vim',

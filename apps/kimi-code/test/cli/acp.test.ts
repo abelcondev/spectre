@@ -69,9 +69,9 @@ describe('kimi acp', () => {
     expect(exitSpy).toHaveBeenCalledWith(0);
   });
 
-  it('forwards KIMI_CODE_HOME to terminalAuthEnv when set', async () => {
-    const previous = process.env['KIMI_CODE_HOME'];
-    process.env['KIMI_CODE_HOME'] = '/tmp/kimi-debug';
+  it('forwards SPECTRE_HOME to terminalAuthEnv when set', async () => {
+    const previous = process.env['SPECTRE_HOME'];
+    process.env['SPECTRE_HOME'] = '/tmp/spectre-debug';
     try {
       const program = new Command('kimi').exitOverride();
       registerAcpCommand(program);
@@ -81,21 +81,21 @@ describe('kimi acp', () => {
       const optsArg = vi.mocked(runAcpServer).mock.calls[0]?.[1];
       expect(optsArg).toEqual(
         expect.objectContaining({
-          terminalAuthEnv: { KIMI_CODE_HOME: '/tmp/kimi-debug' },
+          terminalAuthEnv: { SPECTRE_HOME: '/tmp/spectre-debug' },
         }),
       );
     } finally {
       if (previous === undefined) {
-        delete process.env['KIMI_CODE_HOME'];
+        delete process.env['SPECTRE_HOME'];
       } else {
-        process.env['KIMI_CODE_HOME'] = previous;
+        process.env['SPECTRE_HOME'] = previous;
       }
     }
   });
 
-  it('omits terminalAuthEnv when KIMI_CODE_HOME is unset', async () => {
-    const previous = process.env['KIMI_CODE_HOME'];
-    delete process.env['KIMI_CODE_HOME'];
+  it('omits terminalAuthEnv when SPECTRE_HOME is unset', async () => {
+    const previous = process.env['SPECTRE_HOME'];
+    delete process.env['SPECTRE_HOME'];
     try {
       const program = new Command('kimi').exitOverride();
       registerAcpCommand(program);
@@ -108,7 +108,7 @@ describe('kimi acp', () => {
       expect(optsArg.terminalAuthEnv).toBeUndefined();
     } finally {
       if (previous !== undefined) {
-        process.env['KIMI_CODE_HOME'] = previous;
+        process.env['SPECTRE_HOME'] = previous;
       }
     }
   });
