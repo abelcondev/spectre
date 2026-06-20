@@ -13,7 +13,6 @@ import type { ExecutableToolResult, ToolExecution } from '../../../loop/types';
 import { toInputJsonSchema } from '../../support/input-schema';
 import {
   findProjectRoot,
-  issueTypeFor,
   pathExists,
   runCommand,
   runGit,
@@ -92,7 +91,7 @@ export class SddWorktreeTool implements BuiltinTool<SddWorktreeInput> {
         }
         return this.statusWorktree(repoRoot, args.featureSlug);
       default:
-        return { isError: true, output: `Unknown command: ${args.command}` };
+        return { isError: true, output: `Unknown command: ${String(args.command)}` };
     }
   }
 

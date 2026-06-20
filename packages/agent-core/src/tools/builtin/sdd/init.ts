@@ -15,7 +15,6 @@ import { toInputJsonSchema } from '../../support/input-schema';
 import { SDD_ASSETS, SDD_EMPTY_DIRS } from './sdd-assets';
 import {
   findProjectRoot,
-  isGitRepo,
   pathExists,
   runCommand,
   runGit,

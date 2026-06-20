@@ -12,7 +12,7 @@ import { z } from 'zod';
 import type { BuiltinTool } from '../../../agent/tool';
 import type { ExecutableToolResult, ToolExecution } from '../../../loop/types';
 import { toInputJsonSchema } from '../../support/input-schema';
-import { findProjectRoot, pathExists, runCommand } from './sdd-utils';
+import { findProjectRoot, pathExists } from './sdd-utils';
 import DESCRIPTION from './status.md?raw';
 
 export const SddStatusInputSchema = z.object({});

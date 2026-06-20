@@ -102,7 +102,7 @@ async function collectFiles() {
     }
   }
 
-  files.sort();
+  files.sort((a, b) => a.localeCompare(b));
   return files;
 }
 
