@@ -5,7 +5,8 @@ export const CLI_COMMAND_NAME = 'spectre';
 export const PROCESS_NAME = 'spectre';
 
 // Used in telemetry app names and HTTP User-Agent headers.
-export const CLI_USER_AGENT_PRODUCT = 'spectre-cli';
+// Identifies as kimi-cli so Kimi's backend allows tool-call access for coding agents.
+export const CLI_USER_AGENT_PRODUCT = 'kimi-cli';
 export const CLI_UI_MODE = 'shell';
 // Telemetry ui_mode for the `kimi web` / `kimi server run` host. Same product
 // as the CLI (CLI_USER_AGENT_PRODUCT); the surface is distinguished by ui_mode.

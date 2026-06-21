@@ -188,7 +188,7 @@ describe('runShell', () => {
     expect(mocks.kimiHarnessConstructor).toHaveBeenCalledWith(
       expect.objectContaining({
         identity: expect.objectContaining({
-          userAgentProduct: 'spectre-cli',
+          userAgentProduct: 'kimi-cli',
           version: '1.2.3-test',
         }),
         sessionStartedProperties: { yolo: true, auto: false, plan: true, afk: false },
@@ -208,7 +208,7 @@ describe('runShell', () => {
       homeDir: '/tmp/kimi-code-test-home',
       deviceId: 'device-1',
       enabled: true,
-      appName: 'spectre-cli',
+      appName: 'kimi-cli',
       version: '1.2.3-test',
       uiMode: 'shell',
       model: 'k2',

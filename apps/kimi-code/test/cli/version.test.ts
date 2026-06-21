@@ -20,9 +20,9 @@ describe('cli version helpers', () => {
     expect(getVersion()).toBe(pkg.version);
   });
 
-  it('builds default headers with the spectre-cli user-agent', () => {
+  it('builds default headers with the kimi-cli user-agent', () => {
     const headers = buildKimiDefaultHeaders('1.2.3');
 
-    expect(headers['User-Agent']).toBe('spectre-cli/1.2.3');
+    expect(headers['User-Agent']).toBe('kimi-cli/1.2.3');
   });
 });
