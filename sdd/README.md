@@ -36,11 +36,11 @@ This directory is the **source of truth** for this project's SDD flow.
 4. Read `sdd/quality-gates.md`, `sdd/testing.md`, and `sdd/security.md` before declaring `done`.
 5. Create a feature:
    ```bash
-   ./scripts/sdd-worktree.sh create <feature-slug>
+   spectre sdd worktree create <feature-slug>
    ```
 6. Move issues between states:
    ```bash
-   ./scripts/sdd-move.sh <project> <issue> <source> <destination>
+   spectre sdd move <feature-slug> <issue> <source-state> <target-state>
    ```
 
 ---

@@ -243,7 +243,7 @@ if [ -d "sdd/features" ]; then
   done
 
   if [[ "${projects_found}" -eq 0 ]]; then
-    ok "sdd/features/ is empty — create a feature with: ./scripts/sdd-worktree.sh create <feature-slug>"
+    ok "sdd/features/ is empty — create a feature with: spectre sdd worktree create <feature-slug>"
   fi
 else
   warn "Cannot validate projects: sdd/features/ is missing"

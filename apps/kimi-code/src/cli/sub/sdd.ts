@@ -13,7 +13,7 @@ import { basename, dirname, join, relative, resolve } from 'node:path';
 import { SDD_ASSETS, SDD_EMPTY_DIRS, type SddAsset } from '@moonshot-ai/kimi-code-sdk';
 import type { Command } from 'commander';
 
-interface SddDeps {
+export interface SddDeps {
   readonly cwd: () => string;
   readonly stdout: { write(chunk: string): boolean };
   readonly stderr: { write(chunk: string): boolean };
@@ -42,8 +42,11 @@ export function registerSddCommand(parent: Command): void {
     .command('init')
     .description('Install the bundled SDD framework into the current Git repository.')
     .option('-f, --force', 'Overwrite existing SDD files.')
-    .action(async (options: { force?: boolean }) => {
-      await runSddCommand((deps) => handleSddInit(deps, { force: options.force === true }));
+    .option('--dry-run', 'Show what files would be written without modifying the repository.')
+    .action(async (options: { force?: boolean; dryRun?: boolean }) => {
+      await runSddCommand((deps) =>
+        handleSddInit(deps, { force: options.force === true, dryRun: options.dryRun === true }),
+      );
     });
 
   sdd
@@ -89,7 +92,10 @@ async function runSddCommand(handler: (deps: SddDeps) => Promise<number>): Promi
   if (code !== 0) deps.exit(code);
 }
 
-async function handleSddInit(deps: SddDeps, options: { force: boolean }): Promise<number> {
+export async function handleSddInit(
+  deps: SddDeps,
+  options: { force: boolean; dryRun?: boolean },
+): Promise<number> {
   const cwd = deps.cwd();
   const repoRoot = await findGitRoot(cwd);
   if (repoRoot === null) {
@@ -98,11 +104,21 @@ async function handleSddInit(deps: SddDeps, options: { force: boolean }): Promis
   }
 
   const sddDir = join(repoRoot, 'sdd');
-  if (!options.force && (await pathExists(sddDir))) {
+  if (!options.force && !options.dryRun && (await pathExists(sddDir))) {
     deps.stderr.write(
       'error: SDD is already installed. Use --force to overwrite or run "spectre sdd status".\n',
     );
     return 1;
+  }
+
+  if (options.dryRun) {
+    deps.stdout.write(
+      `SDD framework would be installed in ${repoRoot}.\n` +
+        `${SDD_ASSETS.length} files would be written:\n` +
+        SDD_ASSETS.map((asset) => `  ${asset.path}`).join('\n') +
+        '\n',
+    );
+    return 0;
   }
 
   try {
@@ -131,7 +147,7 @@ async function handleSddInit(deps: SddDeps, options: { force: boolean }): Promis
   return 0;
 }
 
-async function handleSddStatus(deps: SddDeps): Promise<number> {
+export async function handleSddStatus(deps: SddDeps): Promise<number> {
   const cwd = deps.cwd();
   const repoRoot = await findGitRoot(cwd);
   if (repoRoot === null) {

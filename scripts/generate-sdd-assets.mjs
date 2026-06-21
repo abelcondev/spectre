@@ -44,10 +44,7 @@ const SDD_GLOBS = [
   'decisions/**/*.md',
 ];
 
-const SCRIPT_FILES = [
-  'sdd-worktree.sh',
-  'sdd-move.sh',
-];
+const SCRIPT_FILES = [];
 
 const EMPTY_DIRS = ['sdd/features', 'sdd/decisions'];
 
