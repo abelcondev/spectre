@@ -1,5 +1,11 @@
 # @moonshot-ai/kimi-code
 
+## 0.21.0
+
+### Minor Changes
+
+- Enforce the SDD project setup gate before any feature worktree can be created. The Orchestrator now verifies that `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md` are complete, GitHub is configured, dependencies are installed, and MCP servers are registered before allowing feature discovery. The Tech Lead prompt was expanded to cover full project bootstrap including folder structure, scaffolding, dependency installation, and GitHub setup.
+
 ## 0.20.0
 
 ### Minor Changes
