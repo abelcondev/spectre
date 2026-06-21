@@ -1,5 +1,11 @@
 # @moonshot-ai/kimi-code
 
+## 0.19.2
+
+### Patch Changes
+
+- Fix the GitHub Actions release workflow for the Specter fork so tagged releases build and publish native binaries to GitHub Releases.
+
 ## 0.19.1
 
 ### Patch Changes

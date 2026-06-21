@@ -34,9 +34,18 @@ const publishedPackage = parsePublishedPackages().find(
     typeof entry.version === 'string',
 );
 
-const version = publishedPackage?.version ?? packageJson.version;
-const shouldPublish = publishedPackage !== undefined;
-const tag = `${packageName}@${version}`;
+// Specter releases are tagged v0.x.y and are not published to npm. When the
+// workflow is triggered by a version tag, use that tag directly and always
+// publish native artifacts.
+const refType = process.env['GITHUB_REF_TYPE'];
+const refName = process.env['GITHUB_REF_NAME'];
+const isSpecterTag = refType === 'tag' && typeof refName === 'string' && refName.startsWith('v');
+
+const version = isSpecterTag
+  ? refName.replace(/^v/, '')
+  : (publishedPackage?.version ?? packageJson.version);
+const shouldPublish = isSpecterTag || publishedPackage !== undefined;
+const tag = isSpecterTag ? refName : `${packageName}@${version}`;
 const githubOutput = process.env['GITHUB_OUTPUT'];
 
 if (githubOutput !== undefined) {

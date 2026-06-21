@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'v*'
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -11,7 +13,9 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'MoonshotAI'
+    if: |
+      (github.repository_owner == 'MoonshotAI' && github.ref == 'refs/heads/main') ||
+      (github.repository_owner == 'abelcondev' && startsWith(github.ref, 'refs/tags/v'))
     outputs:
       packages_published: ${{ steps.changesets.outputs.published }}
       kimi_native_release: ${{ steps.kimi-release.outputs.should_publish }}
@@ -37,6 +41,7 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: Upgrade npm for Trusted Publishing
+        if: github.repository_owner == 'MoonshotAI'
         run: npm install -g npm@latest
 
       - name: Install dependencies
@@ -53,6 +58,7 @@ jobs:
         run: pnpm build
 
       - name: Create Release Pull Request or Publish to npm
+        if: github.repository_owner == 'MoonshotAI'
         id: changesets
         uses: changesets/action@v1
         with:
@@ -65,11 +71,21 @@ jobs:
           # NPM_TOKEN is not needed with Trusted Publishing (OIDC)
 
       - name: Resolve Kimi Code native release
-        if: steps.changesets.outputs.published == 'true'
         id: kimi-release
         run: node apps/kimi-code/scripts/native/resolve-release.mjs
         env:
           CHANGESETS_PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
+          GITHUB_REF_TYPE: ${{ github.ref_type }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+
+      - name: Create GitHub Release
+        if: github.repository_owner == 'abelcondev' && steps.kimi-release.outputs.should_publish == 'true'
+        run: |
+          gh release create "${{ steps.kimi-release.outputs.tag }}" \
+            --title "${{ steps.kimi-release.outputs.tag }}" \
+            --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-docs:
     name: Deploy docs
