@@ -39,12 +39,12 @@ Output:
 - Success: `SDD harness initialized in <path>`
 - Already exists: `SDD harness already present. Use --force to overwrite.`
 
-### `spectre feature create <slug>`
+### `spectre sdd worktree create <slug>`
 
 Create a feature worktree and SDD project structure.
 
 ```
-spectre feature create <slug>
+spectre sdd worktree create <slug>
 
 Arguments:
   slug    Kebab-case feature identifier
@@ -58,15 +58,15 @@ Behavior:
 - Commits the empty project structure.
 
 Output:
-- Success: `Feature worktree ready: <path>`
+- Success: `Worktree ready for feature '<slug>'`
 - Error: `Feature '<slug>' already exists` or `Invalid slug: ...`
 
-### `spectre feature move <slug> <issue> <source-state> <target-state>`
+### `spectre sdd move <slug> <issue> <source-state> <target-state>`
 
 Move an SDD Issue between states.
 
 ```
-spectre feature move <slug> <issue> <source-state> <target-state>
+spectre sdd move <slug> <issue> <source-state> <target-state>
 
 Arguments:
   slug           Feature identifier
@@ -82,7 +82,7 @@ Behavior:
 - Creates a commit with the move.
 
 Output:
-- Success: `Moved <issue> from <source-state> to <target-state>`
+- Success: `Moved <issue> [Type]: <source-state> → <target-state>`
 - Error: file not found, invalid transition, etc.
 
 ## Error handling
