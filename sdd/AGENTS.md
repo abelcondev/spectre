@@ -2,7 +2,7 @@
 
 Reply in the same language as the user.
 
-This project uses the **SDD (Spec-Driven Development)** workflow. The orchestrator profile is `sdd-orchestrator`, and the native subagents are `sdd-product-manager`, `sdd-designer`, `sdd-tech-specifier`, `sdd-developer`, and `sdd-auditor`.
+This project uses the **SDD (Spec-Driven Development)** workflow. The orchestrator profile is `sdd-orchestrator`, and the native subagents are `sdd-tech-lead`, `sdd-product-manager`, `sdd-designer`, `sdd-tech-specifier`, `sdd-developer`, and `sdd-auditor`.
 
 This file is the **entry point** for any agent working on this project. Read only what you need when you need it.
 
@@ -33,7 +33,8 @@ In every session, the orchestrator agent MUST:
 | `sdd/testing.md` | Testing strategy, TDD, fixtures, coverage | Before writing tests |
 | `sdd/security.md` | Security, RBAC, PII, compliance | Before implementing features with sensitive data |
 | `sdd/delivery.md` | Commits, PRs, merge, and closure | Before delivering |
-| `sdd/decisions/` | ADRs (Architecture Decision Records) | When architectural decisions are made |
+| `sdd/decisions/` | ADRs (Architecture Decision Records) | When architectural or product decisions are made |
+| `sdd/tech-stack.md` | Technology inventory, versions, MCPs, doc URLs | Before implementing |
 | `sdd/features/` | Local projects, issues, and specs | Source of truth for the SDD flow |
 
 Complete `sdd/architecture.md` and `sdd/conventions.md` with this project's concrete stack, conventions, and quality commands.
@@ -56,6 +57,8 @@ Non-negotiable rules:
 
 - **Each feature is a Project in `sdd/features/<slug>/`**, with at least one Issue `[Product]`, one `[Design]`, and one `[Dev]`.
 - **Each feature lives in its own worktree** from the start: `<main-repo>-<feature-slug>/`.
+- **Project setup and stack changes happen on `main`** via the `sdd-tech-lead`; they do not use a feature worktree.
+- **Product-level changes use a `product/<change-slug>` branch + PR**; they do not use a feature worktree.
 - **Only one Issue `[Dev]` in `Implementing` or `Review` at a time**.
 - **Do not declare `done` without a green `init.sh`**.
 - **Do not skip human gates**:

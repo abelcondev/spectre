@@ -18,6 +18,8 @@ Complete with the project's decisions:
 - **Package Manager**: *(e.g. bun, npm, pnpm, poetry, etc.)*
 - **Visual Design Tool**: *(e.g. Figma, Pencil, Sketch, etc.)*
 
+> The detailed technology inventory — versions, MCP servers, documentation URLs, and install commands — lives in `sdd/tech-stack.md`. The Tech Lead creates and maintains that document on `main` during project setup.
+
 ### Example
 
 > Project: **Acme CRM** — Multi-tenant SaaS for customer and sales management.
@@ -32,6 +34,22 @@ Complete with the project's decisions:
 | Queues/async | Inngest | Reported jobs, notifications, integrations |
 | Storage | S3-compatible | Customer attachments, CSV exports |
 | Design | Figma | Prototypes, artboards, visual components |
+
+---
+
+## Project Setup
+
+The `sdd-tech-lead` agent sets up the project on `main` before any feature worktree is created. During setup the Tech Lead:
+
+1. Reads `sdd/product.md`, including the PRD section, to understand product-level requirements.
+2. Interviews the human about the technology stack.
+3. For each technology, checks whether an MCP server exists; if not, asks for the official documentation URL and the version to install.
+4. Reconciles the selected stack against the PRD and asks about omitted technologies (for example, an AI requirement in the PRD without a matching AI provider).
+5. Updates this document (`sdd/architecture.md`) and creates/maintains `sdd/tech-stack.md`.
+6. Installs dependencies and configures the repository.
+7. Configures GitHub (creates the repo if needed) and pushes the setup commits to `main`.
+
+All setup work happens on `main`. Feature development happens in isolated worktrees.
 
 ---
 

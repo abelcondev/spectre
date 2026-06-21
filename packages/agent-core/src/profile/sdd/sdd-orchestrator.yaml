@@ -35,6 +35,8 @@ tools:
   - WebSearch
   - FetchURL
 subagents:
+  sdd-tech-lead:
+    description: Bootstraps the project stack on main, installs technologies, and registers MCPs.
   sdd-product-manager:
     description: Discovers the problem and writes the [Product] spec + BDD scenarios.
   sdd-designer:

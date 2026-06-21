@@ -51,6 +51,77 @@ git branch -D feature/<slug>
    git branch -D feature/<slug>
    ```
 
+### Dependencies are missing in the worktree
+
+**Cause**: `node_modules/` is usually in `.gitignore`, so it is not copied to the worktree. The worktree script tries to reinstall automatically, but it may fail if the package manager is not installed or if the lockfile is missing.
+
+**Solution**:
+
+1. Ensure the package manager is installed in the environment.
+2. Ensure a lockfile exists in `main`:
+   - `pnpm-lock.yaml` for pnpm
+   - `bun.lockb` / `bun.lock` for bun
+   - `yarn.lock` for yarn
+   - `package-lock.json` for npm
+3. If no lockfile exists, add a `packageManager` field to `package.json`:
+   ```json
+   {
+     "packageManager": "pnpm@10.0.0"
+   }
+   ```
+4. Run the install command manually in the worktree:
+   ```bash
+   cd <repo-principal>-<slug>
+   pnpm install
+   ```
+
+### `CLAUDE.md` or other framework files are missing in the worktree
+
+**Cause**: The files were not committed to `main` before creating the worktree. Git worktrees reflect the branch `HEAD`, not uncommitted working-tree changes.
+
+**Solution**:
+
+1. In `main`, verify the files are tracked:
+   ```bash
+   git ls-tree -r --name-only HEAD | grep -E '^(CLAUDE\.md|AGENTS\.md|init\.sh|sdd/)'
+   ```
+2. If they are missing, commit them in `main`:
+   ```bash
+   git add CLAUDE.md AGENTS.md init.sh sdd/
+   git commit -m "chore(sdd): install framework"
+   ```
+3. Remove the incomplete worktree and recreate it:
+   ```bash
+   ./scripts/sdd-worktree.sh remove <slug>
+   ./scripts/sdd-worktree.sh create <slug>
+   ```
+
+### `You are on branch '...'. Feature worktrees must be created from a clean main (or master) branch.`
+
+**Cause**: The worktree script refuses to create a feature worktree unless the current branch is `main` (or `master`) and there are no uncommitted changes.
+
+**Solution**:
+
+1. Switch to `main`:
+   ```bash
+   git checkout main
+   ```
+2. Review changes:
+   ```bash
+   git status
+   ```
+3. Commit or stash everything:
+   ```bash
+   git add ...
+   git commit -m "chore: prepare main for feature worktree"
+   # or
+   git stash push -m "wip before feature worktree"
+   ```
+4. Create the worktree:
+   ```bash
+   ./scripts/sdd-worktree.sh create <slug>
+   ```
+
 ---
 
 ## Invalid Slug

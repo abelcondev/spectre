@@ -117,7 +117,8 @@ export async function ensureMainBranch(kaos: Kaos, cwd: string): Promise<Command
 export async function commitSddFramework(kaos: Kaos, cwd: string): Promise<CommandResult> {
   // Commit only the framework files so the install is isolated from other
   // uncommitted changes the user may have in the working directory.
-  const add = await runGit(kaos, cwd, ['add', 'AGENTS.md', 'init.sh', 'sdd/']);
+  // CLAUDE.md must be included so feature worktrees inherit it.
+  const add = await runGit(kaos, cwd, ['add', 'AGENTS.md', 'CLAUDE.md', 'init.sh', 'sdd/']);
   if (add.exitCode !== 0) return add;
   return runGit(kaos, cwd, ['commit', '-m', 'chore(sdd): install framework']);
 }
@@ -180,4 +181,88 @@ export async function pathExists(kaos: Kaos, path: string): Promise<boolean> {
 
 export async function ensureParentDir(kaos: Kaos, path: string): Promise<void> {
   await kaos.mkdir(dirname(path), { parents: true, existOk: true });
+}
+
+export type PackageManager = 'npm' | 'yarn' | 'pnpm' | 'bun';
+
+export async function detectPackageManager(
+  kaos: Kaos,
+  cwd: string,
+): Promise<PackageManager | null> {
+  if (await pathExists(kaos, join(cwd, 'pnpm-lock.yaml'))) return 'pnpm';
+  if (await pathExists(kaos, join(cwd, 'pnpm-workspace.yaml'))) return 'pnpm';
+  if (await pathExists(kaos, join(cwd, 'bun.lockb'))) return 'bun';
+  if (await pathExists(kaos, join(cwd, 'bun.lock'))) return 'bun';
+  if (await pathExists(kaos, join(cwd, 'yarn.lock'))) return 'yarn';
+  if (await pathExists(kaos, join(cwd, 'package-lock.json'))) return 'npm';
+
+  const packageJsonPath = join(cwd, 'package.json');
+  if (await pathExists(kaos, packageJsonPath)) {
+    try {
+      const content = await kaos.readText(packageJsonPath);
+      const pkg = JSON.parse(content) as { packageManager?: string };
+      const pm = pkg.packageManager?.split('@')[0];
+      if (pm === 'pnpm' || pm === 'bun' || pm === 'yarn' || pm === 'npm') {
+        return pm;
+      }
+    } catch {
+      // Ignore malformed package.json and fall back to npm.
+    }
+    return 'npm';
+  }
+
+  return null;
+}
+
+export async function installDependencies(
+  kaos: Kaos,
+  cwd: string,
+  timeoutMs = 120_000,
+): Promise<CommandResult> {
+  const pm = await detectPackageManager(kaos, cwd);
+  if (pm === null) {
+    return {
+      exitCode: 0,
+      stdout: 'No package.json found; skipping dependency install.',
+      stderr: '',
+    };
+  }
+
+  const command: string[] = [pm, 'install'];
+  return runCommand(kaos, cwd, command, timeoutMs);
+}
+
+export async function getCurrentBranch(kaos: Kaos, cwd: string): Promise<string | null> {
+  const result = await runGit(kaos, cwd, ['branch', '--show-current']);
+  if (result.exitCode !== 0) return null;
+  return result.stdout.trim() || null;
+}
+
+export async function hasUncommittedChanges(kaos: Kaos, cwd: string): Promise<boolean> {
+  const result = await runGit(kaos, cwd, ['status', '--porcelain']);
+  if (result.exitCode !== 0) return true;
+  return result.stdout.trim().length > 0;
+}
+
+export async function requireCleanMain(
+  kaos: Kaos,
+  cwd: string,
+): Promise<{ ok: true } | { ok: false; reason: string }> {
+  const currentBranch = await getCurrentBranch(kaos, cwd);
+  if (currentBranch !== 'main' && currentBranch !== 'master') {
+    return {
+      ok: false,
+      reason: `You are on branch '${currentBranch ?? 'unknown'}'. Feature worktrees must be created from a clean main (or master) branch.`,
+    };
+  }
+
+  if (await hasUncommittedChanges(kaos, cwd)) {
+    return {
+      ok: false,
+      reason:
+        'The repository has uncommitted changes. Commit or stash them before creating a feature worktree so the worktree inherits a clean copy of main.',
+    };
+  }
+
+  return { ok: true };
 }

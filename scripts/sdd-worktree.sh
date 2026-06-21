@@ -63,6 +63,74 @@ worktree_path_for() {
   echo "${WORKTREE_BASE}/${REPO_NAME}-${slug}"
 }
 
+# ─── Package manager detection ────────────────────────────────────────
+
+detect_package_manager() {
+  local dir="$1"
+  if [[ -f "${dir}/pnpm-lock.yaml" ]] || [[ -f "${dir}/pnpm-workspace.yaml" ]]; then
+    echo "pnpm"
+    return
+  fi
+  if [[ -f "${dir}/bun.lockb" ]] || [[ -f "${dir}/bun.lock" ]]; then
+    echo "bun"
+    return
+  fi
+  if [[ -f "${dir}/yarn.lock" ]]; then
+    echo "yarn"
+    return
+  fi
+  if [[ -f "${dir}/package-lock.json" ]]; then
+    echo "npm"
+    return
+  fi
+  if [[ -f "${dir}/package.json" ]]; then
+    local pm=""
+    pm="$(node -e "console.log((require('${dir}/package.json').packageManager || '').split('@')[0])" 2>/dev/null || true)"
+    if [[ -n "${pm}" ]]; then
+      echo "${pm}"
+      return
+    fi
+    echo "npm"
+    return
+  fi
+  echo ""
+}
+
+install_dependencies() {
+  local dir="$1"
+  local pm=""
+  pm="$(detect_package_manager "${dir}")"
+  if [[ -z "${pm}" ]]; then
+    log_info "No package.json found; skipping dependency install."
+    return 0
+  fi
+
+  if ! command -v "${pm}" >/dev/null 2>&1; then
+    log_warn "Detected package manager '${pm}' is not installed; skipping dependency install."
+    return 0
+  fi
+
+  log_info "Installing dependencies with ${pm}..."
+  if (cd "${dir}" && "${pm}" install); then
+    log_info "Dependencies installed."
+  else
+    log_warn "Dependency install failed. Run '${pm} install' manually in ${dir}."
+  fi
+}
+
+ensure_clean_main() {
+  local current_branch=""
+  current_branch="$(git branch --show-current 2>/dev/null || true)"
+
+  if [[ "${current_branch}" != "main" && "${current_branch}" != "master" ]]; then
+    die "You are on branch '${current_branch}'. Feature worktrees must be created from a clean main (or master) branch."
+  fi
+
+  if [[ -n "$(git status --porcelain 2>/dev/null)" ]]; then
+    die "The repository has uncommitted changes. Commit or stash them before creating a feature worktree so the worktree inherits a clean copy of main."
+  fi
+}
+
 # ─── Commands ─────────────────────────────────────────────────────────
 
 cmd_create() {
@@ -74,6 +142,7 @@ cmd_create() {
 
   validate_feature_slug "${feature_slug}"
   ensure_repo_root
+  ensure_clean_main
 
   worktree_path="$(worktree_path_for "${feature_slug}")"
   project_path="${worktree_path}/sdd/features/${feature_slug}"
@@ -145,13 +214,15 @@ EOF
     git commit -m "chore(sdd): create project ${feature_slug}" || true
   )
 
+  install_dependencies "${worktree_path}"
+
   echo ""
   log_info "Worktree ready for feature '${feature_slug}'"
   echo "  Path:    ${worktree_path}"
   echo "  Branch:  ${branch_name}"
   echo "  Project: ${project_path}"
   echo ""
-  log_info "Next step: prepare your environment (dependencies, environment variables, etc.) and start the spec."
+  log_info "Next step: prepare your environment (environment variables, etc.) and start the spec."
   echo ""
 }
 

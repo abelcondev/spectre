@@ -19,7 +19,8 @@ For the general SDD index, see `sdd/README.md`.
 
 | Role | Responsible for | SDD Phase |
 |---|---|---|
-| `orchestrator` | Create worktrees, move issues between states, orchestrate subagents, human gates. | Whole cycle |
+| `orchestrator` | Create worktrees/branches, move issues between states, orchestrate subagents, human gates. | Whole cycle |
+| `tech_lead` | Project setup on `main`: stack selection, technology installation, MCP/doc registration, GitHub setup. | Project setup |
 | `product_manager` | Discovery, BDD, product goals, acceptance criteria, risks, scope. | `[Product]` |
 | `designer` | Functional spec, user flows, UI/UX, accessibility, design tokens, handoff to Dev. | `[Design]` |
 | `tech_specifier` | Technical spec, technical decisions, impact analysis, Test Plan. | `[Dev]` (spec) |
@@ -78,7 +79,48 @@ Slugs use kebab-case, lowercase, no accents.
 
 ---
 
-## 3. States
+## 3. Project Setup on `main`
+
+Before any feature is created, the `tech_lead` sets up the project on `main`. This is **not** a feature and does **not** use a worktree.
+
+### 3.1 When to run setup
+
+- The repository has SDD installed but `sdd/architecture.md` and `sdd/tech-stack.md` are empty or incomplete.
+- The human asks to add, remove, or change a core technology.
+- The PRD in `sdd/product.md` mentions a technology that is not reflected in the stack.
+
+### 3.2 What the Tech Lead does
+
+1. Reads `sdd/product.md` (including the PRD), `sdd/architecture.md`, and `sdd/conventions.md`.
+2. Uses `AskUserQuestion` to interview the human about:
+   - Language, framework, database, authentication, UI/styles, package manager, deployment.
+   - External services and APIs.
+   - AI / LLM providers or ML services required by the PRD.
+3. For each technology:
+   - Check whether an MCP server is available.
+   - If an MCP exists: record the MCP name/configuration in `sdd/tech-stack.md`.
+   - If no MCP exists: ask for the official documentation URL and the exact version to install.
+4. Reconciles the selected stack against the PRD:
+   - If the PRD requires a capability (e.g., "AI-generated summaries") but no matching technology was chosen, ask the human for the missing provider/library.
+5. Updates `sdd/architecture.md` and creates/maintains `sdd/tech-stack.md`.
+6. Updates `sdd/conventions.md` when a technology choice implies naming or style rules.
+7. Runs installation commands (`npm install`, `pnpm install`, etc.).
+8. Configures GitHub:
+   - If the directory is not a Git repository, initialize it.
+   - If the repository has no GitHub remote, create the repo (`gh repo create`) or add the remote.
+   - If the repository is already on GitHub, commit the setup changes and push to `main`.
+
+### 3.3 Output
+
+- `sdd/architecture.md` — stack and layers completed.
+- `sdd/tech-stack.md` — technology inventory with versions, MCPs, and doc URLs.
+- `sdd/conventions.md` — updated if the stack imposes conventions.
+- Dependencies installed in the working directory.
+- Setup commits pushed to `main`.
+
+---
+
+## 4. States
 
 ### Issue `[Product]`
 
@@ -133,7 +175,7 @@ backlog → spec-needed → spec-ready → implementing → review → testing �
 
 ---
 
-## 4. How a Feature Is Modeled
+## 5. How a Feature Is Modeled
 
 Each feature has its own **isolated worktree** from the start. Inside the worktree, specs are written, design is iterated, and code is implemented.
 
@@ -154,7 +196,7 @@ Each feature has its own **isolated worktree** from the start. Inside the worktr
 
 ---
 
-## 5. Workflow
+## 6. Workflow
 
 1. **Idea**: the human describes the feature. The `orchestrator` creates the worktree with `./scripts/sdd-worktree.sh create <feature-slug>`.
 2. **Product Discovery** (inside the worktree): the `product_manager` interviews the human and writes the product spec + BDD scenarios in `product/discovery/`. The `orchestrator` moves the file to `product/product-ready/`.
@@ -171,7 +213,45 @@ Each feature has its own **isolated worktree** from the start. Inside the worktr
 
 ---
 
-## 6. How to Move an Issue Between States
+## 7. Product-Level Changes
+
+Product-level changes — scope reductions, new requirements, UI changes, or priority shifts — are **not** features and do **not** use a worktree. They are reviewed through a short-lived branch and a PR.
+
+### 7.1 When to use a product-change branch
+
+- The human asks to change `sdd/product.md` or its PRD.
+- The scope of an approved feature must be reduced because of time or budget.
+- A UI pattern or functional assumption in `sdd/product.md` changes after review.
+
+### 7.2 Branch and process
+
+1. From `main`, create a branch named `product/<change-slug>`:
+   ```bash
+   git checkout -b product/reduce-onboarding-scope
+   ```
+2. The `product_manager` updates `sdd/product.md` (including the PRD section) and adds a changelog entry.
+3. The `product_manager` writes or updates an ADR in `sdd/decisions/` explaining the change and its rationale.
+4. Commit the changes:
+   ```text
+   docs(product): reduce onboarding scope and update PRD
+   docs(decisions): ADR for onboarding scope reduction
+   ```
+5. Open a PR to `main`:
+   ```bash
+   gh pr create --title "product: reduce onboarding scope" --body "Updates sdd/product.md and records the decision in sdd/decisions/..." --base main
+   ```
+6. Human reviews and merges the PR.
+7. After merge, the `product_manager` notifies designers and developers so they can pull `main`.
+8. If a developer detects that the change affects an active or upcoming feature, the change is treated as input for a new or existing feature Issue and follows the normal feature workflow.
+
+### 7.3 Traceability
+
+- Every product change that affects scope, UI, or functionality must have an ADR in `sdd/decisions/`.
+- The ADR references the PR and the updated `sdd/product.md` sections.
+
+---
+
+## 8. How to Move an Issue Between States
 
 Use the helper:
 
@@ -207,7 +287,7 @@ chore(sdd): login [Design] spec-needed → designing
 
 ---
 
-## 7. Worktree
+## 9. Worktree
 
 Each feature lives in its own worktree from the start:
 
@@ -221,7 +301,10 @@ Creates:
 - Worktree: `<repo-principal>-login-y-dashboard-layout/`
 - Empty structure at `sdd/features/login-y-dashboard-layout/`
 
-> The script does not install dependencies or copy environment files. Each project must prepare its own environment according to its stack.
+> The worktree inherits everything committed in `main`: source code, tests, configs, and SDD files. Files in `.gitignore` (such as `node_modules/` and `.env`) and untracked files are **not** copied; dependencies are reinstalled automatically by detecting the package manager from lockfiles or `package.json`.
+> Environment files (`.env`) are not copied automatically.
+>
+> Before creating a worktree, the script checks that you are on a clean `main` (or `master`) branch with no uncommitted changes. If `main` is dirty, commit or stash first.
 
 To remove:
 
@@ -231,7 +314,7 @@ To remove:
 
 ---
 
-## 8. Visual Design
+## 10. Visual Design
 
 The SDD assumes the project uses a **visual design tool** (Figma, Pencil, Sketch, etc.) as the reference for new screens and components.
 
@@ -244,7 +327,7 @@ The SDD assumes the project uses a **visual design tool** (Figma, Pencil, Sketch
 
 ---
 
-## 9. Spec Versioning
+## 11. Spec Versioning
 
 - **Minor edits**: edit the file directly.
 - **Structural changes**: add a `## Changelog` section at the end of the issue with date, what changed, and why.
@@ -252,7 +335,7 @@ The SDD assumes the project uses a **visual design tool** (Figma, Pencil, Sketch
 
 ---
 
-## 10. Human Gates
+## 12. Human Gates
 
 1. **Product / BDD** (`discovery/` → `product-ready/`).
 2. **Functional/UI spec** (`spec-needed/` → `designing/`).
@@ -262,7 +345,7 @@ The SDD assumes the project uses a **visual design tool** (Figma, Pencil, Sketch
 
 ---
 
-## 11. Golden Rules
+## 13. Golden Rules
 
 - Only one `[Dev]` Issue in `implementing/` or `review/` at a time.
 - `[Dev]` does not advance until `[Design]` is in `design/design-ready/`.
@@ -273,11 +356,13 @@ The SDD assumes the project uses a **visual design tool** (Figma, Pencil, Sketch
 - Tests before implementation (TDD).
 - `sdd/` is the source of truth; there is no `feature_list.yaml` or `specs/` folder outside `sdd/`.
 - Every important change is recorded in `sdd/features/` or in `sdd/decisions/`.
+- Project setup and stack changes happen on `main`; they do not use a feature worktree.
+- Product-level changes use a `product/<change-slug>` branch + PR; they do not use a feature worktree.
 - Leave the repo clean on close: no temporary files or orphan branches.
 
 ---
 
-## 12. Active Features Index
+## 14. Active Features Index
 
 | Feature | Product | Design | Dev | Worktree |
 |---|---|---|---|---|

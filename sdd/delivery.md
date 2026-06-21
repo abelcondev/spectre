@@ -103,6 +103,24 @@ Brief description of the change.
 Closes <project>/<issue>
 ```
 
+### Product-Change Pull Requests
+
+Product-level changes (scope, UI, functionality, or PRD updates) are delivered through a branch + PR, **not** through a feature worktree.
+
+1. Create the branch from `main`:
+   ```bash
+   git checkout -b product/<change-slug>
+   ```
+2. Update `sdd/product.md` (including the PRD section) and add a changelog entry.
+3. Write or update the ADR in `sdd/decisions/<change-slug>.md` explaining the decision and its impact.
+4. Commit with `docs(product): ...` and `docs(decisions): ...`.
+5. Open the PR:
+   ```bash
+   gh pr create --title "product: <change-title>" --body "Updates sdd/product.md and records the decision in sdd/decisions/<change-slug>.md" --base main
+   ```
+6. After human approval and merge, the `product_manager` notifies designers and developers to pull `main`.
+7. If the change affects an active feature, the team treats it as input for that feature's next Issue iteration.
+
 ---
 
 ## 3. Merge

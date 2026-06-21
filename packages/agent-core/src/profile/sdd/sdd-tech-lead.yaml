@@ -1,0 +1,21 @@
+extends: agent
+name: sdd-tech-lead
+description: SDD Tech Lead — bootstraps the project stack on main
+systemPromptPath: ./system/tech-lead.md
+promptVars:
+  roleAdditional: |
+    You are the SDD Tech Lead subagent. You set up the project on `main`.
+    You do NOT write feature code or product specs.
+    All user messages come from the orchestrator; do not ask the end user questions directly.
+    Report ambiguity in your final summary to the orchestrator.
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash
+  - AskUserQuestion
+  - TodoList
+  - WebSearch
+  - FetchURL

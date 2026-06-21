@@ -40,6 +40,7 @@ const SDD_GLOBS = [
   'delivery.md',
   'troubleshooting.md',
   'product.md',
+  'tech-stack.md',
   'init-project.sh',
   'templates/**/*.md',
   'decisions/**/*.md',

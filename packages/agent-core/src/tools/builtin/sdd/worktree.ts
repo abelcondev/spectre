@@ -13,7 +13,9 @@ import type { ExecutableToolResult, ToolExecution } from '../../../loop/types';
 import { toInputJsonSchema } from '../../support/input-schema';
 import {
   findProjectRoot,
+  installDependencies,
   pathExists,
+  requireCleanMain,
   runCommand,
   runGit,
   validateFeatureSlug,
@@ -98,6 +100,11 @@ export class SddWorktreeTool implements BuiltinTool<SddWorktreeInput> {
   private async createWorktree(repoRoot: string, slug: string): Promise<ExecutableToolResult> {
     validateFeatureSlug(slug);
 
+    const cleanCheck = await requireCleanMain(this.kaos, repoRoot);
+    if (!cleanCheck.ok) {
+      return { isError: true, output: cleanCheck.reason };
+    }
+
     const productPath = join(repoRoot, 'sdd/product.md');
     if (!(await pathExists(this.kaos, productPath))) {
       return {
@@ -177,12 +184,20 @@ export class SddWorktreeTool implements BuiltinTool<SddWorktreeInput> {
       ]);
     }
 
+    // Install dependencies so the worktree is ready for development.
+    const installResult = await installDependencies(this.kaos, worktreePath);
+    const installMessage =
+      installResult.exitCode === 0
+        ? `Dependencies installed (${installResult.stdout.trim() || 'ok'}).`
+        : `Dependency install failed:\n${installResult.stderr}`;
+
     return {
       output:
         `Feature '${slug}' has been created in its own worktree.\n\n` +
         `  Path:    ${worktreePath}\n` +
         `  Branch:  ${branchName}\n` +
         `  Project: ${projectPath}\n\n` +
+        `${installMessage}\n\n` +
         'STOP — switch to the worktree to continue working on this feature:\n' +
         `  cd "${worktreePath}"\n\n` +
         'All product-level context lives in the main repo; feature-specific Issues live inside the worktree under sdd/features/.',
