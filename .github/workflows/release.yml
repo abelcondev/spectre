@@ -81,9 +81,14 @@ jobs:
       - name: Create GitHub Release
         if: github.repository_owner == 'abelcondev' && steps.kimi-release.outputs.should_publish == 'true'
         run: |
-          gh release create "${{ steps.kimi-release.outputs.tag }}" \
-            --title "${{ steps.kimi-release.outputs.tag }}" \
-            --generate-notes
+          TAG="${{ steps.kimi-release.outputs.tag }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists. Skipping creation."
+          else
+            gh release create "$TAG" \
+              --title "Specter $TAG" \
+              --generate-notes
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
