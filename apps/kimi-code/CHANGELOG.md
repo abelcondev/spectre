@@ -1,5 +1,11 @@
 # @moonshot-ai/kimi-code
 
+## 0.19.1
+
+### Patch Changes
+
+- Use the official Kimi Code CLI User-Agent product identifier so requests to the managed coding endpoint pass the server allowlist check.
+
 ## 0.19.0
 
 ### Minor Changes

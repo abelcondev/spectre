@@ -407,7 +407,7 @@ describe('kimi export', () => {
       homeDir: '/tmp/kimi-export-home',
       deviceId: 'device-1',
       enabled: true,
-      appName: 'kimi-cli',
+      appName: 'kimi-code-cli',
       version: expect.any(String),
       uiMode: 'shell',
       model: 'k2',

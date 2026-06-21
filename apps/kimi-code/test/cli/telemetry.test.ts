@@ -63,7 +63,7 @@ describe('initializeServerTelemetry', () => {
 
     expect(mocks.initializeTelemetry).toHaveBeenCalledWith(
       expect.objectContaining({
-        appName: 'kimi-cli',
+        appName: 'kimi-code-cli',
         version: '1.2.3',
         uiMode: 'web',
         model: 'kimi-k2',
