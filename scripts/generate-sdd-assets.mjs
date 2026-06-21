@@ -27,7 +27,6 @@ const ROOT_FILES = [
   // The root AGENTS.md belongs to the Specter repo itself; projects receiving
   // SDD keep their own AGENTS.md or get the generic SDD one in sdd/AGENTS.md.
   'CLAUDE.md',
-  'init.sh',
 ];
 
 const SDD_GLOBS = [
@@ -40,6 +39,8 @@ const SDD_GLOBS = [
   'security.md',
   'delivery.md',
   'troubleshooting.md',
+  'product.md',
+  'init-project.sh',
   'templates/**/*.md',
   'decisions/**/*.md',
 ];
@@ -99,6 +100,15 @@ async function collectFiles() {
     }
   }
 
+  // Projects receiving SDD get a generic root AGENTS.md copied from sdd/AGENTS.md.
+  const genericAgentsPath = join(SDD_ROOT, 'AGENTS.md');
+  try {
+    const s = await stat(genericAgentsPath);
+    if (s.isFile()) files.push(genericAgentsPath);
+  } catch {
+    console.warn('Missing generic SDD AGENTS.md template: sdd/AGENTS.md');
+  }
+
   files.sort((a, b) => a.localeCompare(b));
   return files;
 }
@@ -112,14 +122,21 @@ function toAssetPath(absolutePath) {
   return toPosixPath(rel);
 }
 
+const ASSET_PATH_RENAMES = {
+  'sdd/AGENTS.md': 'AGENTS.md',
+  'sdd/init-project.sh': 'init.sh',
+};
+
 async function main() {
   const files = await collectFiles();
   const assets = [];
 
   for (const path of files) {
     const content = await readFile(path, 'utf-8');
+    const relPath = toAssetPath(path);
+    const assetPath = ASSET_PATH_RENAMES[relPath] ?? relPath;
     assets.push({
-      path: toAssetPath(path),
+      path: assetPath,
       content,
       executable: path.endsWith('.sh'),
     });

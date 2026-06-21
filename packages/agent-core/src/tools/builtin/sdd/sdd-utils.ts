@@ -97,6 +97,25 @@ export async function findProjectRoot(kaos: Kaos, cwd: string): Promise<string |
   return result.stdout.trim();
 }
 
+export async function hasMainOrMasterBranch(kaos: Kaos, cwd: string): Promise<boolean> {
+  for (const branch of ['main', 'master']) {
+    const result = await runGit(kaos, cwd, ['show-ref', '--verify', '--quiet', `refs/heads/${branch}`]);
+    if (result.exitCode === 0) return true;
+  }
+  return false;
+}
+
+export async function initGitRepo(kaos: Kaos, cwd: string): Promise<CommandResult> {
+  return runGit(kaos, cwd, ['init']);
+}
+
+export async function createInitialCommit(kaos: Kaos, cwd: string): Promise<CommandResult> {
+  // Ensure a base branch exists. git checkout -B main creates it if missing.
+  const checkout = await runGit(kaos, cwd, ['checkout', '-B', 'main']);
+  if (checkout.exitCode !== 0) return checkout;
+  return runGit(kaos, cwd, ['commit', '-m', 'chore: initial commit', '--allow-empty']);
+}
+
 export function validateFeatureSlug(slug: string): void {
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug)) {
     throw new Error(

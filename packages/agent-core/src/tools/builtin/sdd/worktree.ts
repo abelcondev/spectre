@@ -98,6 +98,17 @@ export class SddWorktreeTool implements BuiltinTool<SddWorktreeInput> {
   private async createWorktree(repoRoot: string, slug: string): Promise<ExecutableToolResult> {
     validateFeatureSlug(slug);
 
+    const productPath = join(repoRoot, 'sdd/product.md');
+    if (!(await pathExists(this.kaos, productPath))) {
+      return {
+        isError: true,
+        output:
+          'No global product definition found.\n' +
+          'Define the product first by running SddInit with product_answers.\n' +
+          'A feature can only be created after sdd/product.md exists.',
+      };
+    }
+
     const repoName = basename(repoRoot);
     const branchName = `feature/${slug}`;
     const worktreePath = worktreePathFor(repoRoot, repoName, slug);
@@ -120,7 +131,13 @@ export class SddWorktreeTool implements BuiltinTool<SddWorktreeInput> {
 
     const mainBranch = await this.getMainBranch(repoRoot);
     if (mainBranch === null) {
-      return { isError: true, output: 'Neither main nor master branch found.' };
+      return {
+        isError: true,
+        output:
+          'No main or master branch found in this repository.\n' +
+          'Run SddInit first to install the SDD framework and create the base branch, ' +
+          'or create an initial commit manually on main/master.',
+      };
     }
 
     const createBranch = await runGit(this.kaos, repoRoot, ['branch', branchName, mainBranch]);
@@ -162,10 +179,13 @@ export class SddWorktreeTool implements BuiltinTool<SddWorktreeInput> {
 
     return {
       output:
-        `Worktree ready for feature '${slug}'\n` +
+        `Feature '${slug}' has been created in its own worktree.\n\n` +
         `  Path:    ${worktreePath}\n` +
         `  Branch:  ${branchName}\n` +
-        `  Project: ${projectPath}`,
+        `  Project: ${projectPath}\n\n` +
+        'STOP — switch to the worktree to continue working on this feature:\n' +
+        `  cd "${worktreePath}"\n\n` +
+        'All product-level context lives in the main repo; feature-specific Issues live inside the worktree under sdd/features/.',
     };
   }
 

@@ -13,6 +13,7 @@ This directory is the **source of truth** for this project's SDD flow.
 | File | Purpose |
 |---|---|
 | `sdd/README.md` | This index. |
+| `sdd/product.md` | **Global product definition**. Vision, users, value proposition, and roadmap. |
 | `sdd/workflow.md` | States, workflow, worktrees, golden rules. |
 | `sdd/architecture.md` | **Template** for defining the project's stack, layers, and architectural decisions. |
 | `sdd/conventions.md` | **Template** for defining code style, naming, and project conventions. |
@@ -24,21 +25,27 @@ This directory is the **source of truth** for this project's SDD flow.
 | `sdd/decisions/` | Project ADRs (Architecture Decision Records). |
 | `sdd/templates/` | Templates for projects and issues. |
 | `sdd/templates/issue-product.md` | Template for the `[Product]` Issue (BDD, product goals, acceptance criteria). |
-| `sdd/features/` | Active projects and issues. |
+| `sdd/features/` | Active projects and issues for individual features. |
 
 ---
 
 ## How to Start
 
-1. Complete `sdd/architecture.md` with the project's stack and architectural decisions.
-2. Complete `sdd/conventions.md` with style, naming, and project conventions.
-3. Read `sdd/workflow.md` to understand the lifecycle.
-4. Read `sdd/quality-gates.md`, `sdd/testing.md`, and `sdd/security.md` before declaring `done`.
-5. Create a feature:
+1. Define the global product in `sdd/product.md` (done automatically by `SddInit` when you provide `product_answers`).
+2. Complete `sdd/architecture.md` with the project's stack and architectural decisions.
+3. Complete `sdd/conventions.md` with style, naming, and project conventions.
+4. Read `sdd/workflow.md` to understand the lifecycle.
+5. Read `sdd/quality-gates.md`, `sdd/testing.md`, and `sdd/security.md` before declaring `done`.
+6. Create a feature:
    ```bash
    spectre sdd worktree create <feature-slug>
    ```
-6. Move issues between states:
+7. Switch to the feature worktree and continue there:
+   ```bash
+   cd <repo>-<feature-slug>
+   spectre
+   ```
+8. Move issues between states:
    ```bash
    spectre sdd move <feature-slug> <issue> <source-state> <target-state>
    ```
