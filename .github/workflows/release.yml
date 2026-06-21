@@ -105,7 +105,7 @@ jobs:
     with:
       upload-artifact-prefix: kimi-code-native
       retention-days: 7
-      sign-macos: true
+      sign-macos: ${{ github.repository_owner == 'MoonshotAI' }}
     secrets:
       APPLE_CERTIFICATE_P12: ${{ secrets.APPLE_CERTIFICATE_P12 }}
       APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}

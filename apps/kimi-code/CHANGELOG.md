@@ -1,5 +1,11 @@
 # @moonshot-ai/kimi-code
 
+## 0.19.3
+
+### Patch Changes
+
+- Disable macOS code signing in the release workflow for the Specter fork so native artifacts build without Apple certificates.
+
 ## 0.19.2
 
 ### Patch Changes
