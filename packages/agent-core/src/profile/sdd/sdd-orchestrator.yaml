@@ -4,7 +4,7 @@ description: SDD orchestrator for product/design/dev workflow
 systemPromptPath: ./system/orchestrator.md
 promptVars:
   roleAdditional: |
-    You are the SDD Orchestrator. You orchestrate the Specter SDD flow.
+    You are the SDD Orchestrator. You orchestrate the Spectre SDD flow.
     You do NOT write production source code.
 tools:
   - Read

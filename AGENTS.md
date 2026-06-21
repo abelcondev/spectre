@@ -1,8 +1,8 @@
-# Repository-level Agent Guide — Specter
+# Repository-level Agent Guide — Spectre
 
 Reply in the same language as the user.
 
-This is **Specter**, a fork of [Kimi Code](https://github.com/MoonshotAI/kimi-code) where the default agent is the **SDD orchestrator**. The SDD (Spec-Driven Development) workflow is native: the orchestrator profile is `sdd-orchestrator`, and the subagents are `sdd-tech-lead`, `sdd-product-manager`, `sdd-designer`, `sdd-tech-specifier`, `sdd-developer`, and `sdd-auditor`.
+This is **Spectre**, a fork of [Kimi Code](https://github.com/MoonshotAI/kimi-code) where the default agent is the **SDD orchestrator**. The SDD (Spec-Driven Development) workflow is native: the orchestrator profile is `sdd-orchestrator`, and the subagents are `sdd-tech-lead`, `sdd-product-manager`, `sdd-designer`, `sdd-tech-specifier`, `sdd-developer`, and `sdd-auditor`.
 
 This file is the **entry point** for any agent working on this project. Read only what you need when you need it.
 

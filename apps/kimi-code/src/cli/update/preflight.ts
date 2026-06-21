@@ -78,7 +78,7 @@ export function installCommandFor(
     case 'bun-global':
       return `bun add -g ${NPM_PACKAGE_NAME}@${version}`;
     case 'homebrew':
-      return 'brew upgrade kimi-code';
+      return 'brew upgrade spectre';
     case 'native':
       return platform === 'win32' ? NATIVE_INSTALL_COMMAND_WIN : NATIVE_INSTALL_COMMAND_UNIX;
     case 'unsupported':
@@ -124,7 +124,7 @@ export function spawnForSource(
     case 'bun-global':
       return { cmd: bunCommand(platform), args: ['add', '-g', `${NPM_PACKAGE_NAME}@${version}`] };
     case 'homebrew':
-      return { cmd: 'brew', args: ['upgrade', 'kimi-code'] };
+      return { cmd: 'brew', args: ['upgrade', 'spectre'] };
     case 'native':
       // `curl … | bash` reports only the trailing bash's exit status, so a
       // failed download (curl can't connect → empty stdin → bash exits 0)
@@ -179,7 +179,7 @@ export function renderInstallSuccessMessage(target: UpdateTarget): string {
 
 function renderBackgroundInstallSuccessNotice(version: string): string {
   const displayVersion = version.startsWith('v') ? version : `v${version}`;
-  return `Kimi Code updated to ${displayVersion}\nChangelog: ${CHANGELOG_URL}\n`;
+  return `Spectre updated to ${displayVersion}\nChangelog: ${CHANGELOG_URL}\n`;
 }
 
 function refreshInBackground(): void {

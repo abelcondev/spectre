@@ -10,88 +10,88 @@ import { homedir } from 'node:os';
 import { join } from 'node:path';
 
 import {
-  KIMI_CODE_BANNER_DIR_NAME,
-  KIMI_CODE_BANNER_STATE_FILE_NAME,
-  KIMI_CODE_BIN_DIR_NAME,
-  KIMI_CODE_CACHE_DIR_NAME,
-  KIMI_CODE_DATA_DIR_NAME,
-  KIMI_CODE_HOME_ENV,
-  KIMI_CODE_INPUT_HISTORY_DIR_NAME,
-  KIMI_CODE_LOG_DIR_NAME,
-  KIMI_CODE_UPDATE_INSTALL_LOCK_FILE_NAME,
-  KIMI_CODE_UPDATE_INSTALL_STATE_FILE_NAME,
-  KIMI_CODE_UPDATE_DIR_NAME,
-  KIMI_CODE_UPDATE_ROLLOUT_LOG_FILE_NAME,
-  KIMI_CODE_UPDATE_STATE_FILE_NAME,
+  SPECTRE_BANNER_DIR_NAME,
+  SPECTRE_BANNER_STATE_FILE_NAME,
+  SPECTRE_BIN_DIR_NAME,
+  SPECTRE_CACHE_DIR_NAME,
+  SPECTRE_DATA_DIR_NAME,
+  SPECTRE_HOME_ENV,
+  SPECTRE_INPUT_HISTORY_DIR_NAME,
+  SPECTRE_LOG_DIR_NAME,
+  SPECTRE_UPDATE_INSTALL_LOCK_FILE_NAME,
+  SPECTRE_UPDATE_INSTALL_STATE_FILE_NAME,
+  SPECTRE_UPDATE_DIR_NAME,
+  SPECTRE_UPDATE_ROLLOUT_LOG_FILE_NAME,
+  SPECTRE_UPDATE_STATE_FILE_NAME,
 } from '#/constant/app';
 
 /**
- * Return the root data directory for Specter.
+ * Return the root data directory for Spectre.
  *
  * Priority: `SPECTRE_HOME` env var > `~/.spectre`.
  */
 export function getDataDir(): string {
-  const envDir = process.env[KIMI_CODE_HOME_ENV];
+  const envDir = process.env[SPECTRE_HOME_ENV];
   if (envDir) {
     return envDir;
   }
-  return join(homedir(), KIMI_CODE_DATA_DIR_NAME);
+  return join(homedir(), SPECTRE_DATA_DIR_NAME);
 }
 
 /**
  * Return the diagnostic log directory: `<dataDir>/logs/`.
  */
 export function getLogDir(): string {
-  return join(getDataDir(), KIMI_CODE_LOG_DIR_NAME);
+  return join(getDataDir(), SPECTRE_LOG_DIR_NAME);
 }
 
 /**
  * Return the CLI cache directory: `<dataDir>/cache/`.
  */
 export function getCacheDir(): string {
-  return join(getDataDir(), KIMI_CODE_CACHE_DIR_NAME);
+  return join(getDataDir(), SPECTRE_CACHE_DIR_NAME);
 }
 
 /**
  * Return the managed tools directory: `<dataDir>/bin/`.
  */
 export function getBinDir(): string {
-  return join(getDataDir(), KIMI_CODE_BIN_DIR_NAME);
+  return join(getDataDir(), SPECTRE_BIN_DIR_NAME);
 }
 
 /**
  * Return the update cache file: `<dataDir>/updates/latest.json`.
  */
 export function getUpdateStateFile(): string {
-  return join(getDataDir(), KIMI_CODE_UPDATE_DIR_NAME, KIMI_CODE_UPDATE_STATE_FILE_NAME);
+  return join(getDataDir(), SPECTRE_UPDATE_DIR_NAME, SPECTRE_UPDATE_STATE_FILE_NAME);
 }
 
 /**
  * Return the update install state file: `<dataDir>/updates/install.json`.
  */
 export function getUpdateInstallStateFile(): string {
-  return join(getDataDir(), KIMI_CODE_UPDATE_DIR_NAME, KIMI_CODE_UPDATE_INSTALL_STATE_FILE_NAME);
+  return join(getDataDir(), SPECTRE_UPDATE_DIR_NAME, SPECTRE_UPDATE_INSTALL_STATE_FILE_NAME);
 }
 
 /**
  * Return the update install lock file: `<dataDir>/updates/install.lock`.
  */
 export function getUpdateInstallLockFile(): string {
-  return join(getDataDir(), KIMI_CODE_UPDATE_DIR_NAME, KIMI_CODE_UPDATE_INSTALL_LOCK_FILE_NAME);
+  return join(getDataDir(), SPECTRE_UPDATE_DIR_NAME, SPECTRE_UPDATE_INSTALL_LOCK_FILE_NAME);
 }
 
 /**
  * Return the rollout decision log: `<dataDir>/updates/rollout.log`.
  */
 export function getUpdateRolloutLogFile(): string {
-  return join(getDataDir(), KIMI_CODE_UPDATE_DIR_NAME, KIMI_CODE_UPDATE_ROLLOUT_LOG_FILE_NAME);
+  return join(getDataDir(), SPECTRE_UPDATE_DIR_NAME, SPECTRE_UPDATE_ROLLOUT_LOG_FILE_NAME);
 }
 
 /**
  * Return the banner display state file: `<dataDir>/cache/banner/state.json`.
  */
 export function getBannerStateFile(): string {
-  return join(getCacheDir(), KIMI_CODE_BANNER_DIR_NAME, KIMI_CODE_BANNER_STATE_FILE_NAME);
+  return join(getCacheDir(), SPECTRE_BANNER_DIR_NAME, SPECTRE_BANNER_STATE_FILE_NAME);
 }
 
 /**
@@ -100,5 +100,5 @@ export function getBannerStateFile(): string {
  */
 export function getInputHistoryFile(workDir: string): string {
   const hash = createHash('md5').update(workDir, 'utf-8').digest('hex');
-  return join(getDataDir(), KIMI_CODE_INPUT_HISTORY_DIR_NAME, `${hash}.jsonl`);
+  return join(getDataDir(), SPECTRE_INPUT_HISTORY_DIR_NAME, `${hash}.jsonl`);
 }

@@ -6,8 +6,8 @@ import { fileURLToPath } from 'node:url';
 import { gt, valid } from 'semver';
 
 import {
-  KIMI_CODE_PLUGIN_MARKETPLACE_URL,
-  KIMI_CODE_PLUGIN_MARKETPLACE_URL_ENV,
+  SPECTRE_PLUGIN_MARKETPLACE_URL,
+  SPECTRE_PLUGIN_MARKETPLACE_URL_ENV,
 } from '#/constant/app';
 
 export const PLUGIN_MARKETPLACE_TIERS = ['official', 'curated'] as const;
@@ -77,7 +77,7 @@ export async function loadPluginMarketplace(
   options: LoadPluginMarketplaceOptions,
 ): Promise<PluginMarketplace> {
   const location = resolveMarketplaceLocation(
-    options.source ?? process.env[KIMI_CODE_PLUGIN_MARKETPLACE_URL_ENV] ?? KIMI_CODE_PLUGIN_MARKETPLACE_URL,
+    options.source ?? process.env[SPECTRE_PLUGIN_MARKETPLACE_URL_ENV] ?? SPECTRE_PLUGIN_MARKETPLACE_URL,
     options.workDir,
   );
   const raw = await readMarketplaceText(location, options.fetchImpl ?? fetch);
@@ -112,7 +112,7 @@ export function parsePluginMarketplace(raw: string, location: MarketplaceLocatio
 function resolveMarketplaceLocation(source: string, workDir: string): MarketplaceLocation {
   const trimmed = source.trim();
   if (trimmed.length === 0) {
-    throw new Error(`${KIMI_CODE_PLUGIN_MARKETPLACE_URL_ENV} cannot be empty.`);
+    throw new Error(`${SPECTRE_PLUGIN_MARKETPLACE_URL_ENV} cannot be empty.`);
   }
   if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
     return { raw: trimmed, kind: 'remote', resolved: trimmed };

@@ -75,7 +75,7 @@ assertIncludes(exportHelpOutput, 'Usage: spectre export', 'export --help');
 
 const nativeAssetOutput = await runKimiWithEnv(['--version'], {
   SPECTRE_HOME: smokeHome,
-  KIMI_CODE_NATIVE_ASSET_SMOKE: '1',
+  SPECTRE_NATIVE_ASSET_SMOKE: '1',
 });
 assertIncludes(nativeAssetOutput, `Native asset smoke passed: ${target}`, 'native asset smoke');
 

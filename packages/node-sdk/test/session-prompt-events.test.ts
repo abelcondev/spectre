@@ -209,7 +209,7 @@ describe('Session.prompt events', () => {
         }),
       );
       expect(fakeProviderState.calls[0]?.systemPrompt).toContain('# Role: Orchestrator (SDD)');
-      expect(fakeProviderState.calls[0]?.systemPrompt).toContain('Specter');
+      expect(fakeProviderState.calls[0]?.systemPrompt).toContain('Spectre');
       expect(fakeProviderState.providerConfigs[0]).toMatchObject({
         type: 'kimi',
         defaultHeaders: expect.objectContaining({

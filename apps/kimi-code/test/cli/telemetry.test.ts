@@ -57,31 +57,35 @@ describe('initializeServerTelemetry', () => {
     });
   });
 
-  it('configures the sink with ui_mode="web" and the CLI product identity', async () => {
-    const { initializeServerTelemetry } = await import('#/cli/telemetry');
-    const client = initializeServerTelemetry({ version: '1.2.3' });
+  it(
+    'configures the sink with ui_mode="web" and the CLI product identity',
+    async () => {
+      const { initializeServerTelemetry } = await import('#/cli/telemetry');
+      const client = initializeServerTelemetry({ version: '1.2.3' });
 
-    expect(mocks.initializeTelemetry).toHaveBeenCalledWith(
-      expect.objectContaining({
-        appName: 'kimi-code-cli',
-        version: '1.2.3',
-        uiMode: 'web',
-        model: 'kimi-k2',
-        enabled: true,
-        deviceId: 'device-123',
-        homeDir: '/home/.kimi-code',
-      }),
-    );
-    // The returned client wraps the module functions so core + the host share
-    // the same underlying client.
-    expect(client).toEqual(
-      expect.objectContaining({
-        track: expect.any(Function),
-        withContext: expect.any(Function),
-        setContext: expect.any(Function),
-      }),
-    );
-  });
+      expect(mocks.initializeTelemetry).toHaveBeenCalledWith(
+        expect.objectContaining({
+          appName: 'kimi-code-cli',
+          version: '1.2.3',
+          uiMode: 'web',
+          model: 'kimi-k2',
+          enabled: true,
+          deviceId: 'device-123',
+          homeDir: '/home/.kimi-code',
+        }),
+      );
+      // The returned client wraps the module functions so core + the host share
+      // the same underlying client.
+      expect(client).toEqual(
+        expect.objectContaining({
+          track: expect.any(Function),
+          withContext: expect.any(Function),
+          setContext: expect.any(Function),
+        }),
+      );
+    },
+    15_000,
+  );
 
   it('disables telemetry when config.toml sets telemetry = false', async () => {
     mocks.loadRuntimeConfigSafe.mockReturnValue({

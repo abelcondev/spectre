@@ -44,12 +44,12 @@ This directory is the **source of truth** for this project's SDD flow.
    spectre sdd worktree create <feature-slug>
    ```
    No Issue files are created at this point.
-6. Switch to the feature worktree and start Specter there:
+6. Switch to the feature worktree and start Spectre there:
    ```bash
    cd <repo>-<feature-slug>
    spectre
    ```
-7. Inside the worktree, Specter detects the feature and asks what to build. The first Issue `[Product]` is created there.
+7. Inside the worktree, Spectre detects the feature and asks what to build. The first Issue `[Product]` is created there.
 8. Move issues between states inside the worktree:
    ```bash
    spectre sdd move <feature-slug> <issue> <source-state> <target-state>

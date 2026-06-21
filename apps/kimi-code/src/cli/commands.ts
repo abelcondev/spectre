@@ -89,7 +89,7 @@ export function createProgram(
   registerMigrateCommand(program, onMigrate);
   program
     .command('upgrade')
-    .description('Upgrade Kimi Code to the latest version.')
+    .description('Upgrade Spectre to the latest version.')
     .action(async () => {
       await onUpgrade();
     });

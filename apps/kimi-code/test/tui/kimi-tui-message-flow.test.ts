@@ -12,7 +12,7 @@ import type { ApprovalRequest, ApprovalResponse, Event } from '@moonshot-ai/kimi
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ApprovalPanelComponent } from '#/tui/components/dialogs/approval-panel';
-import { KIMI_CODE_PLUGIN_MARKETPLACE_URL } from '#/constant/app';
+import { SPECTRE_PLUGIN_MARKETPLACE_URL } from '#/constant/app';
 import {
   AgentSwarmProgressComponent,
   agentSwarmGridHeightForTerminalRows,
@@ -313,7 +313,7 @@ function countOccurrences(haystack: string, needle: string): number {
 
 const tempDirs: string[] = [];
 const originalSpectreHome = process.env['SPECTRE_HOME'];
-const originalPluginMarketplaceUrl = process.env['KIMI_CODE_PLUGIN_MARKETPLACE_URL'];
+const originalPluginMarketplaceUrl = process.env['SPECTRE_PLUGIN_MARKETPLACE_URL'];
 const originalVisual = process.env['VISUAL'];
 const originalEditor = process.env['EDITOR'];
 
@@ -339,9 +339,9 @@ afterEach(async () => {
     process.env['VISUAL'] = originalVisual;
   }
   if (originalPluginMarketplaceUrl === undefined) {
-    delete process.env['KIMI_CODE_PLUGIN_MARKETPLACE_URL'];
+    delete process.env['SPECTRE_PLUGIN_MARKETPLACE_URL'];
   } else {
-    process.env['KIMI_CODE_PLUGIN_MARKETPLACE_URL'] = originalPluginMarketplaceUrl;
+    process.env['SPECTRE_PLUGIN_MARKETPLACE_URL'] = originalPluginMarketplaceUrl;
   }
   if (originalEditor === undefined) {
     delete process.env['EDITOR'];
@@ -2943,7 +2943,7 @@ command = "vim"
       expect(getStatus).toHaveBeenCalledTimes(previousStatusCalls + 1);
       const output = stripSgr(driver.state.transcriptContainer.render(120).join('\n'));
       expect(output).toContain(' Status ');
-      expect(output).toContain('>_ Specter');
+      expect(output).toContain('>_ Spectre');
       expect(output).toContain('Model');
       expect(output).toContain('thinking on');
       expect(output).toContain('Permissions  auto');
@@ -3097,7 +3097,7 @@ command = "vim"
       }),
       'utf8',
     );
-    process.env['KIMI_CODE_PLUGIN_MARKETPLACE_URL'] = marketplacePath;
+    process.env['SPECTRE_PLUGIN_MARKETPLACE_URL'] = marketplacePath;
     const session = makeSession();
     const { driver } = await makeDriver(session);
 
@@ -3150,10 +3150,10 @@ command = "vim"
 
       await vi.waitFor(() => {
         expect(session.installPlugin).toHaveBeenCalledWith(
-          'https://code.kimi.com/kimi-code/plugins/official/kimi-datasource.zip',
+          'https://github.com/abelcondev/spectre/releases/latest/download/official/kimi-datasource.zip',
         );
       });
-      expect(globalThis.fetch).toHaveBeenCalledWith(KIMI_CODE_PLUGIN_MARKETPLACE_URL);
+      expect(globalThis.fetch).toHaveBeenCalledWith(SPECTRE_PLUGIN_MARKETPLACE_URL);
     } finally {
       vi.stubGlobal('fetch', originalFetch);
     }
@@ -3387,8 +3387,8 @@ command = "vim"
     });
     const picker = driver.state.editorContainer.children[0];
     const pickerOutput = stripSgr((picker as TabbedModelSelectorComponent).render(120).join('\n'));
-    expect(pickerOutput).toMatch(/Kimi K2\s+Specter ← current/);
-    expect(pickerOutput).toMatch(/❯ Kimi Turbo\s+Specter/);
+    expect(pickerOutput).toMatch(/Kimi K2\s+Spectre ← current/);
+    expect(pickerOutput).toMatch(/❯ Kimi Turbo\s+Spectre/);
     (picker as TabbedModelSelectorComponent).handleInput('t');
     (picker as TabbedModelSelectorComponent).handleInput('u');
     const filteredOutput = stripSgr((picker as TabbedModelSelectorComponent).render(120).join('\n'));

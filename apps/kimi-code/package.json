@@ -1,21 +1,21 @@
 {
-  "name": "@moonshot-ai/kimi-code",
+  "name": "@abelcondev/spectre",
   "version": "0.23.0",
-  "description": "The Starting Point for Next-Gen Agents",
+  "description": "Spec-Driven Development agent CLI",
   "license": "MIT",
-  "author": "Moonshot AI",
-  "homepage": "https://github.com/MoonshotAI/kimi-code/tree/main/apps/kimi-code#readme",
+  "author": "abelcondev",
+  "homepage": "https://github.com/abelcondev/spectre/tree/main/apps/kimi-code#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MoonshotAI/kimi-code.git",
+    "url": "git+https://github.com/abelcondev/spectre.git",
     "directory": "apps/kimi-code"
   },
   "bugs": {
-    "url": "https://github.com/MoonshotAI/kimi-code/issues"
+    "url": "https://github.com/abelcondev/spectre/issues"
   },
   "keywords": [
-    "kimi",
-    "kimi-code",
+    "specter",
+    "sdd",
     "cli",
     "agent",
     "coding-agent",
@@ -23,7 +23,6 @@
     "tui"
   ],
   "bin": {
-    "kimi": "dist/main.mjs",
     "spectre": "dist/main.mjs"
   },
   "files": [

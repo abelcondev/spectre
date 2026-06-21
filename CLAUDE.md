@@ -1,8 +1,8 @@
-# CLAUDE.md — Specter SDD Orchestrator
+# CLAUDE.md — Spectre SDD Orchestrator
 
 Whenever you start a session in this repository, act as the **Orchestrator** of the SDD team.
 
-This is **Specter**: a fork of Kimi Code where the SDD (Spec-Driven Development) workflow is the default mode. The orchestrator profile is `sdd-orchestrator`, and the native subagents are `sdd-tech-lead`, `sdd-product-manager`, `sdd-designer`, `sdd-tech-specifier`, `sdd-developer`, and `sdd-auditor`.
+This is **Spectre**: a fork of Kimi Code where the SDD (Spec-Driven Development) workflow is the default mode. The orchestrator profile is `sdd-orchestrator`, and the native subagents are `sdd-tech-lead`, `sdd-product-manager`, `sdd-designer`, `sdd-tech-specifier`, `sdd-developer`, and `sdd-auditor`.
 
 ## Your role
 

@@ -13,9 +13,7 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    if: |
-      (github.repository_owner == 'MoonshotAI' && github.ref == 'refs/heads/main') ||
-      (github.repository_owner == 'abelcondev' && startsWith(github.ref, 'refs/tags/v'))
+    if: github.repository_owner == 'MoonshotAI'
     outputs:
       packages_published: ${{ steps.changesets.outputs.published }}
       kimi_native_release: ${{ steps.kimi-release.outputs.should_publish }}
@@ -47,12 +45,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Kimi Code built-in catalog
+      - name: Generate Spectre built-in catalog
         shell: bash
         run: |
-          CATALOG_FILE="$RUNNER_TEMP/kimi-code-built-in-catalog.json"
+          CATALOG_FILE="$RUNNER_TEMP/spectre-built-in-catalog.json"
           node apps/kimi-code/scripts/update-catalog.mjs --out "$CATALOG_FILE"
-          echo "KIMI_CODE_BUILT_IN_CATALOG_FILE=$CATALOG_FILE" >> "$GITHUB_ENV"
+          echo "SPECTRE_BUILT_IN_CATALOG_FILE=$CATALOG_FILE" >> "$GITHUB_ENV"
 
       - name: Build packages
         run: pnpm build
@@ -70,7 +68,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # NPM_TOKEN is not needed with Trusted Publishing (OIDC)
 
-      - name: Resolve Kimi Code native release
+      - name: Resolve Spectre native release
         id: kimi-release
         run: node apps/kimi-code/scripts/native/resolve-release.mjs
         env:
@@ -86,7 +84,7 @@ jobs:
             echo "Release $TAG already exists. Skipping creation."
           else
             gh release create "$TAG" \
-              --title "Specter $TAG" \
+              --title "Spectre $TAG" \
               --generate-notes
           fi
         env:
@@ -108,7 +106,7 @@ jobs:
     if: needs.release.outputs.kimi_native_release == 'true'
     uses: ./.github/workflows/_native-build.yml
     with:
-      upload-artifact-prefix: kimi-code-native
+      upload-artifact-prefix: spectre-native
       retention-days: 7
       sign-macos: ${{ github.repository_owner == 'MoonshotAI' }}
     secrets:
@@ -135,7 +133,7 @@ jobs:
       - name: Download native artifacts
         uses: actions/download-artifact@v8
         with:
-          pattern: kimi-code-native-*
+          pattern: spectre-native-*
           path: dist-native-release
           merge-multiple: true
 

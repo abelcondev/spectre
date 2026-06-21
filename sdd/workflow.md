@@ -213,7 +213,7 @@ Each feature has its own **isolated worktree** from the start. Inside the worktr
    - A generic scaffold `README.md` (to be completed inside the worktree).
    - A `design/assets/` folder where the Pencil `.pen` file for this feature will live.
    No Issue `.md` files are created from `main`.
-2. Switch to the worktree and start a new Specter session there.
+2. Switch to the worktree and start a new Spectre session there.
 3. The orchestrator detects the feature worktree, asks what feature to build, and creates the first Issue `[Product]`.
 4. Complete the project `README.md` and create issues as `.md` files inside state folders. Start with `[Product]`.
 5. Move files physically between folders when they change state.
@@ -227,7 +227,7 @@ Each feature has its own **isolated worktree** from the start. Inside the worktr
 
 1. **Project setup** (on `main`): before any feature, the `orchestrator` checks the setup gate. If `sdd/architecture.md`, `sdd/conventions.md`, or `sdd/tech-stack.md` are incomplete, the `tech_lead` finishes setup on `main` first.
 2. **Create worktree** (on `main`): the human asks to build a feature. The `orchestrator` asks only for the feature slug and creates the worktree with `./scripts/sdd-worktree.sh create <feature-slug>`. No Issue files are written from `main`.
-3. **Switch to worktree**: the human moves to the worktree and starts a new Specter session there.
+3. **Switch to worktree**: the human moves to the worktree and starts a new Spectre session there.
 4. **Idea** (inside the worktree): the `orchestrator` detects the feature worktree, asks the human what feature to build, and creates the first Issue `[Product]`.
 5. **Product Discovery** (inside the worktree): the `product_manager` interviews the human and writes the product spec + BDD scenarios in `product/discovery/`. The `orchestrator` moves the file to `product/product-ready/`.
 6. **Product review** (gate 0): human approves. The `[Product]` Issue remains in `product/product-ready/` and unlocks `[Design]`.

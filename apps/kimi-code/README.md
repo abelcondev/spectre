@@ -1,12 +1,12 @@
-# @moonshot-ai/kimi-code
+# @abelcondev/spectre
 
 > The Starting Point for Next-Gen Agents
 
-[![npm](https://img.shields.io/npm/v/@moonshot-ai/kimi-code)](https://www.npmjs.com/package/@moonshot-ai/kimi-code) [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)  [![Docs](https://img.shields.io/badge/docs-online-blue)](https://moonshotai.github.io/kimi-code/en/)
+[![npm](https://img.shields.io/npm/v/@abelcondev/spectre)](https://www.npmjs.com/package/@abelcondev/spectre) [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)  [![Docs](https://img.shields.io/badge/docs-online-blue)](https://abelcondev.github.io/spectre/en/)
 
-## What is Kimi Code CLI
+## What is Spectre CLI
 
-Kimi Code CLI is an AI coding agent that runs in your terminal. It can read and edit code, run shell commands, search files, fetch web pages, and choose the next step based on the feedback it receives. It works out of the box with Moonshot AI's Kimi models and can also be configured to use other compatible providers.
+Spectre CLI is an AI coding agent that runs in your terminal. It can read and edit code, run shell commands, search files, fetch web pages, and choose the next step based on the feedback it receives. It works out of the box with Moonshot AI's Kimi models and can also be configured to use other compatible providers.
 
 ## Install
 
@@ -15,21 +15,21 @@ The recommended install path is the official script. It does not require Node.js
 - **macOS / Linux**:
 
 ```sh
-curl -fsSL https://code.kimi.com/kimi-code/install.sh | bash
+curl -fsSL https://github.com/abelcondev/spectre/releases/latest/download/install.sh | bash
 ```
 
 - **Windows (PowerShell)**:
 
 ```powershell
-irm https://code.kimi.com/kimi-code/install.ps1 | iex
+irm https://github.com/abelcondev/spectre/releases/latest/download/install.ps1 | iex
 ```
 
-> On Windows, install [Git for Windows](https://gitforwindows.org/) before first launch because Kimi Code CLI uses the bundled Git Bash as its shell environment. If Git Bash is installed in a custom location, set `KIMI_SHELL_PATH` to the absolute path of `bash.exe`.
+> On Windows, install [Git for Windows](https://gitforwindows.org/) before first launch because Spectre CLI uses the bundled Git Bash as its shell environment. If Git Bash is installed in a custom location, set `KIMI_SHELL_PATH` to the absolute path of `bash.exe`.
 
 Then run it with a new Terminal session:
 
 ```sh
-kimi --version
+spectre --version
 ```
 
 ### Alternative: npm
@@ -37,16 +37,16 @@ kimi --version
 If you prefer npm, use Node.js 22.19.0 or later:
 
 ```sh
-npm install -g @moonshot-ai/kimi-code
+npm install -g @abelcondev/spectre
 ```
 
 Or with pnpm:
 
 ```sh
-pnpm add -g @moonshot-ai/kimi-code
+pnpm add -g @abelcondev/spectre
 ```
 
-For upgrade and uninstall instructions, see the [Getting Started guide](https://moonshotai.github.io/kimi-code/en/guides/getting-started).
+For upgrade and uninstall instructions, see the [Getting Started guide](https://abelcondev.github.io/spectre/en/guides/getting-started).
 
 ## Quick Start
 
@@ -54,10 +54,10 @@ Open a project and start the interactive UI:
 
 ```sh
 cd your-project
-kimi
+spectre
 ```
 
-On first launch, run `/login` inside Kimi Code CLI and choose either Kimi Code OAuth or a Kimi Platform API key. After login, try a first task:
+On first launch, run `/login` inside Spectre CLI and choose either Spectre OAuth or a Kimi Platform API key. After login, try a first task:
 
 ```
 Take a look at this project and explain the main directories.
@@ -75,9 +75,9 @@ Take a look at this project and explain the main directories.
 
 ## Documentation
 
-- Full docs: https://moonshotai.github.io/kimi-code/en/
-- 中文文档: https://moonshotai.github.io/kimi-code/zh/
-- Getting Started: https://moonshotai.github.io/kimi-code/en/guides/getting-started
+- Full docs: https://abelcondev.github.io/spectre/en/
+- 中文文档: https://abelcondev.github.io/spectre/zh/
+- Getting Started: https://abelcondev.github.io/spectre/en/guides/getting-started
 
 ## Repository & Issues
 

@@ -174,7 +174,7 @@ describe('WSBroadcastService (WS transport pump)', () => {
   });
 
   afterEach(async () => {
-    await rm(homeDir, { recursive: true, force: true });
+    await rm(homeDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
   });
 
   it('publishes event with seq=1, broadcasts to subscribers, advances seq monotonically per session', async () => {

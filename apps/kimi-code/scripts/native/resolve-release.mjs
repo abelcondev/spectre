@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 
 import { appRoot } from './paths.mjs';
 
-const packageName = '@moonshot-ai/kimi-code';
+const packageName = '@abelcondev/spectre';
 const packageJson = JSON.parse(
   await readFile(resolve(appRoot, 'package.json'), 'utf-8'),
 );
@@ -34,18 +34,18 @@ const publishedPackage = parsePublishedPackages().find(
     typeof entry.version === 'string',
 );
 
-// Specter releases are tagged v0.x.y and are not published to npm. When the
+// Spectre releases are tagged v0.x.y and are not published to npm. When the
 // workflow is triggered by a version tag, use that tag directly and always
 // publish native artifacts.
 const refType = process.env['GITHUB_REF_TYPE'];
 const refName = process.env['GITHUB_REF_NAME'];
-const isSpecterTag = refType === 'tag' && typeof refName === 'string' && refName.startsWith('v');
+const isSpectreTag = refType === 'tag' && typeof refName === 'string' && refName.startsWith('v');
 
-const version = isSpecterTag
+const version = isSpectreTag
   ? refName.replace(/^v/, '')
   : (publishedPackage?.version ?? packageJson.version);
-const shouldPublish = isSpecterTag || publishedPackage !== undefined;
-const tag = isSpecterTag ? refName : `${packageName}@${version}`;
+const shouldPublish = isSpectreTag || publishedPackage !== undefined;
+const tag = isSpectreTag ? refName : `${packageName}@${version}`;
 const githubOutput = process.env['GITHUB_OUTPUT'];
 
 if (githubOutput !== undefined) {

@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 import { describe, expect, it, vi } from 'vitest';
 
-import { KIMI_CODE_PLUGIN_MARKETPLACE_URL } from '#/constant/app';
+import { SPECTRE_PLUGIN_MARKETPLACE_URL } from '#/constant/app';
 import { computeUpdateStatus, loadPluginMarketplace } from '#/utils/plugin-marketplace';
 
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../../..');
@@ -162,18 +162,18 @@ describe('loadPluginMarketplace', () => {
 
     const marketplace = await loadPluginMarketplace({
       workDir: '/tmp/work',
-      source: KIMI_CODE_PLUGIN_MARKETPLACE_URL,
+      source: SPECTRE_PLUGIN_MARKETPLACE_URL,
       fetchImpl,
     });
 
-    expect(fetchImpl).toHaveBeenCalledWith(KIMI_CODE_PLUGIN_MARKETPLACE_URL);
+    expect(fetchImpl).toHaveBeenCalledWith(SPECTRE_PLUGIN_MARKETPLACE_URL);
     expect(marketplace.plugins[0]).toEqual(
       expect.objectContaining({
         id: 'kimi-datasource',
         displayName: 'Kimi Datasource',
         source: new URL(
           './official/kimi-datasource.zip',
-          KIMI_CODE_PLUGIN_MARKETPLACE_URL,
+          SPECTRE_PLUGIN_MARKETPLACE_URL,
         ).toString(),
       }),
     );

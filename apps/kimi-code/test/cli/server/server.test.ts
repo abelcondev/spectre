@@ -650,17 +650,17 @@ describe('spawnDaemonChild', () => {
   let prevHome: string | undefined;
 
   beforeEach(() => {
-    workDir = mkdtempSync(join(tmpdir(), 'kimi-daemon-cwd-'));
-    prevHome = process.env['KIMI_CODE_HOME'];
-    process.env['KIMI_CODE_HOME'] = workDir;
+    workDir = mkdtempSync(join(tmpdir(), 'spectre-daemon-cwd-'));
+    prevHome = process.env['SPECTRE_HOME'];
+    process.env['SPECTRE_HOME'] = workDir;
     vi.resetModules();
   });
 
   afterEach(() => {
     if (prevHome === undefined) {
-      delete process.env['KIMI_CODE_HOME'];
+      delete process.env['SPECTRE_HOME'];
     } else {
-      process.env['KIMI_CODE_HOME'] = prevHome;
+      process.env['SPECTRE_HOME'] = prevHome;
     }
     rmSync(workDir, { recursive: true, force: true });
   });

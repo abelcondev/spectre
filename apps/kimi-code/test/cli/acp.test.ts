@@ -63,7 +63,7 @@ describe('kimi acp', () => {
     const optsArg = vi.mocked(runAcpServer).mock.calls[0]?.[1];
     expect(optsArg).toEqual(
       expect.objectContaining({
-        agentInfo: { name: 'Kimi Code CLI', version: expect.any(String) },
+        agentInfo: { name: 'Spectre CLI', version: expect.any(String) },
       }),
     );
     expect(exitSpy).toHaveBeenCalledWith(0);
