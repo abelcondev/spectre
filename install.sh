@@ -41,7 +41,7 @@ verify_checksum() {
 }
 
 main() {
-  local target zip url checksum_url tmpdir
+  local target zip url checksum_url
   target=$(detect_target)
   zip="spectre-${target}.zip"
 
