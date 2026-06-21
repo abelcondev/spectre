@@ -11,7 +11,6 @@
 
 export const SUPPORTED_TARGETS = Object.freeze([
   'darwin-arm64',
-  'darwin-x64',
   'linux-arm64',
   'linux-x64',
   'win32-arm64',
@@ -20,7 +19,6 @@ export const SUPPORTED_TARGETS = Object.freeze([
 
 const clipboardSubpackageByTarget = Object.freeze({
   'darwin-arm64': '@mariozechner/clipboard-darwin-arm64',
-  'darwin-x64': '@mariozechner/clipboard-darwin-x64',
   'linux-arm64': '@mariozechner/clipboard-linux-arm64-gnu',
   'linux-x64': '@mariozechner/clipboard-linux-x64-gnu',
   'win32-arm64': '@mariozechner/clipboard-win32-arm64-msvc',
@@ -29,7 +27,6 @@ const clipboardSubpackageByTarget = Object.freeze({
 
 const koffiTripletByTarget = Object.freeze({
   'darwin-arm64': 'darwin_arm64',
-  'darwin-x64': 'darwin_x64',
   'linux-arm64': 'linux_arm64',
   'linux-x64': 'linux_x64',
   'win32-arm64': 'win32_arm64',

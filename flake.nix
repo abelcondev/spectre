@@ -118,7 +118,7 @@
             else if pkgs.stdenv.hostPlatform.isDarwin && pkgs.stdenv.hostPlatform.isAarch64 then
               "darwin-arm64"
             else if pkgs.stdenv.hostPlatform.isDarwin then
-              "darwin-x64"
+              throw "Specter native builds are only supported on Apple Silicon (darwin-arm64); x86_64 Macs are not supported"
             else
               throw "Unsupported Kimi Code native target for ${pkgs.stdenv.hostPlatform.system}";
 

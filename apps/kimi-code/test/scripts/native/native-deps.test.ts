@@ -8,11 +8,10 @@ import {
 } from '../../../scripts/native/native-deps.mjs';
 
 describe('SUPPORTED_TARGETS', () => {
-  it('contains the six published targets', () => {
+  it('contains the five published targets', () => {
     expect([...SUPPORTED_TARGETS].toSorted()).toEqual(
       [
         'darwin-arm64',
-        'darwin-x64',
         'linux-arm64',
         'linux-x64',
         'win32-arm64',
@@ -59,8 +58,8 @@ describe('resolveTargetDeps', () => {
   it('encodes koffi native file path with target triplet', () => {
     const linuxKoffi = resolveTargetDeps('linux-arm64').find((d) => d.resolvedName === 'koffi');
     expect(linuxKoffi?.nativeFileRelatives).toEqual(['build/koffi/linux_arm64/koffi.node']);
-    const macKoffi = resolveTargetDeps('darwin-x64').find((d) => d.resolvedName === 'koffi');
-    expect(macKoffi?.nativeFileRelatives).toEqual(['build/koffi/darwin_x64/koffi.node']);
+    const macKoffi = resolveTargetDeps('darwin-arm64').find((d) => d.resolvedName === 'koffi');
+    expect(macKoffi?.nativeFileRelatives).toEqual(['build/koffi/darwin_arm64/koffi.node']);
     const winArmKoffi = resolveTargetDeps('win32-arm64').find((d) => d.resolvedName === 'koffi');
     expect(winArmKoffi?.nativeFileRelatives).toEqual(['build/koffi/win32_arm64/koffi.node']);
   });
