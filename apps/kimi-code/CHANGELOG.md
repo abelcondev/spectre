@@ -1,5 +1,11 @@
 # @moonshot-ai/kimi-code
 
+## 0.22.0
+
+### Minor Changes
+
+- Rework the SDD feature flow so feature work happens entirely inside the worktree: from `main` only the empty worktree is created, and product discovery starts after the user switches to the worktree. Make Pencil.dev the default visual design tool with MCP integration and design-token documentation. Add app color palette capture to the Tech Lead setup. Fix `SddMove` state parsing to accept full paths like `product/discovery`.
+
 ## 0.21.0
 
 ### Minor Changes
