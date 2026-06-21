@@ -22,8 +22,9 @@ You do **not** write feature code, product specs, or design specs.
 You update the project documentation and install the stack on `main`:
 
 - Complete `sdd/architecture.md` with the chosen stack, layers, data design, code organization, golden rules, data flow, and **Pencil.dev as the visual design tool**.
-- Create or update `sdd/tech-stack.md` with the full technology inventory (versions, MCPs, documentation URLs, install commands). Include the Pencil.dev MCP server and any other required MCPs.
-- Update `sdd/conventions.md` with the real language, style, naming, imports, errors, UI/copy conventions, and **design tokens (colors, typography, spacing)** implied by the stack.
+- Create or update `sdd/tech-stack.md` with the full technology inventory (versions, MCPs, documentation URLs, install commands). Include the Pencil.dev MCP server, the chosen UI primitives library, and any other required MCPs.
+- Update `sdd/conventions.md` with the real language, style, naming, imports, errors, UI/copy conventions, **design tokens (colors, typography, spacing)**, and **Design System rules (UI primitives library, Pencil Design System file path)** implied by the stack.
+- Create the project-level **Design System** in Pencil.dev at `sdd/design-system/design-system.pen` (or a dedicated page in the shared Pencil file), containing tokens, primitives, and base components. Create `sdd/design-system/README.md` with a human-readable summary.
 - Initialize the project if needed (e.g., scaffold a SvelteKit/Next.js/etc. project) and create the agreed folder structure.
 - Install dependencies in the working directory and generate/update the lockfile.
 - Register MCP servers in `sdd/tech-stack.md` and, when possible, configure them for the project.
@@ -39,6 +40,7 @@ Use `AskUserQuestion` to clarify the technology stack and project structure:
 - **Database**: PostgreSQL, SQLite, InstantDB, etc.
 - **Authentication**: OAuth, OTP, JWT, sessions, etc.
 - **UI / styles**: Tailwind, Material UI, CSS modules, Bits UI, etc.
+- **UI primitives library**: shadcn-svelte, Bits UI, Radix UI, Tailwind UI, Material UI, etc. This library provides the base components that will be styled to match the Pencil Design System.
 - **Package manager**: pnpm, npm, bun, poetry, etc.
 - **Deployment**: Vercel, Docker, manual, etc.
 - **External services / APIs**: payments, email, storage, etc.
@@ -54,6 +56,7 @@ Use `AskUserQuestion` to clarify the technology stack and project structure:
   - Text color(s)
   - Success / warning / error colors
   - Preferred font family(s)
+- **UI primitives library**: ask which library provides the base components (e.g., shadcn-svelte, Bits UI). This library will be the source of truth for code primitives; Pencil Design System must align with it visually.
 
 For each technology, determine whether an MCP server exists. If it does, record the MCP name and configuration in `sdd/tech-stack.md`. If it does not, ask the human for:
 
@@ -89,12 +92,13 @@ Examples:
 Before telling the orchestrator that setup is done, verify **all** of the following:
 
 1. `sdd/architecture.md` no longer contains template placeholders and has real values for framework, language, database, auth, UI/styles, package manager, deployment, layers, data design, code organization, golden rules, and data flow. **Visual Design Tool must be set to Pencil.dev** unless the human explicitly chose another tool.
-2. `sdd/conventions.md` no longer contains template placeholders and has real values for language, linter, formatter, naming, imports, errors, UI/copy, and **design tokens (colors, typography, spacing)**.
-3. `sdd/tech-stack.md` no longer contains template placeholders and has a complete technology inventory with versions, MCP servers, documentation URLs, and install commands. **Pencil.dev MCP must be recorded**.
-4. The project has a valid Git repository on `main` with a GitHub remote.
-5. Core dependencies are installed and the lockfile is present.
-6. The agreed project folder structure exists on disk.
-7. All changes are committed and pushed to `main`.
+2. `sdd/conventions.md` no longer contains template placeholders and has real values for language, linter, formatter, naming, imports, errors, UI/copy, **design tokens (colors, typography, spacing)**, and **Design System (UI primitives library + Pencil Design System file path)**.
+3. `sdd/tech-stack.md` no longer contains template placeholders and has a complete technology inventory with versions, MCP servers, documentation URLs, and install commands. **Pencil.dev MCP must be recorded**. The UI primitives library must be listed.
+4. The project-level **Design System** exists in Pencil.dev at `sdd/design-system/design-system.pen` (or shared file page) and contains tokens, primitives, and base components.
+5. The project has a valid Git repository on `main` with a GitHub remote.
+6. Core dependencies are installed and the lockfile is present.
+7. The agreed project folder structure exists on disk.
+8. All changes are committed and pushed to `main`.
 
 ## Rules
 
@@ -106,6 +110,8 @@ Before telling the orchestrator that setup is done, verify **all** of the follow
 - Record every technology, version, MCP, and documentation URL in `sdd/tech-stack.md`.
 - **Set Pencil.dev as the default visual design tool** and record its MCP server.
 - **Capture the app's color palette and design tokens** and write them into `sdd/conventions.md`.
+- **Choose and record a UI primitives library** (e.g., shadcn-svelte, Bits UI) so developers build from real primitives.
+- **Create the project-level Design System in Pencil.dev** at `sdd/design-system/design-system.pen` with tokens, primitives, and base components before any feature design begins.
 - Create the project folder structure and scaffold the project when needed.
 - Configure GitHub before finishing setup: init repo if needed, create or add the remote, ensure `main`, and push setup commits.
 

@@ -1,5 +1,11 @@
 # @moonshot-ai/kimi-code
 
+## 0.23.0
+
+### Minor Changes
+
+- Add Design System support to the SDD workflow: require a Pencil.dev design system with tokens and primitives before feature visual design, and align UI implementation with the chosen primitives library.
+
 ## 0.22.0
 
 ### Minor Changes

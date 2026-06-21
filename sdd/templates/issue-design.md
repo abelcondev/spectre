@@ -60,6 +60,7 @@ Screen/Action 1 → Screen/Action 2 → Final result
 ### Components
 
 - Existing components to reuse, new components to create, variants.
+- Cross-reference with the **Design System reference** and **Pencil plan** below: every component must map to a Design System primitive and have a matching entry in Pencil.dev before the issue reaches `design-ready`.
 
 ### UI Flows
 
@@ -73,14 +74,33 @@ Screen/Action 1 → Screen/Action 2 → Final result
 
 - Contrast, keyboard navigation, ARIA.
 
-### Design assets
+### Design System reference
+
+- **Design System file**: `sdd/design-system/design-system.pen` (or shared Pencil file page recorded in `sdd/conventions.md`)
+- **UI primitives library**: *(e.g. shadcn-svelte, Bits UI, Tailwind UI)* — recorded in `sdd/conventions.md`
+- **Primitives this feature reuses**: list the base components from the Design System that this feature uses (e.g. Button, Input, Card)
+- **Primitives this feature extends or adds**: list any new primitive that must be added to the Design System before feature design
+
+### Pencil plan (filled in `design/spec-needed/`)
 
 - **Tool**: Pencil.dev (default; connected via MCP)
 - **MCP status**: *(configured / pending)*
-- **Pencil frames / views**: list the frame names and view identifiers created in Pencil.dev
-- **Pencil components**: list reusable components created or reused in Pencil.dev
-- **Design tokens used**: reference `sdd/conventions.md` → Design Tokens; note any new tokens added for this feature
+- **Pencil file path**: `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen` (default; update if the project uses a shared file)
+- **Frames / views to create**: list the Pencil frames and views this feature needs
+- **Components to create or reuse**: list reusable components to create in Pencil or reuse from the design system; every new component must map to a Design System primitive
+- **Design tokens to use/add**: reference `sdd/conventions.md` → Design Tokens; note any new tokens needed
+
+### Pencil artifacts (filled in `design/designing/`)
+
+After the functional spec is approved, create/update the Pencil file and record the actual artifacts:
+
+- **Pencil file path**: `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen`
+- **Design System file updated**: `sdd/design-system/design-system.pen` (or shared file page) — confirm whether primitives were added or changed
+- **Pencil frames / views**: actual frame names and view identifiers created in Pencil.dev
+- **Pencil components**: actual reusable components created or reused in Pencil.dev; map each to a Design System primitive
+- **Design tokens used**: actual tokens from `sdd/conventions.md` and any new token added for this feature
 - **Relevant screenshots / exports**: [links or exports]
+- **Human iteration notes**: record any feedback or decisions from the human's direct iteration in Pencil.dev
 
 ## Handoff to Dev
 

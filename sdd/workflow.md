@@ -43,6 +43,9 @@ sdd/
 ├── delivery.md               # Commits, PRs, merge, and closure
 ├── decisions/                # ADRs per feature or global
 ├── templates/                # Templates for features and issues
+├── design-system/            # Project-level design system (Pencil .pen + docs)
+│   ├── design-system.pen     # Pencil file with tokens, primitives, and base components
+│   └── README.md             # Human-readable design system summary
 └── features/
     └── <feature-slug>/
         ├── README.md
@@ -52,7 +55,8 @@ sdd/
         ├── design/
         │   ├── spec-needed/
         │   ├── designing/
-        │   └── design-ready/
+        │   ├── design-ready/
+        │   └── assets/            ← Pencil .pen file and exported design assets for this feature
         └── dev/
             ├── backlog/
             ├── spec-needed/
@@ -207,6 +211,7 @@ Each feature has its own **isolated worktree** from the start. Inside the worktr
    - Worktree at `<repo-principal>-<feature-slug>/`.
    - Empty structure at `sdd/features/<feature-slug>/`.
    - A generic scaffold `README.md` (to be completed inside the worktree).
+   - A `design/assets/` folder where the Pencil `.pen` file for this feature will live.
    No Issue `.md` files are created from `main`.
 2. Switch to the worktree and start a new Specter session there.
 3. The orchestrator detects the feature worktree, asks what feature to build, and creates the first Issue `[Product]`.
@@ -226,10 +231,15 @@ Each feature has its own **isolated worktree** from the start. Inside the worktr
 4. **Idea** (inside the worktree): the `orchestrator` detects the feature worktree, asks the human what feature to build, and creates the first Issue `[Product]`.
 5. **Product Discovery** (inside the worktree): the `product_manager` interviews the human and writes the product spec + BDD scenarios in `product/discovery/`. The `orchestrator` moves the file to `product/product-ready/`.
 6. **Product review** (gate 0): human approves. The `[Product]` Issue remains in `product/product-ready/` and unlocks `[Design]`.
-7. **Spec Design** (inside the worktree): the `designer` interviews the human and writes the functional + UI/UX spec in `design/spec-needed/`, referencing the BDD scenarios from `[Product]`. The `orchestrator` moves the file to `design/designing/`.
-8. **Spec review** (gate 1): human approves the functional spec. The file stays in `design/designing/` for visual design.
-9. **Design iteration** in **Pencil.dev**: visual design (frames, components, views) is iterated in Pencil.dev via MCP. The designer records references in the Issue `[Design]` file.
-10. **Design review** (gate 2): human approves the Pencil.dev design. The `orchestrator` moves the file to `design/design-ready/`.
+7. **Spec Design** (inside the worktree): the `designer` interviews the human and writes the functional + UI/UX spec in `design/spec-needed/`, referencing the BDD scenarios from `[Product]`. The spec includes a **Pencil plan** (frames, views, and components to create) but does not yet claim the Pencil artifacts exist. The `orchestrator` moves the file to `design/designing/`.
+8. **Functional spec review** (gate 1): human approves the functional spec. The file stays in `design/designing/` for visual design.
+9. **Design iteration** in **Pencil.dev** (inside the worktree):
+   1. The `designer` verifies the Pencil.dev MCP server.
+   2. The `designer` checks whether the project already has a **Design System** in Pencil (tokens, primitives, base components) at `sdd/design-system/design-system.pen` (or the shared Pencil file page recorded in `sdd/conventions.md`).
+   3. If the Design System is missing or incomplete, the `designer` creates/updates it first, with the human's approval.
+   4. Only after the Design System exists, the `designer` creates/updates the feature Pencil file at `sdd/features/<slug>/design/assets/<slug>.pen` and creates the planned frames, components, and views based on the Design System primitives.
+   5. The human iterates the visual design directly in Pencil.dev via MCP. The designer records references and any new design tokens or primitives in the Issue `[Design]` file.
+10. **Visual design review** (gate 2): human approves the Pencil.dev design. The `orchestrator` moves the file to `design/design-ready/`.
 11. **Spec Dev** (inside the worktree): the `tech_specifier` writes the technical spec + Test Plan in `dev/spec-needed/`, including BDD scenarios as acceptance tests. The `orchestrator` moves the file to `dev/spec-ready/`.
 12. **Spec technical review** (gate 3): human approves. The `orchestrator` moves the file to `dev/implementing/`.
 13. **Implementation** (inside the worktree): the `developer` runs TDD for each `R<n>` and each BDD scenario, writing code wherever the project defines. When finished and `init.sh` passes, the `orchestrator` moves the file to `dev/review/`.
@@ -341,14 +351,18 @@ To remove:
 
 ## 10. Visual Design
 
-The SDD assumes the project uses a **visual design tool** (Figma, Pencil, Sketch, etc.) as the reference for new screens and components.
+The SDD assumes the project uses a **visual design tool** as the reference for new screens and components. **Pencil.dev is the default tool**, connected via MCP.
 
-- Every **new** component or screen must first exist in the project's design tool.
-- The link to the artboard is included in the `UI/UX Design` section of the `[Design]` Issue.
-- Existing base components in code are the **functional source of truth**; the design tool acts as visual reference and documentation.
+- Every project must have a **Design System** in Pencil.dev before feature visual design begins. It lives at `sdd/design-system/design-system.pen` (or a dedicated page in the shared Pencil file) and contains tokens, primitives, and base components.
+- Every **new** component or screen must first exist in Pencil.dev.
+- The Pencil file for a feature lives at `sdd/features/<slug>/design/assets/<slug>.pen` and is tracked in Git.
+- Feature designs are built from the Design System primitives. New primitives are added to the Design System, not invented per feature.
+- The Issue `[Design]` records: the Pencil file path, frame/view identifiers, reusable component names, design tokens used or added, and Design System primitives reused or extended.
+- Existing base components in code are the **functional source of truth**; Pencil acts as visual reference and documentation.
 - The developer does not modify existing base components without a specific issue.
+- The human iterates the visual design directly in Pencil.dev via MCP; the `designer` agent structures the handoff and records the references.
 
-> The project documents in `sdd/conventions.md` or `sdd/architecture.md` which design tool it uses and how it is synced with code.
+> The project documents in `sdd/conventions.md` or `sdd/architecture.md` which design tool it uses and how it is synced with code. For Pencil.dev, also record the MCP server configuration in `sdd/tech-stack.md`.
 
 ---
 
@@ -363,8 +377,8 @@ The SDD assumes the project uses a **visual design tool** (Figma, Pencil, Sketch
 ## 12. Human Gates
 
 1. **Product / BDD** (`discovery/` → `product-ready/`).
-2. **Functional/UI spec** (`spec-needed/` → `designing/`).
-3. **UI design** (`designing/` → `design-ready/`).
+2. **Functional spec** (`spec-needed/` → `designing/`).
+3. **Visual design in Pencil.dev** (`designing/` → `design-ready/`).
 4. **Technical spec** (`spec-needed/` → `spec-ready/` → `implementing/`).
 5. **Review/merge** (`review/` → `testing/`).
 

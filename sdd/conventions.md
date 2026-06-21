@@ -171,6 +171,37 @@ Capture the project's color palette, typography, and spacing here so designers d
 
 ---
 
+## Design System
+
+- **UI primitives library**: *(complete, e.g. shadcn-svelte, Bits UI, Tailwind UI, Radix UI, Material UI)*
+- **Pencil Design System file**: default `sdd/design-system/design-system.pen`. If the project uses a shared Pencil file, the Design System lives as a dedicated page/frame inside that file.
+- **Design System contents**:
+  - Design tokens: colors, typography, spacing, shadows, radii.
+  - Primitive/base components: button, input, textarea, select, card, alert, label, etc.
+  - States: default, hover, active, disabled, focus, error, success.
+  - Layout basics: page containers, grids, responsive breakpoints.
+- The Design System must exist in Pencil **before** any feature-specific visual design.
+- Feature designs reuse the Design System primitives; new primitives are added to the Design System only when a feature genuinely needs them.
+- Developers implement UI using the project's chosen UI primitives library, styled to match the Pencil Design System exactly.
+
+### Mapping Pencil → Code
+
+| Pencil artifact | Code source |
+|---|---|
+| Design tokens | CSS variables / Tailwind theme / design tokens file |
+| Primitive components | UI library primitives (shadcn, Bits UI, etc.) |
+| Composite/feature components | Built from primitives, styled per Pencil frames |
+| Layout patterns | Reused from Design System page frames |
+
+## Visual Design Files
+
+- **Default tool**: Pencil.dev, connected via MCP.
+- **Pencil file per feature**: `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen`.
+- **Pencil Design System file**: `sdd/design-system/design-system.pen` (or shared Pencil file page).
+- The `.pen` file is JSON-based and must be tracked in Git.
+- Every new screen or component must exist in Pencil.dev before implementation begins.
+- The Issue `[Design]` records frame/view identifiers, reusable component names, and design tokens so developers can replicate the design in code.
+
 ## UI and Copy
 
 - **UI language**: *(complete)*
@@ -210,6 +241,8 @@ This section is used by the Orchestrator to decide whether the project setup gat
 - [ ] **Imports** order and aliases are defined.
 - [ ] **Errors** strategy is chosen and documented with examples.
 - [ ] **Design Tokens** section has real colors, typography, and spacing values.
+- [ ] **Design System** section records the UI primitives library and the Pencil Design System file path.
+- [ ] **Visual Design Files** section records the Pencil file location and MCP configuration.
 - [ ] **UI and Copy** section has actual language, formats, and breakpoints.
 
 ## How to Complete This Document

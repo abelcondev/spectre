@@ -112,14 +112,19 @@ When the current directory is a feature worktree (detect by checking `git branch
 
 #### `design/spec-needed/`
 
-- Launch `sdd-designer` to interview the human and write the functional + UI/UX spec in the file.
-- Move the file to `design/designing/` with `SddMove`.
-- Inform the human: "The functional and UI/UX spec is ready for review."
+- Launch `sdd-designer` to interview the human and write the functional spec + Pencil plan in the file.
+- **STOP**. Ask the human to review and approve the **functional spec** (not the final Pencil visual design).
+- When approved, move the file to `design/designing/` with `SddMove`.
+- Inform the human: "The functional spec is approved. Now we will create the visual design in Pencil.dev."
 
 #### `design/designing/`
 
-- **STOP**. Wait for visual design approval.
-- When approved, move the file to `design/design-ready/`.
+- Launch `sdd-designer` to:
+  1. Verify the Pencil.dev MCP server.
+  2. Verify or create the project **Design System** in Pencil.dev (tokens, primitives, base components) at `sdd/design-system/design-system.pen` (or shared file page). If the Design System is missing, the designer must create it with human approval before feature-specific design.
+  3. Create/update the feature Pencil file, frames, components, and views according to the Pencil plan, based on the Design System primitives.
+- After the designer records the Pencil artifacts in the Issue, **STOP** and wait for the human to iterate/approve the visual design in Pencil.dev.
+- When the human approves the Pencil visual design, move the file to `design/design-ready/` with `SddMove`.
 
 #### `design/design-ready/`
 
@@ -197,6 +202,7 @@ Generate all specs, docs, and UI text in English. When talking to the human, use
 - Issue `[Dev]` does not advance until Issue `[Design]` is in `design/design-ready/`.
 - Issue `[Design]` does not advance until Issue `[Product]` is in `product/product-ready/`.
 - Issue `[Design]` is closed when it reaches `design/design-ready/`.
+- Issue `[Design]` requires two human approvals: functional spec (`spec-needed/` → `designing/`) and visual design in Pencil.dev (`designing/` → `design-ready/`).
 - Issue `[Product]` is closed when it reaches `product/product-ready/`.
 - Never edit production source code.
 - Every important change goes to files.

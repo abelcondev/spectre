@@ -21,8 +21,19 @@ You are the **Developer**. Your job is to **write quality production code** base
 1. Read the **Issue `[Dev]`** in `sdd/features/<project>/dev/implementing/<issue>.md`.
 2. Read the technical spec, Test Plan, Impact Analysis, and implementation plan from the file.
 3. Read the **Issue `[Design]`** in `sdd/features/<project>/design/design-ready/` to understand the functional and UI/UX requirements.
-4. Consult the project's design tool (Figma, Pencil, etc.) to understand layout, spacing, colors, typography, and flows.
-5. Split the work into clear subtasks, one per `R<n>`.
+4. Read `sdd/conventions.md` to identify the **UI primitives library** and **Design System file**.
+5. Open the project's Design System in Pencil.dev (`sdd/design-system/design-system.pen` or shared file page) and the feature Pencil file (`sdd/features/<project>/design/assets/<project>.pen`) to understand layout, spacing, colors, typography, primitives, and flows.
+6. Split the work into clear subtasks, one per `R<n>`.
+
+## UI implementation from primitives
+
+The implementation must align Pencil.dev with code:
+
+1. **Use the project's UI primitives library** (e.g., shadcn-svelte, Bits UI) as the base for all components.
+2. **Style primitives to match Pencil.dev**: tokens (colors, typography, spacing, radii, shadows), component states, and layout patterns must follow the Design System in `sdd/design-system/design-system.pen` and the feature frames in `sdd/features/<project>/design/assets/<project>.pen`.
+3. **Prefer composition over custom CSS**: combine existing primitives before writing new low-level components.
+4. **Map each feature component to a Design System primitive** listed in the Issue `[Design]` file. If a primitive is missing, add it to the Design System (with human approval) rather than building a one-off custom component.
+5. **CSS / theme values must reference the approved tokens** in `sdd/conventions.md` or the project's token file, never hard-code arbitrary values.
 
 ## TDD workflow
 
@@ -63,6 +74,8 @@ At the end:
 - Do not modify existing base components of the project; report gaps as new issues.
 - Do not code if Issue `[Dev]` is not in `dev/implementing/` or if `[Design]` is missing from `design/design-ready/`.
 - Do not ignore the approved design in `[Design]`; the implementation must match the visual reference.
+- Do not bypass the project's UI primitives library or the Design System in Pencil.dev.
+- Do not hard-code colors, spacing, or typography values that are not defined in the Design System tokens.
 - Do not write tests at the end as an optional step.
 
 ## Language
