@@ -32,14 +32,25 @@ Use these tools instead of shell scripts:
 
 ## Actions by entity
 
-### Project setup on `main`
+### Project setup gate on `main`
 
-When SDD is installed but the project stack is not yet set up, or when the human asks to change the core stack:
+Before any feature worktree is created, the project must be fully set up on `main`. The setup is complete only when **all** of the following are true:
 
-1. Launch `sdd-tech-lead` on `main`.
-2. The Tech Lead interviews the human, reconciles the stack against the PRD in `sdd/product.md`, checks for MCPs, installs technologies, and updates `sdd/architecture.md`, `sdd/tech-stack.md`, and `sdd/conventions.md`.
-3. The Tech Lead configures GitHub (init repo / create repo / push to `main`).
-4. All setup commits are pushed to `main`. No feature worktree is created.
+1. `sdd/architecture.md` is filled with the real stack, layers, data design, code organization, and golden rules — not the template placeholders.
+2. `sdd/conventions.md` is filled with the real language, style, naming, imports, errors, and UI/copy conventions — not the template placeholders.
+3. `sdd/tech-stack.md` is filled with the real technology inventory, versions, MCP servers, documentation URLs, and installation notes — not the template placeholders.
+4. The project repository is initialized (`.git/`), has a `main` branch, and has a GitHub remote configured.
+5. Core dependencies are installed in the working directory (e.g., `node_modules/`, lockfile, or equivalent).
+6. Required MCP servers are recorded in `sdd/tech-stack.md` with their configuration.
+
+When SDD is installed but the setup gate is **not** met:
+
+1. **Do not create a feature worktree.**
+2. Launch `sdd-tech-lead` on `main`.
+3. The Tech Lead interviews the human, reconciles the stack against the PRD in `sdd/product.md`, checks for MCPs, installs technologies, creates the project folder structure, and updates `sdd/architecture.md`, `sdd/tech-stack.md`, and `sdd/conventions.md`.
+4. The Tech Lead configures GitHub (init repo / create repo / push to `main`) and installs dependencies.
+5. All setup commits are pushed to `main`.
+6. Only after the setup gate is met, continue with feature work.
 
 ### Product-level changes
 
@@ -56,7 +67,8 @@ When the human asks to change `sdd/product.md` (including the PRD), scope, UI, o
 
 ### Feature Project
 
-- Create the feature worktree when the human defines a new idea:
+- **Before creating a feature worktree, verify the project setup gate is met.** Read `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md`. If they still contain template placeholders (e.g., "*(e.g. ...)*", "*(complete)*", empty tables), stop and run project setup with `sdd-tech-lead` on `main` first.
+- Only create the feature worktree when the human defines a new idea **and** the setup gate is met:
   ```
   SddWorktree command=create featureSlug=<feature-slug>
   ```
@@ -175,6 +187,7 @@ Generate all specs, docs, and UI text in English. When talking to the human, use
 - For harness verification use `SddStatus`.
 - To install SDD in a project use `SddInit`.
 - Project setup and stack changes happen on `main` via `sdd-tech-lead`; they do not use a feature worktree.
+- **No feature worktree is created until the project setup gate is met** (`sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md` are complete, GitHub is configured, and dependencies are installed).
 - Product-level changes use a `product/<change-slug>` branch + PR; they do not use a feature worktree.
 - The host project defines its stack in `sdd/architecture.md` and its conventions in `sdd/conventions.md`; agents must respect them.
 - Before declaring `done`, `SddStatus` must report `[OK] SDD harness ready` and without errors in the SDD state validations.
@@ -188,8 +201,12 @@ Generate all specs, docs, and UI text in English. When talking to the human, use
    - Use `AskUserQuestion` to ask the human: "This project does not have the SDD framework installed. Would you like Specter to install it now?"
    - If the human agrees, run `SddInit`.
    - If the human declines, continue without SDD and do not mention it again unless asked.
-4. If SDD is installed, read `sdd/README.md` and `sdd/workflow.md`.
-5. Read the current state of issues in `sdd/features/`.
+4. After `SddInit`, or if SDD is already installed, **check the project setup gate** before doing anything else:
+   - Read `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md`.
+   - If any of these files still contain template placeholders (e.g., "*(e.g. ...)*", "*(complete)*", empty tables) or are clearly incomplete, the setup gate is **not** met.
+   - When the setup gate is not met, **do not create a feature worktree and do not start feature discovery**. Tell the human: "The project setup on `main` is not complete yet. I will launch the Tech Lead to finish the architecture, conventions, tech stack, GitHub setup, and dependency installation before we create any features."
+   - Launch `sdd-tech-lead` on `main` and wait for it to complete.
+5. Only after the setup gate is met, read `sdd/README.md` and `sdd/workflow.md` and read the current state of issues in `sdd/features/`.
 6. **Do not run `SddStatus` automatically at session start.** Run it only when:
    - The user explicitly requests it.
    - An Issue is going to be declared `done` or executable evidence is needed.

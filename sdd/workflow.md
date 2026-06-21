@@ -81,21 +81,38 @@ Slugs use kebab-case, lowercase, no accents.
 
 ## 3. Project Setup on `main`
 
-Before any feature is created, the `tech_lead` sets up the project on `main`. This is **not** a feature and does **not** use a worktree.
+Before any feature is created, the `tech_lead` sets up the project on `main`. This is **not** a feature and does **not** use a worktree. **No feature worktree may be created until the project setup gate is complete.**
 
 ### 3.1 When to run setup
 
-- The repository has SDD installed but `sdd/architecture.md` and `sdd/tech-stack.md` are empty or incomplete.
+- The repository has SDD installed but `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md` are empty or still contain template placeholders.
 - The human asks to add, remove, or change a core technology.
 - The PRD in `sdd/product.md` mentions a technology that is not reflected in the stack.
+- The project has no GitHub remote, no lockfile, or no installed dependencies.
 
-### 3.2 What the Tech Lead does
+### 3.2 Project setup gate
+
+The setup gate is considered complete only when **all** of these are true:
+
+1. `sdd/architecture.md` is complete: real stack, layers, data design, code organization, golden rules, and data flow (no template placeholders).
+2. `sdd/conventions.md` is complete: real language, linter, formatter, naming, imports, errors, and UI/copy conventions (no template placeholders).
+3. `sdd/tech-stack.md` is complete: full technology inventory with versions, MCP servers, documentation URLs, and install commands (no template placeholders).
+4. The repository has a `main` branch and a GitHub remote configured.
+5. Core dependencies are installed and the lockfile is present.
+6. The agreed project folder structure exists on disk.
+
+If any of these are missing, the orchestrator must launch `sdd-tech-lead` on `main` before allowing feature creation.
+
+### 3.3 What the Tech Lead does
 
 1. Reads `sdd/product.md` (including the PRD), `sdd/architecture.md`, and `sdd/conventions.md`.
 2. Uses `AskUserQuestion` to interview the human about:
    - Language, framework, database, authentication, UI/styles, package manager, deployment.
    - External services and APIs.
    - AI / LLM providers or ML services required by the PRD.
+   - MCP servers to configure.
+   - Preferred project folder structure.
+   - GitHub setup (create repo now or use existing remote).
 3. For each technology:
    - Check whether an MCP server is available.
    - If an MCP exists: record the MCP name/configuration in `sdd/tech-stack.md`.
@@ -104,19 +121,21 @@ Before any feature is created, the `tech_lead` sets up the project on `main`. Th
    - If the PRD requires a capability (e.g., "AI-generated summaries") but no matching technology was chosen, ask the human for the missing provider/library.
 5. Updates `sdd/architecture.md` and creates/maintains `sdd/tech-stack.md`.
 6. Updates `sdd/conventions.md` when a technology choice implies naming or style rules.
-7. Runs installation commands (`npm install`, `pnpm install`, etc.).
-8. Configures GitHub:
+7. Initializes or scaffolds the project if needed (e.g., `bun create svelte@latest`), and creates the agreed folder structure.
+8. Runs installation commands (`npm install`, `pnpm install`, `bun install`, etc.).
+9. Configures GitHub:
    - If the directory is not a Git repository, initialize it.
    - If the repository has no GitHub remote, create the repo (`gh repo create`) or add the remote.
    - If the repository is already on GitHub, commit the setup changes and push to `main`.
 
-### 3.3 Output
+### 3.4 Output
 
 - `sdd/architecture.md` — stack and layers completed.
+- `sdd/conventions.md` — style, naming, and project conventions completed.
 - `sdd/tech-stack.md` — technology inventory with versions, MCPs, and doc URLs.
-- `sdd/conventions.md` — updated if the stack imposes conventions.
+- Project folder structure created and scaffolded if needed.
 - Dependencies installed in the working directory.
-- Setup commits pushed to `main`.
+- GitHub remote configured and setup commits pushed to `main`.
 
 ---
 
@@ -192,24 +211,25 @@ Each feature has its own **isolated worktree** from the start. Inside the worktr
 4. Move files physically between folders when they change state.
 5. Merge the worktree to `main` when finished and remove it.
 
-> The project must complete `sdd/architecture.md` and `sdd/conventions.md` so agents know which stack and style to use.
+> The project must complete `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md` so agents know which stack and style to use. The orchestrator must verify the project setup gate before creating a feature worktree.
 
 ---
 
 ## 6. Workflow
 
-1. **Idea**: the human describes the feature. The `orchestrator` creates the worktree with `./scripts/sdd-worktree.sh create <feature-slug>`.
-2. **Product Discovery** (inside the worktree): the `product_manager` interviews the human and writes the product spec + BDD scenarios in `product/discovery/`. The `orchestrator` moves the file to `product/product-ready/`.
-3. **Product review** (gate 0): human approves. The `[Product]` Issue remains in `product/product-ready/` and unlocks `[Design]`.
-4. **Spec Design** (inside the worktree): the `designer` interviews the human and writes the functional + UI/UX spec in `design/spec-needed/`, referencing the BDD scenarios from `[Product]`. The `orchestrator` moves the file to `design/designing/`.
-5. **Spec review** (gate 1): human approves. The `orchestrator` moves the file to `design/design-ready/`.
-6. **Design iteration**: visual design is iterated in the project's design tool.
-7. **Design review** (gate 2): human approves the design. The `[Design]` Issue remains in `design/design-ready/`.
-8. **Spec Dev** (inside the worktree): the `tech_specifier` writes the technical spec + Test Plan in `dev/spec-needed/`, including BDD scenarios as acceptance tests. The `orchestrator` moves the file to `dev/spec-ready/`.
-9. **Spec technical review** (gate 3): human approves. The `orchestrator` moves the file to `dev/implementing/`.
-10. **Implementation** (inside the worktree): the `developer` runs TDD for each `R<n>` and each BDD scenario, writing code wherever the project defines. When finished and `init.sh` passes, the `orchestrator` moves the file to `dev/review/`.
-11. **Review**: the `auditor` audits against `sdd/quality-gates.md` C1–C7. If approved: moves the file to `dev/testing/` and awaits human validation of the merge. If rejected: moves the file to `dev/rejected/` with action items.
-12. **Testing** (gate 4): human validates the merge. The `orchestrator` merges the worktree to `main`, removes the worktree, and moves the file to `dev/done/`.
+1. **Project setup** (on `main`): before any feature, the `orchestrator` checks the setup gate. If `sdd/architecture.md`, `sdd/conventions.md`, or `sdd/tech-stack.md` are incomplete, the `tech_lead` finishes setup on `main` first.
+2. **Idea**: the human describes the feature. Only after the setup gate is met, the `orchestrator` creates the worktree with `./scripts/sdd-worktree.sh create <feature-slug>`.
+3. **Product Discovery** (inside the worktree): the `product_manager` interviews the human and writes the product spec + BDD scenarios in `product/discovery/`. The `orchestrator` moves the file to `product/product-ready/`.
+4. **Product review** (gate 0): human approves. The `[Product]` Issue remains in `product/product-ready/` and unlocks `[Design]`.
+5. **Spec Design** (inside the worktree): the `designer` interviews the human and writes the functional + UI/UX spec in `design/spec-needed/`, referencing the BDD scenarios from `[Product]`. The `orchestrator` moves the file to `design/designing/`.
+6. **Spec review** (gate 1): human approves. The `orchestrator` moves the file to `design/design-ready/`.
+7. **Design iteration**: visual design is iterated in the project's design tool.
+8. **Design review** (gate 2): human approves the design. The `[Design]` Issue remains in `design/design-ready/`.
+9. **Spec Dev** (inside the worktree): the `tech_specifier` writes the technical spec + Test Plan in `dev/spec-needed/`, including BDD scenarios as acceptance tests. The `orchestrator` moves the file to `dev/spec-ready/`.
+10. **Spec technical review** (gate 3): human approves. The `orchestrator` moves the file to `dev/implementing/`.
+11. **Implementation** (inside the worktree): the `developer` runs TDD for each `R<n>` and each BDD scenario, writing code wherever the project defines. When finished and `init.sh` passes, the `orchestrator` moves the file to `dev/review/`.
+12. **Review**: the `auditor` audits against `sdd/quality-gates.md` C1–C7. If approved: moves the file to `dev/testing/` and awaits human validation of the merge. If rejected: moves the file to `dev/rejected/` with action items.
+13. **Testing** (gate 4): human validates the merge. The `orchestrator` merges the worktree to `main`, removes the worktree, and moves the file to `dev/done/`.
 
 ---
 

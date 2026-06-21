@@ -70,3 +70,7 @@
 ## Notes
 
 - *Additional product-level notes, constraints, or references.*
+
+## Project Setup Gate
+
+Before creating any feature under `sdd/features/`, the Tech Lead must complete the project setup on `main`: fill `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md`, install dependencies, configure MCP servers, and set up GitHub. No feature worktree is created until this gate is complete.

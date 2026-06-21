@@ -107,6 +107,19 @@
 - **Node / runtime version**: *(from .nvmrc or package.json engines)*
 - **Last updated**: YYYY-MM-DD
 
+## Project Setup Completion
+
+This section is used by the Orchestrator to decide whether the project setup gate is complete. Do not remove it.
+
+- [ ] **Stack overview** table has real technologies and versions (no `*(e.g. ...)*` placeholders).
+- [ ] **Languages & runtimes** section has real values.
+- [ ] **Frontend**, **Backend**, **Database & storage**, and **Authentication & authorization** sections are filled.
+- [ ] **External services / APIs** and **AI / LLM services** sections are filled (or explicitly marked N/A).
+- [ ] **MCP servers** section records configured MCPs (or explicitly states "none").
+- [ ] **DevOps / deployment** section has real values.
+- [ ] **Documentation URLs** table links to official docs for each technology.
+- [ ] **Versions & lockfile** section has the lockfile name and runtime version.
+
 ## Notes
 
 - *Any special setup instructions, environment variables, or known incompatibilities.*

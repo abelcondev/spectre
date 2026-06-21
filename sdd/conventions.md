@@ -170,6 +170,16 @@ UI:
 
 ---
 
+## Project Setup Completion
+
+This section is used by the Orchestrator to decide whether the project setup gate is complete. Do not remove it.
+
+- [ ] **Language and Style** section has real tools (no `*(complete)*` placeholders).
+- [ ] **Naming** table has real conventions for the project's stack.
+- [ ] **Imports** order and aliases are defined.
+- [ ] **Errors** strategy is chosen and documented with examples.
+- [ ] **UI and Copy** section has actual language, formats, and breakpoints.
+
 ## How to Complete This Document
 
 1. Replace the "*(complete)*" fields in **Language and Style** with the project's actual tools.
@@ -178,3 +188,4 @@ UI:
 4. Choose an **Errors** strategy (exceptions, typed results, or both) and document it with examples.
 5. Complete **UI and Copy** with actual language, formats, and breakpoints.
 6. Remove sections marked as **Example** when the document is mature, or keep them as reference while the team adopts SDD.
+7. Check all boxes in the **Project Setup Completion** section above.

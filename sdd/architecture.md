@@ -219,6 +219,16 @@ This document only summarizes active decisions. Each row should link to a real A
 
 ---
 
+## Project Setup Completion
+
+This section is used by the Orchestrator to decide whether the project setup gate is complete. Do not remove it.
+
+- [ ] **Stack and Layers** section has real technologies (no `*(e.g. ...)*` placeholders).
+- [ ] **Code Organization** section describes the actual folder structure.
+- [ ] At least 5 **Project Golden Rules** are defined.
+- [ ] **Typical Data Flow** section has a real read and write example.
+- [ ] **Current Architectural Decisions** table links to real ADR files in `sdd/decisions/` (or states "none yet" explicitly).
+
 ## How to Complete This Document
 
 1. Replace the "*(e.g. ...)*" fields in the **Stack and Layers** section with the project's actual technologies.
@@ -227,3 +237,4 @@ This document only summarizes active decisions. Each row should link to a real A
 4. Draw the **data flow** for a representative operation (read and write).
 5. Update the **Current Architectural Decisions** table with real ADRs in `sdd/decisions/` (use `sdd/templates/adr-template.md`).
 6. Remove sections marked as **Example** when the document is mature, or keep them as reference while the team adopts SDD.
+7. Check all boxes in the **Project Setup Completion** section above.
