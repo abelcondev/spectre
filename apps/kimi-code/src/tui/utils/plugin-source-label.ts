@@ -26,8 +26,8 @@ export function formatPluginSourceLabel(plugin: PluginSummary): string {
 }
 
 /**
- * Returns one of three trust labels for a plugin. Only Kimi-hosted plugin zip
- * paths receive official or curated badges. Everything else is third-party.
+ * Returns one of three trust labels for a plugin. Only Spectre release-hosted
+ * plugin zip paths receive official or curated badges. Everything else is third-party.
  */
 export function pluginTrustLabel(plugin: PluginSummary): PluginTrustLabel {
   if (plugin.source !== 'zip-url' || plugin.originalSource === undefined) {
@@ -35,13 +35,13 @@ export function pluginTrustLabel(plugin: PluginSummary): PluginTrustLabel {
   }
   try {
     const url = new URL(plugin.originalSource);
-    if (url.protocol !== 'https:' || url.hostname !== 'code.kimi.com') {
+    if (url.protocol !== 'https:' || url.hostname !== 'github.com') {
       return 'third-party';
     }
-    if (url.pathname.startsWith('/kimi-code/plugins/official/')) {
+    if (url.pathname.startsWith('/abelcondev/spectre/releases/latest/download/official/')) {
       return 'official';
     }
-    if (url.pathname.startsWith('/kimi-code/plugins/curated/')) {
+    if (url.pathname.startsWith('/abelcondev/spectre/releases/latest/download/curated/')) {
       return 'curated';
     }
     return 'third-party';

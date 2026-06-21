@@ -25,18 +25,18 @@ beforeEach(async () => {
   await __resetRootLoggerForTest();
   homeDir = await mkdtemp(join(tmpdir(), 'kimi-cli-log-home-'));
   workDir = await mkdtemp(join(tmpdir(), 'kimi-cli-log-work-'));
-  oldHome = process.env['KIMI_CODE_HOME'];
+  oldHome = process.env['SPECTRE_HOME'];
   oldLogLevel = process.env['KIMI_LOG_LEVEL'];
-  process.env['KIMI_CODE_HOME'] = homeDir;
+  process.env['SPECTRE_HOME'] = homeDir;
   process.env['KIMI_LOG_LEVEL'] = 'info';
 });
 
 afterEach(async () => {
   await __resetRootLoggerForTest();
   if (oldHome === undefined) {
-    delete process.env['KIMI_CODE_HOME'];
+    delete process.env['SPECTRE_HOME'];
   } else {
-    process.env['KIMI_CODE_HOME'] = oldHome;
+    process.env['SPECTRE_HOME'] = oldHome;
   }
   if (oldLogLevel === undefined) {
     delete process.env['KIMI_LOG_LEVEL'];

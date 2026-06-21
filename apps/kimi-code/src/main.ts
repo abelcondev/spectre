@@ -1,5 +1,5 @@
 /**
- * Specter entry point.
+ * Spectre entry point.
  *
  * Parses CLI arguments via Commander.js, validates options, runs the
  * outer update preflight, then delegates to the requested UI runner.

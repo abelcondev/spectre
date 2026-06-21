@@ -1,5 +1,5 @@
 /**
- * Kimi Code version helpers.
+ * Spectre version helpers.
  *
  * `getVersion` reads the host CLI's `package.json#version`.
  */
@@ -12,7 +12,7 @@ import { createKimiDefaultHeaders, type KimiHostIdentity } from '@moonshot-ai/ki
 import { CLI_USER_AGENT_PRODUCT } from '#/constant/app';
 
 import { getDataDir } from '../utils/paths';
-import { KIMI_BUILD_INFO } from './build-info';
+import { SPECTRE_BUILD_INFO } from './build-info';
 
 const MODULE_DIR = import.meta.dirname;
 
@@ -39,8 +39,8 @@ export function getHostPackageRoot(): string {
 }
 
 export function getVersion(): string {
-  if (KIMI_BUILD_INFO.version !== undefined) {
-    return KIMI_BUILD_INFO.version;
+  if (SPECTRE_BUILD_INFO.version !== undefined) {
+    return SPECTRE_BUILD_INFO.version;
   }
   const pkg = JSON.parse(readFileSync(getHostPackageJsonPath(), 'utf-8')) as {
     version: string;

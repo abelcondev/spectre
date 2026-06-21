@@ -1,5 +1,5 @@
 {
-  description = "Kimi Code CLI";
+  description = "Spectre CLI";
 
   inputs = {
     # Pinned to the 25.11 release channel because nixpkgs-unstable currently
@@ -42,7 +42,7 @@
           node
         else
           throw ''
-            Kimi Code requires Node.js >= ${minNodeVersion},
+            Spectre requires Node.js >= ${minNodeVersion},
             but nixpkgs only offers ${node.version}.
             Pin a newer nixpkgs revision or update minNodeVersion in flake.nix.
           '';
@@ -94,7 +94,7 @@
         "@moonshot-ai/kimi-code-oauth"
         "@moonshot-ai/protocol"
         "@moonshot-ai/kimi-telemetry"
-        "@moonshot-ai/kimi-code"
+        "@abelcondev/spectre"
         "@moonshot-ai/kimi-web"
         "@moonshot-ai/vis"
         "@moonshot-ai/vis-server"
@@ -118,12 +118,12 @@
             else if pkgs.stdenv.hostPlatform.isDarwin && pkgs.stdenv.hostPlatform.isAarch64 then
               "darwin-arm64"
             else if pkgs.stdenv.hostPlatform.isDarwin then
-              throw "Specter native builds are only supported on Apple Silicon (darwin-arm64); x86_64 Macs are not supported"
+              throw "Spectre native builds are only supported on Apple Silicon (darwin-arm64); x86_64 Macs are not supported"
             else
-              throw "Unsupported Kimi Code native target for ${pkgs.stdenv.hostPlatform.system}";
+              throw "Unsupported Spectre native target for ${pkgs.stdenv.hostPlatform.system}";
 
-          kimi-code = pkgs.stdenv.mkDerivation (finalAttrs: {
-            pname = "kimi-code";
+          spectre = pkgs.stdenv.mkDerivation (finalAttrs: {
+            pname = "spectre";
             version = appPackageJson.version;
 
             src = lib.fileset.toSource {
@@ -176,7 +176,7 @@
 
             buildPhase = ''
               runHook preBuild
-              export KIMI_CODE_BUILD_TARGET=${nativeTarget}
+              export SPECTRE_BUILD_TARGET=${nativeTarget}
               ${lib.optionalString pkgs.stdenv.hostPlatform.isDarwin ''
                 # pkgs.darwin.sigtool's codesign supports `--sign -` (ad-hoc)
                 # but not the inspection mode (`-dv`) that 05-verify.mjs runs
@@ -188,12 +188,12 @@
                     "// runVerifyStep skipped in nix sandbox (sigtool lacks -dv)"
               ''}
               # The SEA blob step (scripts/native/02-sea-blob.mjs) embeds the
-              # Kimi web assets from apps/kimi-code/dist-web and fails if that
+              # Spectre web assets from apps/kimi-code/dist-web and fails if that
               # directory is missing. Build the web app and stage its assets
               # before producing the native executable.
               pnpm --filter=@moonshot-ai/kimi-web run build
               node apps/kimi-code/scripts/copy-web-assets.mjs
-              pnpm --filter=@moonshot-ai/kimi-code run build:native:sea
+              pnpm --filter=@abelcondev/spectre run build:native:sea
               runHook postBuild
             '';
 
@@ -212,8 +212,8 @@
             '';
 
             meta = {
-              description = "Specter CLI";
-              homepage = "https://github.com/MoonshotAI/kimi-code";
+              description = "Spectre CLI";
+              homepage = "https://github.com/abelcondev/spectre";
               license = lib.licenses.mit;
               mainProgram = "spectre";
               platforms = systems;
@@ -221,17 +221,17 @@
           });
         in
         {
-          inherit kimi-code;
-          default = kimi-code;
+          inherit spectre;
+          default = spectre;
         }
       );
 
       apps = forAllSystems (pkgs: {
-        kimi-code = {
+        spectre = {
           type = "app";
-          program = "${self.packages.${pkgs.system}.kimi-code}/bin/spectre";
+          program = "${self.packages.${pkgs.system}.spectre}/bin/spectre";
         };
-        default = self.apps.${pkgs.system}.kimi-code;
+        default = self.apps.${pkgs.system}.spectre;
       });
 
       devShells = forAllSystems (pkgs: {

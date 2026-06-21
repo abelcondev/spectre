@@ -29,7 +29,7 @@ import {
 } from '@moonshot-ai/acp-adapter';
 import { createKimiHarness, type Session, type SkillSummary } from '@moonshot-ai/kimi-code-sdk';
 
-import { KIMI_CODE_HOME_ENV } from '#/constant/app';
+import { SPECTRE_HOME_ENV } from '#/constant/app';
 import { createKimiCodeHostIdentity, getVersion } from '#/cli/version';
 import { buildSkillSlashCommands } from '#/tui/commands/skills';
 
@@ -38,7 +38,7 @@ import { runLoginFlow } from './login-flow';
 export function registerAcpCommand(parent: Command): void {
   parent
     .command('acp')
-    .description('Run kimi-code as an Agent Client Protocol (ACP) server over stdio.')
+    .description('Run spectre as an Agent Client Protocol (ACP) server over stdio.')
     .option(
       '--login',
       'Run the device-code login flow then exit (entry point for ACP terminal-auth).',
@@ -60,10 +60,10 @@ export function registerAcpCommand(parent: Command): void {
       // sandboxed test setups (Zed's `agent_servers.*.env.SPECTRE_HOME =
       // /tmp/...`). Production runs leave the env unset and the field stays
       // empty.
-      const sandboxHome = process.env[KIMI_CODE_HOME_ENV];
+      const sandboxHome = process.env[SPECTRE_HOME_ENV];
       const terminalAuthEnv =
         sandboxHome !== undefined && sandboxHome.length > 0
-          ? { [KIMI_CODE_HOME_ENV]: sandboxHome }
+          ? { [SPECTRE_HOME_ENV]: sandboxHome }
           : undefined;
       // Legacy `_meta.terminal-auth` fallback for clients that don't yet
       // honor the first-class `type:'terminal'` (Zed without the
@@ -110,7 +110,7 @@ export function registerAcpCommand(parent: Command): void {
       };
       try {
         await runAcpServer(harness, {
-          agentInfo: { name: 'Kimi Code CLI', version: getVersion() },
+          agentInfo: { name: 'Spectre CLI', version: getVersion() },
           slashCommands: resolveSlashCommands,
           ...(terminalAuthEnv ? { terminalAuthEnv } : {}),
           ...(legacyCommand !== undefined && legacyCommand.length > 0

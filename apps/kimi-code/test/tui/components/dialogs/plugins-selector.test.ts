@@ -52,7 +52,7 @@ describe('plugins selector dialogs', () => {
       enabledMcpServerCount: 0,
       hasErrors: false,
       source: 'zip-url',
-      originalSource: 'https://code.kimi.com/kimi-code/plugins/official/kimi-datasource.zip',
+      originalSource: 'https://github.com/abelcondev/spectre/releases/latest/download/official/kimi-datasource.zip',
     })).toBe('official');
     expect(pluginTrustLabel({
       id: 'superpowers',
@@ -64,7 +64,7 @@ describe('plugins selector dialogs', () => {
       enabledMcpServerCount: 0,
       hasErrors: false,
       source: 'zip-url',
-      originalSource: 'https://code.kimi.com/kimi-code/plugins/curated/superpowers.zip',
+      originalSource: 'https://github.com/abelcondev/spectre/releases/latest/download/curated/superpowers.zip',
     })).toBe('curated');
     expect(pluginTrustLabel({
       id: 'demo',

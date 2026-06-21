@@ -67,7 +67,7 @@ main() {
   chmod +x "${INSTALL_DIR}/spectre"
 
   echo ""
-  echo "Specter installed to ${INSTALL_DIR}/spectre"
+  echo "Spectre installed to ${INSTALL_DIR}/spectre"
   if [[ ":${PATH}:" != *":${INSTALL_DIR}:"* ]]; then
     echo "Add ${INSTALL_DIR} to your PATH to use the 'spectre' command."
   fi

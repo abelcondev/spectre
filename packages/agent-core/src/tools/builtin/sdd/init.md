@@ -1,6 +1,6 @@
 Install the SDD (Spec-Driven Development) framework into the current Git repository.
 
-This writes the standard SDD files (`sdd/`, `AGENTS.md`, `init.sh`) from the bundled Specter assets and commits them on `main` with the message `chore(sdd): install framework`.
+This writes the standard SDD files (`sdd/`, `AGENTS.md`, `init.sh`) from the bundled Spectre assets and commits them on `main` with the message `chore(sdd): install framework`.
 
 If the current directory is not a Git repository, SddInit initializes one, creates the `main` branch, and commits the framework files. It refuses to install into a parent repository that is not the current directory (for example, the user's home directory).
 

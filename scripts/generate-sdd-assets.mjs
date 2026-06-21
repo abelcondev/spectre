@@ -3,7 +3,7 @@
  * generate-sdd-assets.mjs
  *
  * Packages the SDD framework files from the repository root into a TypeScript
- * module so the Specter binary can install SDD into any project without
+ * module so the Spectre binary can install SDD into any project without
  * reaching out to the network.
  *
  * Run manually after changing SDD files:
@@ -24,7 +24,7 @@ const OUTPUT_FILE = join(
 );
 
 const ROOT_FILES = [
-  // The root AGENTS.md belongs to the Specter repo itself; projects receiving
+  // The root AGENTS.md belongs to the Spectre repo itself; projects receiving
   // SDD keep their own AGENTS.md or get the generic SDD one in sdd/AGENTS.md.
   'CLAUDE.md',
 ];

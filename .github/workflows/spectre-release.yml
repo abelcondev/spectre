@@ -36,6 +36,9 @@ jobs:
           node-version-file: .nvmrc
           cache: 'pnpm'
 
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: Download native artifacts
         uses: actions/download-artifact@v8
         with:
@@ -48,12 +51,24 @@ jobs:
           RELEASE_TAG: ${{ github.ref_name }}
         run: node apps/kimi-code/scripts/native/produce-manifest.mjs dist-native-release "${{ github.ref_name }}"
 
+      - name: Build plugin marketplace artifacts
+        run: pnpm --filter @abelcondev/spectre run build:plugin-marketplace
+
+      - name: Prepare updater release assets
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          version="${RELEASE_TAG#v}"
+          published_at="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          printf '%s' "${version}" > dist-native-release/latest
+          printf '%s\n' "{\"version\": \"${version}\", \"publishedAt\": \"${published_at}\", \"rollout\": []}" > dist-native-release/latest.json
+
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           tag="${{ github.ref_name }}"
-          assets=(dist-native-release/* install.sh)
+          assets=(dist-native-release/* install.sh plugins/cdn/*)
           if gh release view "${tag}" >/dev/null 2>&1; then
             gh release upload "${tag}" "${assets[@]}" --clobber
             gh release edit "${tag}" --title "Spectre ${tag}"

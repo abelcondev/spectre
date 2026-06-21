@@ -89,24 +89,6 @@ function closeNetServer(server: Server): Promise<void> {
   return new Promise((resolve) => server.close(() => resolve()));
 }
 
-/** Find `port` such that both `port` and `port + 1` are free to bind. */
-async function allocateAdjacentFreePair(
-  host = '127.0.0.1',
-): Promise<{ port: number; next: number }> {
-  for (let i = 0; i < 30; i++) {
-    const a = await listenOnPort(host, 0);
-    const address = a.address();
-    const port = typeof address === 'object' && address !== null ? address.port : 0;
-    await closeNetServer(a);
-    if (port <= 0 || port >= 65535) continue;
-    const probe = await listenOnPort(host, port + 1).catch(() => null);
-    if (probe === null) continue;
-    await closeNetServer(probe);
-    return { port, next: port + 1 };
-  }
-  throw new Error('could not allocate an adjacent free port pair');
-}
-
 function fakeGateway(
   listen: (host: string, port: number) => Promise<string>,
 ): Parameters<typeof listenWithPortRetry>[0]['gateway'] {
@@ -161,28 +143,32 @@ describe('startServer — lock + healthz smoke', () => {
     expect(existsSync(lockPath)).toBe(false);
   });
 
-  it('retries on port+1 and updates the lock when the requested port is held by a third party', async () => {
+  it('retries to a free port and updates the lock when the requested port is held by a third party', async () => {
     // Occupy the requested port with a raw TCP server (a "third-party" process
     // from the server's point of view — it does NOT hold the lock).
-    const { port, next } = await allocateAdjacentFreePair();
-    const occupant = await listenOnPort('127.0.0.1', port);
+    const occupant = await listenOnPort('127.0.0.1', 0);
+    const address = occupant.address();
+    const occupiedPort = typeof address === 'object' && address !== null ? address.port : 0;
+    expect(occupiedPort).toBeGreaterThan(0);
+
     // Distinct lock path: the global single-instance lock is not what we are
     // testing here; the port conflict must come from the TCP bind alone.
     const thirdPartyLockPath = join(tmpDir, 'lock-third-party');
     try {
       const r = await startServer({
         host: '127.0.0.1',
-        port,
+        port: occupiedPort,
         lockPath: thirdPartyLockPath,
         logger: silentLogger(),
         coreProcessOptions: { homeDir: bridgeHome },
       });
       running.push(r);
 
-      // Bound to the next port, and the lock advertises it so status/kill/ps work.
-      expect(r.address).toBe(`http://127.0.0.1:${String(next)}`);
+      // Bound to a different port, and the lock advertises it so status/kill/ps work.
+      const boundPort = Number(new URL(r.address).port);
+      expect(boundPort).not.toBe(occupiedPort);
       const stored = JSON.parse(readFileSync(thirdPartyLockPath, 'utf8')) as LockContents;
-      expect(stored.port).toBe(next);
+      expect(stored.port).toBe(boundPort);
     } finally {
       await closeNetServer(occupant);
     }

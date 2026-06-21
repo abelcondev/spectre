@@ -1,15 +1,15 @@
-# Specter
+# Spectre
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![Docs](https://img.shields.io/badge/docs-repo-blue)](docs/en/) <br>
 [Documentation](docs/en/) · [Issues](https://github.com/abelcondev/spectre/issues) · [中文](README.zh-CN.md)
 
-Specter is a fork of [Kimi Code](https://github.com/MoonshotAI/kimi-code) where the default agent is the **SDD orchestrator**. It is an AI coding agent that runs in your terminal — it can read and edit code, run shell commands, search files, fetch web pages, and choose the next step based on the feedback it receives. Spec-Driven Development (SDD) is native to the workflow.
+Spectre is a fork of [Kimi Code](https://github.com/MoonshotAI/kimi-code) where the default agent is the **SDD orchestrator**. It is an AI coding agent that runs in your terminal — it can read and edit code, run shell commands, search files, fetch web pages, and choose the next step based on the feedback it receives. Spec-Driven Development (SDD) is native to the workflow.
 
 ## Install
 
 Install with the official script. No Node.js required.
 
-> **Note:** Intel Macs (`x86_64`) are not supported. Specter builds native artifacts for Apple Silicon only.
+> **Note:** Intel Macs (`x86_64`) are not supported. Spectre builds native artifacts for Apple Silicon only.
 
 - **macOS (Apple Silicon) or Linux**:
 
@@ -32,7 +32,7 @@ cd your-project
 spectre
 ```
 
-On first launch, run `/login` inside Specter and choose either OAuth or a compatible API key. After login, try your first task:
+On first launch, run `/login` inside Spectre and choose either OAuth or a compatible API key. After login, try your first task:
 
 ```
 Take a look at this project and explain its main directories.
@@ -46,18 +46,18 @@ Take a look at this project and explain its main directories.
 - **Purpose-built TUI.** A carefully tuned interface, optimized end to end for long, focused agent sessions.
 - **Subagents for focused, parallel work.** Dispatch built-in `coder`, `explore`, and `plan` subagents in isolated contexts while keeping the main conversation clean.
 - **Lifecycle hooks.** Run local commands at key points to gate risky tool calls, audit decisions, trigger desktop notifications, or connect to your own automation.
-- **Editor & IDE integration (ACP).** Drive a Specter session straight from Zed, JetBrains, or any [Agent Client Protocol](https://agentclientprotocol.com/) client with `spectre acp`.
+- **Editor & IDE integration (ACP).** Drive a Spectre session straight from Zed, JetBrains, or any [Agent Client Protocol](https://agentclientprotocol.com/) client with `spectre acp`.
 
 ## Use it in your editor (ACP)
 
-Specter speaks the [Agent Client Protocol](https://agentclientprotocol.com/), so ACP-compatible editors and IDEs (Zed, JetBrains, …) can drive a session over stdio. Log in once, then point your editor at the `spectre acp` subcommand — no extra login needed.
+Spectre speaks the [Agent Client Protocol](https://agentclientprotocol.com/), so ACP-compatible editors and IDEs (Zed, JetBrains, …) can drive a session over stdio. Log in once, then point your editor at the `spectre acp` subcommand — no extra login needed.
 
 For Zed, add this to `~/.config/zed/settings.json`:
 
 ```json
 {
   "agent_servers": {
-    "Specter": {
+    "Spectre": {
       "type": "custom",
       "command": "spectre",
       "args": ["acp"],
@@ -69,9 +69,9 @@ For Zed, add this to `~/.config/zed/settings.json`:
 
 Then open a new conversation in Zed's Agent panel.
 
-## Specter SDD
+## Spectre SDD
 
-Specter uses the SDD (Spec-Driven Development) workflow natively. The `spectre sdd` command manages the SDD harness directly in the CLI, without relying on external scripts.
+Spectre uses the SDD (Spec-Driven Development) workflow natively. The `spectre sdd` command manages the SDD harness directly in the CLI, without relying on external scripts.
 
 Initialize the SDD harness in the current Git repository:
 
@@ -132,7 +132,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full contribution guide.
 
 ## Acknowledgements
 
-Our TUI is built on top of [`pi-tui`](https://github.com/earendil-works/pi-mono/tree/main/packages/tui). We thank the authors of `pi-tui` for their valuable work. Specter is a fork of [Kimi Code](https://github.com/MoonshotAI/kimi-code) by Moonshot AI.
+Our TUI is built on top of [`pi-tui`](https://github.com/earendil-works/pi-mono/tree/main/packages/tui). We thank the authors of `pi-tui` for their valuable work. Spectre is a fork of [Kimi Code](https://github.com/MoonshotAI/kimi-code) by Moonshot AI.
 
 ## License
 

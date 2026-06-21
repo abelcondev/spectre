@@ -1,7 +1,7 @@
 import { valid } from 'semver';
 import { z } from 'zod';
 
-import { KIMI_CODE_CDN_LATEST_JSON_URL, KIMI_CODE_CDN_LATEST_URL } from '#/constant/app';
+import { SPECTRE_CDN_LATEST_JSON_URL, SPECTRE_CDN_LATEST_URL } from '#/constant/app';
 
 import type { UpdateManifest } from './types';
 
@@ -46,7 +46,7 @@ async function fetchWithTimeout(fetchImpl: typeof fetch, input: string): Promise
 }
 
 /**
- * Fetch the latest published Kimi Code version from the CDN.
+ * Fetch the latest published Spectre version from the CDN.
  *
  * **Throws** on any failure (network error, non-2xx, empty body, non-semver
  * text). Callers must catch — `refreshUpdateCache` deliberately lets the
@@ -58,7 +58,7 @@ async function fetchWithTimeout(fetchImpl: typeof fetch, input: string): Promise
 export async function fetchLatestVersionFromCdn(
   fetchImpl: typeof fetch = fetch,
 ): Promise<string> {
-  const response = await fetchWithTimeout(fetchImpl, KIMI_CODE_CDN_LATEST_URL);
+  const response = await fetchWithTimeout(fetchImpl, SPECTRE_CDN_LATEST_URL);
   if (!response.ok) {
     throw new Error(`CDN /latest returned HTTP ${response.status}`);
   }
@@ -70,7 +70,7 @@ export async function fetchLatestVersionFromCdn(
 }
 
 async function fetchUpdateManifestFromCdn(fetchImpl: typeof fetch): Promise<UpdateManifest> {
-  const response = await fetchWithTimeout(fetchImpl, KIMI_CODE_CDN_LATEST_JSON_URL);
+  const response = await fetchWithTimeout(fetchImpl, SPECTRE_CDN_LATEST_JSON_URL);
   if (!response.ok) {
     throw new Error(`CDN /latest.json returned HTTP ${response.status}`);
   }

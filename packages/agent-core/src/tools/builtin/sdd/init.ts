@@ -1,7 +1,7 @@
 /**
  * SddInitTool — install the SDD framework into the current Git repository.
  *
- * The framework files are bundled as static assets so Specter can bootstrap
+ * The framework files are bundled as static assets so Spectre can bootstrap
  * SDD offline, without fetching from GitHub.
  */
 
