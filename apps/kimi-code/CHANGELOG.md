@@ -1,5 +1,12 @@
 # @moonshot-ai/kimi-code
 
+## 0.23.1
+
+### Patch Changes
+
+- a89f0af: Skip marketplace plugins whose local source is missing instead of failing the CDN build.
+- 7c27130: Fix SDD design worktree setup: ensure `design/assets/` folder is created and enforce valid Pencil `.pen` document format.
+
 ## 0.23.0
 
 ### Minor Changes

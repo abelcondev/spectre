@@ -1,6 +1,6 @@
 {
   "name": "@abelcondev/spectre",
-  "version": "0.23.0",
+  "version": "0.23.1",
   "description": "Spec-Driven Development agent CLI",
   "license": "MIT",
   "author": "abelcondev",
