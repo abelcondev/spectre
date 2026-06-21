@@ -48,6 +48,10 @@ export async function buildPluginMarketplaceCdn({ pluginsRoot, outDir }) {
       continue;
     }
     const result = await materializeEntrySource(entry.source, pluginsRoot, outDir);
+    if (result === undefined) {
+      process.stderr.write(`Skipping marketplace plugin "${entry.id ?? '<unknown>'}" because source is missing: ${entry.source}\n`);
+      continue;
+    }
     let stamped = { ...entry, source: result.source };
     if (isLocalRelativeSource(entry.source)) {
       // Stamp the version from the plugin's real manifest so "latest" stays truthful.
@@ -94,7 +98,7 @@ async function materializeEntrySource(source, pluginsRoot, outDir) {
   const sourcePath = resolveInsideRoot(pluginsRoot, source);
   const info = await stat(sourcePath).catch(() => undefined);
   if (info === undefined) {
-    throw new Error(`Marketplace source does not exist: ${source}`);
+    return undefined;
   }
 
   if (info.isDirectory()) {
