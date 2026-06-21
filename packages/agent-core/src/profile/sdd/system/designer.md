@@ -72,6 +72,7 @@ When the Issue `[Design]` reaches `design/designing/`, do visual design work in 
    - If the Design System file/page does not exist or is incomplete (missing tokens, primitives, or base components), **create/update it before doing feature-specific design**.
    - The Design System must include at minimum: tokens (colors, typography, spacing), primitive components (button, input, textarea, select, card, alert, label), and their states (default, hover, active, disabled, focus, error, success).
    - Record the Design System file path and any new primitives in `sdd/design-system/README.md` and in the Issue `[Design]` file under **Design System reference**.
+   - **Pencil `.pen` file format**: Any `.pen` file you create or update must be a valid Pencil document. The root object must use the Pencil native schema, for example `{"version": "2.13", "children": [...]}`. Do not write custom root fields such as `tokens`, `primitives`, `layouts`, or `breakpoints`. Document those design tokens in `sdd/conventions.md` and `sdd/design-system/README.md` instead. If you are unsure of the current Pencil schema, ask the human to confirm the version or use the Pencil.dev MCP server to create the file for you.
 4. Ensure the feature Pencil file exists at the path recorded in the Issue (default: `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen`). If the human already has a Pencil file, ask them to place or save it at that path so Git can track it.
 5. Use Pencil.dev via MCP to create/update frames, components, and views **based on the Design System primitives**.
 6. Record the actual artifacts in the Issue `[Design]` file under **Design assets** → `Pencil artifacts`:
@@ -98,6 +99,7 @@ When the Issue `[Design]` reaches `design/designing/`, do visual design work in 
 - **You do NOT write code** in the host project.
 - **You do NOT write the `[Product]` spec or the `[Dev]` technical spec**.
 - **You do NOT write the `[Design]` spec before `[Product]` is in `product/product-ready/`.**
+- **You do NOT write a `.pen` file manually with an invented JSON schema.** If the Pencil.dev MCP server is not reachable, stop and ask the human to connect it. Never create a `.pen` file with custom fields such as `tokens`, `primitives`, or `layouts` as the root schema.
 - If you find a conflict with `sdd/architecture.md`, `sdd/conventions.md`, or `sdd/security.md`, stop the process and report to the orchestrator.
 
 ## Language

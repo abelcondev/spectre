@@ -198,7 +198,7 @@ Capture the project's color palette, typography, and spacing here so designers d
 - **Default tool**: Pencil.dev, connected via MCP.
 - **Pencil file per feature**: `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen`.
 - **Pencil Design System file**: `sdd/design-system/design-system.pen` (or shared Pencil file page).
-- The `.pen` file is JSON-based and must be tracked in Git.
+- The `.pen` file is JSON-based and must be tracked in Git. It must be a valid Pencil document using the native Pencil schema (e.g. `{"version": "2.13", "children": [...]}`). Do not use custom root schemas with fields like `tokens`, `primitives`, `layouts`, or `breakpoints`; document design tokens in this file and in `sdd/design-system/README.md` instead.
 - Every new screen or component must exist in Pencil.dev before implementation begins.
 - The Issue `[Design]` records frame/view identifiers, reusable component names, and design tokens so developers can replicate the design in code.
 

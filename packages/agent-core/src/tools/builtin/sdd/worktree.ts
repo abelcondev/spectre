@@ -166,6 +166,7 @@ export class SddWorktreeTool implements BuiltinTool<SddWorktreeInput> {
     for (const state of DESIGN_STATES) {
       await this.kaos.mkdir(join(projectPath, 'design', state), { parents: true, existOk: true });
     }
+    await this.kaos.mkdir(join(projectPath, 'design', 'assets'), { parents: true, existOk: true });
     for (const state of DEV_STATES) {
       await this.kaos.mkdir(join(projectPath, 'dev', state), { parents: true, existOk: true });
     }
