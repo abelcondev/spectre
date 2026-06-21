@@ -14,13 +14,13 @@ import type { ExecutableToolResult, ToolExecution } from '../../../loop/types';
 import { toInputJsonSchema } from '../../support/input-schema';
 import { SDD_ASSETS, SDD_EMPTY_DIRS } from './sdd-assets';
 import {
-  createInitialCommit,
+  commitSddFramework,
+  ensureMainBranch,
   findProjectRoot,
   hasMainOrMasterBranch,
   initGitRepo,
   pathExists,
   runCommand,
-  runGit,
 } from './sdd-utils';
 import DESCRIPTION from './init.md?raw';
 
@@ -140,42 +140,33 @@ export class SddInitTool implements BuiltinTool<SddInitInput> {
 
     const hasBaseBranch = await hasMainOrMasterBranch(this.kaos, repoRoot);
     if (!hasBaseBranch) {
-      // Newly initialized repos need a base branch before worktrees can be created.
-      const commitResult = await createInitialCommit(this.kaos, repoRoot);
-      if (commitResult.exitCode !== 0) {
+      const branchResult = await ensureMainBranch(this.kaos, repoRoot);
+      if (branchResult.exitCode !== 0) {
         return {
           isError: false,
           output:
-            `SDD files written to ${repoRoot}, but could not create the initial commit:\n${commitResult.stderr}\n\n` +
+            `SDD files written to ${repoRoot}, but could not create the main branch:\n${branchResult.stderr}\n\n` +
             `Written files:\n${written.map((p) => `  ${p}`).join('\n')}`,
         };
       }
-      return {
-        output:
-          `SDD framework installed in ${repoRoot}.\n` +
-          `${written.length} files written and committed as the initial commit on branch main.\n\n` +
-          `Product defined in sdd/product.md.\n` +
-          'Next: create a feature project with `spectre sdd worktree create <feature-slug>`.',
-      };
     }
 
-    // Stage the new files so the human can review the diff before committing.
-    const addResult = await runGit(this.kaos, repoRoot, ['add', '.']);
-    if (addResult.exitCode !== 0) {
+    const commitResult = await commitSddFramework(this.kaos, repoRoot);
+    if (commitResult.exitCode !== 0) {
       return {
         isError: false,
         output:
-          `SDD files written, but could not stage them:\n${addResult.stderr}\n\n` +
+          `SDD files written to ${repoRoot}, but could not commit them:\n${commitResult.stderr}\n\n` +
           `Written files:\n${written.map((p) => `  ${p}`).join('\n')}`,
       };
     }
 
     return {
       output:
-        `SDD framework installed in ${repoRoot}.\n` +
-        `${written.length} files written and staged.\n` +
+        `SDD framework installed and committed in ${repoRoot}.\n` +
+        `${written.length} files committed on branch main.\n\n` +
         `Product defined in sdd/product.md.\n` +
-        'Review the changes with `git diff --cached`, then create a feature with `spectre sdd worktree create <feature-slug>`.',
+        'Next: create a feature project with `spectre sdd worktree create <feature-slug>`.',
     };
   }
 

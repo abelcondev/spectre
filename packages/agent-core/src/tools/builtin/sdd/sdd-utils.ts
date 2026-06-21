@@ -109,11 +109,17 @@ export async function initGitRepo(kaos: Kaos, cwd: string): Promise<CommandResul
   return runGit(kaos, cwd, ['init']);
 }
 
-export async function createInitialCommit(kaos: Kaos, cwd: string): Promise<CommandResult> {
+export async function ensureMainBranch(kaos: Kaos, cwd: string): Promise<CommandResult> {
   // Ensure a base branch exists. git checkout -B main creates it if missing.
-  const checkout = await runGit(kaos, cwd, ['checkout', '-B', 'main']);
-  if (checkout.exitCode !== 0) return checkout;
-  return runGit(kaos, cwd, ['commit', '-m', 'chore: initial commit', '--allow-empty']);
+  return runGit(kaos, cwd, ['checkout', '-B', 'main']);
+}
+
+export async function commitSddFramework(kaos: Kaos, cwd: string): Promise<CommandResult> {
+  // Commit only the framework files so the install is isolated from other
+  // uncommitted changes the user may have in the working directory.
+  const add = await runGit(kaos, cwd, ['add', 'AGENTS.md', 'init.sh', 'sdd/']);
+  if (add.exitCode !== 0) return add;
+  return runGit(kaos, cwd, ['commit', '-m', 'chore(sdd): install framework']);
 }
 
 export function validateFeatureSlug(slug: string): void {
