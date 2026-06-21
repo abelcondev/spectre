@@ -112,7 +112,7 @@ timeout = 5
 ```toml
 [providers.kimi.env]
 KIMI_API_KEY = "sk-xxx"
-KIMI_BASE_URL = "https://api.moonshot.ai/v1"
+KIMI_BASE_URL = "https://api.kimi.com/coding/v1"
 ```
 
 优先级：`api_key` 字段 > `env` 子表键 > 两者都缺时启动报错。

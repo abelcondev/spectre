@@ -47,16 +47,16 @@ function makeModelsResponse(): Response {
 describe('OPEN_PLATFORMS', () => {
   it('contains moonshot.cn and moonshot.ai', () => {
     expect(getOpenPlatformById('moonshot-cn')).toMatchObject({
-      name: 'Kimi Platform (API key · platform.kimi.com)',
-      baseUrl: 'https://api.moonshot.cn/v1',
-      consoleUrl: 'https://platform.kimi.com',
-      allowedPrefixes: ['kimi-k'],
+      name: 'Kimi Code (API key · kimi.com/code/console)',
+      baseUrl: 'https://api.kimi.com/coding/v1',
+      consoleUrl: 'https://www.kimi.com/code/console',
+      allowedPrefixes: ['kimi-k', 'kimi-for-coding'],
     });
     expect(getOpenPlatformById('moonshot-ai')).toMatchObject({
-      name: 'Kimi Platform (API key · platform.kimi.ai)',
-      baseUrl: 'https://api.moonshot.ai/v1',
-      consoleUrl: 'https://platform.kimi.ai',
-      allowedPrefixes: ['kimi-k'],
+      name: 'Kimi Code (API key · kimi.com/code/console)',
+      baseUrl: 'https://api.kimi.com/coding/v1',
+      consoleUrl: 'https://www.kimi.com/code/console',
+      allowedPrefixes: ['kimi-k', 'kimi-for-coding'],
     });
     expect(getOpenPlatformById('unknown')).toBeUndefined();
   });
@@ -88,7 +88,7 @@ describe('fetchOpenPlatformModels', () => {
     expect(models[2]?.id).toBe('non-kimi-model');
 
     expect(fetchMock).toHaveBeenCalledWith(
-      'https://api.moonshot.cn/v1/models',
+      'https://api.kimi.com/coding/v1/models',
       expect.objectContaining({
         headers: expect.objectContaining({
           Authorization: 'Bearer sk-test',
@@ -278,7 +278,7 @@ describe('applyOpenPlatformConfig', () => {
 
     expect(config.providers['moonshot-cn']).toMatchObject({
       type: 'kimi',
-      baseUrl: 'https://api.moonshot.cn/v1',
+      baseUrl: 'https://api.kimi.com/coding/v1',
       apiKey: 'sk-test',
     });
     expect(config.models?.['moonshot-cn/kimi-k2-0712-preview']).toMatchObject({
@@ -296,7 +296,7 @@ describe('applyOpenPlatformConfig', () => {
   it('clears stale models for the same provider', () => {
     const config: ManagedKimiConfigShape = {
       providers: {
-        'moonshot-cn': { type: 'kimi', baseUrl: 'https://api.moonshot.cn/v1', apiKey: 'sk-old' },
+        'moonshot-cn': { type: 'kimi', baseUrl: 'https://api.kimi.com/coding/v1', apiKey: 'sk-old' },
       },
       models: {
         'moonshot-cn/stale': { provider: 'moonshot-cn', model: 'stale', maxContextSize: 1000 },
@@ -325,7 +325,7 @@ describe('removeOpenPlatformConfig', () => {
   it('removes provider, its models, and defaultModel when matched', () => {
     const config: ManagedKimiConfigShape = {
       providers: {
-        'moonshot-cn': { type: 'kimi', baseUrl: 'https://api.moonshot.cn/v1', apiKey: 'sk-test' },
+        'moonshot-cn': { type: 'kimi', baseUrl: 'https://api.kimi.com/coding/v1', apiKey: 'sk-test' },
         'other': { type: 'kimi', baseUrl: 'https://other.test/v1', apiKey: 'sk-other' },
       },
       models: {
@@ -347,7 +347,7 @@ describe('removeOpenPlatformConfig', () => {
   it('leaves defaultModel intact when it belongs to another provider', () => {
     const config: ManagedKimiConfigShape = {
       providers: {
-        'moonshot-cn': { type: 'kimi', baseUrl: 'https://api.moonshot.cn/v1', apiKey: 'sk-test' },
+        'moonshot-cn': { type: 'kimi', baseUrl: 'https://api.kimi.com/coding/v1', apiKey: 'sk-test' },
       },
       models: {
         'moonshot-cn/kimi-k2': { provider: 'moonshot-cn', model: 'kimi-k2', maxContextSize: 256000 },

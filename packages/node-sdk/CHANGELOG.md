@@ -1,5 +1,11 @@
 # @moonshot-ai/kimi-code-sdk
 
+## 0.9.5
+
+### Patch Changes
+
+- ba64072: Allow foreground shell and subagent tasks to be detached into background tasks.
+
 ## 0.9.4
 
 ### Patch Changes

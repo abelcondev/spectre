@@ -1,5 +1,17 @@
 # @moonshot-ai/kimi-code
 
+## 0.19.0
+
+### Minor Changes
+
+- f6aee11: Drop Intel macOS (`darwin-x64`) native builds and build macOS artifacts on Apple Silicon (`macos-15`) runners.
+
+### Patch Changes
+
+- 7644f10: Fix provider requests failing when restored conversation history contains empty text content blocks.
+- Fix API key login for the managed coding service and restore the current coding model in the model selector.
+- ba64072: Allow foreground shell and subagent tasks to be detached into background tasks.
+
 ## 0.18.0
 
 ### Minor Changes

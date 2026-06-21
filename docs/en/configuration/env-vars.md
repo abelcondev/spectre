@@ -45,7 +45,7 @@ This design lets you keep familiar key name conventions while centralizing secre
 ```toml
 [providers.kimi.env]
 KIMI_API_KEY = "sk-xxx"
-KIMI_BASE_URL = "https://api.moonshot.ai/v1"
+KIMI_BASE_URL = "https://api.kimi.com/coding/v1"
 ```
 
 Key names per provider:
@@ -53,7 +53,7 @@ Key names per provider:
 | Key | Applicable provider | Default |
 | --- | --- | --- |
 | `KIMI_API_KEY` | Kimi / Moonshot | None |
-| `KIMI_BASE_URL` | Kimi / Moonshot | `https://api.moonshot.ai/v1` |
+| `KIMI_BASE_URL` | Kimi / Moonshot | `https://api.kimi.com/coding/v1` |
 | `ANTHROPIC_API_KEY` | Anthropic | None |
 | `ANTHROPIC_BASE_URL` | Anthropic | Follows Anthropic SDK default |
 | `OPENAI_API_KEY` | OpenAI (`openai` and `openai_responses`) | None |

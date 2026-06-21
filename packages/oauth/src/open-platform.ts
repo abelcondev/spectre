@@ -19,17 +19,17 @@ export interface OpenPlatformDefinition {
 export const OPEN_PLATFORMS: readonly OpenPlatformDefinition[] = [
   {
     id: 'moonshot-cn',
-    name: 'Kimi Platform (API key · platform.kimi.com)',
-    baseUrl: 'https://api.moonshot.cn/v1',
-    consoleUrl: 'https://platform.kimi.com',
-    allowedPrefixes: ['kimi-k'],
+    name: 'Kimi Code (API key · kimi.com/code/console)',
+    baseUrl: 'https://api.kimi.com/coding/v1',
+    consoleUrl: 'https://www.kimi.com/code/console',
+    allowedPrefixes: ['kimi-k', 'kimi-for-coding'],
   },
   {
     id: 'moonshot-ai',
-    name: 'Kimi Platform (API key · platform.kimi.ai)',
-    baseUrl: 'https://api.moonshot.ai/v1',
-    consoleUrl: 'https://platform.kimi.ai',
-    allowedPrefixes: ['kimi-k'],
+    name: 'Kimi Code (API key · kimi.com/code/console)',
+    baseUrl: 'https://api.kimi.com/coding/v1',
+    consoleUrl: 'https://www.kimi.com/code/console',
+    allowedPrefixes: ['kimi-k', 'kimi-for-coding'],
   },
 ];
 

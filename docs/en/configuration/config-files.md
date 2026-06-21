@@ -112,7 +112,7 @@ Each entry in the `providers` table defines an API provider, keyed by a unique n
 ```toml
 [providers.kimi.env]
 KIMI_API_KEY = "sk-xxx"
-KIMI_BASE_URL = "https://api.moonshot.ai/v1"
+KIMI_BASE_URL = "https://api.kimi.com/coding/v1"
 ```
 
 Priority: `api_key` field > `env` sub-table key > if both are absent, startup fails with an error.

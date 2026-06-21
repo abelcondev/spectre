@@ -42,16 +42,16 @@ The same operations are also available in non-interactive environments via the s
 
 ## `kimi`
 
-For connecting to Moonshot AI's OpenAI-compatible interface, including the Kimi Code managed service and Kimi Platform API keys.
+For connecting to Moonshot AI's Kimi Code OpenAI-compatible interface.
 
-- Default `base_url`: `https://api.moonshot.ai/v1`
+- Default `base_url`: `https://api.kimi.com/coding/v1`
 - Credential key names: `KIMI_API_KEY`, `KIMI_BASE_URL`
 - Additional capability: supports video upload
 
 ```toml
 [providers.kimi]
 type = "kimi"
-base_url = "https://api.moonshot.ai/v1"
+base_url = "https://api.kimi.com/coding/v1"
 api_key = "sk-xxxxx"
 ```
 

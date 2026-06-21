@@ -103,7 +103,7 @@ kimi -C
 `/login` 会弹出平台选择器，支持两种方式：
 
 - **Kimi Code（OAuth）** — 验证码流程，在任意设备打开链接、登录并输入验证码即可授权
-- **Kimi Platform API 密钥** — 输入来自 `platform.kimi.com` 或 `platform.kimi.ai` 的 API 密钥
+- **Kimi Code API 密钥** — 输入来自 [`kimi.com/code/console`](https://www.kimi.com/code/console) 的 API 密钥
 
 需要退出登录时，输入 `/logout` 清除当前凭证。
 

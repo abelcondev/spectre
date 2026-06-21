@@ -16,7 +16,7 @@ export const ENV_MODEL_ALIAS_KEY = '__kimi_env_model__';
 const ALLOWED_TYPES: readonly ProviderType[] = ['kimi', 'anthropic', 'openai'];
 
 const DEFAULT_BASE_URL: Partial<Record<ProviderType, string>> = {
-  kimi: 'https://api.moonshot.ai/v1',
+  kimi: 'https://api.kimi.com/coding/v1',
   openai: 'https://api.openai.com/v1',
   // anthropic: omitted -> let the Anthropic SDK pick its default
 };

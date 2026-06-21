@@ -45,7 +45,7 @@ export KIMI_DISABLE_TELEMETRY=1
 ```toml
 [providers.kimi.env]
 KIMI_API_KEY = "sk-xxx"
-KIMI_BASE_URL = "https://api.moonshot.ai/v1"
+KIMI_BASE_URL = "https://api.kimi.com/coding/v1"
 ```
 
 各供应商对应的键名：
@@ -53,7 +53,7 @@ KIMI_BASE_URL = "https://api.moonshot.ai/v1"
 | 键名 | 适用供应商 | 默认值 |
 | --- | --- | --- |
 | `KIMI_API_KEY` | Kimi / Moonshot | 无 |
-| `KIMI_BASE_URL` | Kimi / Moonshot | `https://api.moonshot.ai/v1` |
+| `KIMI_BASE_URL` | Kimi / Moonshot | `https://api.kimi.com/coding/v1` |
 | `ANTHROPIC_API_KEY` | Anthropic | 无 |
 | `ANTHROPIC_BASE_URL` | Anthropic | Anthropic SDK 默认值 |
 | `OPENAI_API_KEY` | OpenAI（`openai` 和 `openai_responses`） | 无 |
