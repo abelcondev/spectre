@@ -1,4 +1,4 @@
-name: Specter Release
+name: Spectre Release
 
 on:
   push:
@@ -52,7 +52,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${{ github.ref_name }}" \
-            --title "Specter ${{ github.ref_name }}" \
-            --generate-notes \
-            dist-native-release/* install.sh
+          tag="${{ github.ref_name }}"
+          assets=(dist-native-release/* install.sh)
+          if gh release view "${tag}" >/dev/null 2>&1; then
+            gh release upload "${tag}" "${assets[@]}" --clobber
+            gh release edit "${tag}" --title "Spectre ${tag}"
+          else
+            gh release create "${tag}" \
+              --title "Spectre ${tag}" \
+              --generate-notes \
+              "${assets[@]}"
+          fi
