@@ -89,6 +89,36 @@ For Zed, add this to `~/.config/zed/settings.json`:
 
 Then open a new conversation in Zed's Agent panel. See [Using in IDEs](https://moonshotai.github.io/kimi-code/en/guides/ides) for JetBrains setup and troubleshooting, and the [`kimi acp` reference](https://moonshotai.github.io/kimi-code/en/reference/kimi-acp) for the full capability matrix.
 
+## Specter SDD
+
+Specter uses the SDD (Spec-Driven Development) workflow natively. The `spectre sdd` command manages the SDD harness directly in the CLI, without relying on external scripts.
+
+Initialize the SDD harness in the current Git repository:
+
+```sh
+spectre sdd init
+```
+
+Create a feature worktree (a sibling directory with its own branch):
+
+```sh
+spectre sdd worktree create <feature-slug>
+```
+
+Move an Issue between state folders and commit the change:
+
+```sh
+spectre sdd move <feature-slug> <issue-name> <source-state> <target-state>
+```
+
+Example:
+
+```sh
+spectre sdd move login-y-dashboard-layout login design/spec-needed design/designing
+```
+
+The legacy shell scripts `scripts/sdd-worktree.sh` and `scripts/sdd-move.sh` are no longer installed by `spectre sdd init`; they remain in the repository only as reference/legacy.
+
 ## Docs
 
 - [Getting Started](https://moonshotai.github.io/kimi-code/en/guides/getting-started)
