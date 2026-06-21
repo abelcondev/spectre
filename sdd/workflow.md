@@ -161,7 +161,7 @@ spec-needed → designing → design-ready
 | Folder | Meaning |
 |---|---|
 | `design/spec-needed/` | Issue created, functional/UI spec missing. Blocked until `[Product]` is in `product-ready/`. |
-| `design/designing/` | Visual design is iterated in the project's design tool. |
+| `design/designing/` | Visual design is iterated in **Pencil.dev** via MCP. Frames, components, and views are created there and referenced in the Issue `[Design]` file. |
 | `design/design-ready/` | Design and spec approved. The `[Dev]` Issue may advance. |
 
 ### Issue `[Dev]`
@@ -198,7 +198,7 @@ backlog → spec-needed → spec-ready → implementing → review → testing �
 
 Each feature has its own **isolated worktree** from the start. Inside the worktree, specs are written, design is iterated, and code is implemented.
 
-1. Create the feature worktree:
+1. Create the feature worktree from `main`:
    ```bash
    ./scripts/sdd-worktree.sh create <feature-slug>
    ```
@@ -206,10 +206,13 @@ Each feature has its own **isolated worktree** from the start. Inside the worktr
    - Branch `feature/<feature-slug>`.
    - Worktree at `<repo-principal>-<feature-slug>/`.
    - Empty structure at `sdd/features/<feature-slug>/`.
-2. Open the coding agent inside the worktree.
-3. Complete the project `README.md` and create issues as `.md` files inside state folders. Start with `[Product]`.
-4. Move files physically between folders when they change state.
-5. Merge the worktree to `main` when finished and remove it.
+   - A generic scaffold `README.md` (to be completed inside the worktree).
+   No Issue `.md` files are created from `main`.
+2. Switch to the worktree and start a new Specter session there.
+3. The orchestrator detects the feature worktree, asks what feature to build, and creates the first Issue `[Product]`.
+4. Complete the project `README.md` and create issues as `.md` files inside state folders. Start with `[Product]`.
+5. Move files physically between folders when they change state.
+6. Merge the worktree to `main` when finished and remove it.
 
 > The project must complete `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md` so agents know which stack and style to use. The orchestrator must verify the project setup gate before creating a feature worktree.
 
@@ -218,18 +221,20 @@ Each feature has its own **isolated worktree** from the start. Inside the worktr
 ## 6. Workflow
 
 1. **Project setup** (on `main`): before any feature, the `orchestrator` checks the setup gate. If `sdd/architecture.md`, `sdd/conventions.md`, or `sdd/tech-stack.md` are incomplete, the `tech_lead` finishes setup on `main` first.
-2. **Idea**: the human describes the feature. Only after the setup gate is met, the `orchestrator` creates the worktree with `./scripts/sdd-worktree.sh create <feature-slug>`.
-3. **Product Discovery** (inside the worktree): the `product_manager` interviews the human and writes the product spec + BDD scenarios in `product/discovery/`. The `orchestrator` moves the file to `product/product-ready/`.
-4. **Product review** (gate 0): human approves. The `[Product]` Issue remains in `product/product-ready/` and unlocks `[Design]`.
-5. **Spec Design** (inside the worktree): the `designer` interviews the human and writes the functional + UI/UX spec in `design/spec-needed/`, referencing the BDD scenarios from `[Product]`. The `orchestrator` moves the file to `design/designing/`.
-6. **Spec review** (gate 1): human approves. The `orchestrator` moves the file to `design/design-ready/`.
-7. **Design iteration**: visual design is iterated in the project's design tool.
-8. **Design review** (gate 2): human approves the design. The `[Design]` Issue remains in `design/design-ready/`.
-9. **Spec Dev** (inside the worktree): the `tech_specifier` writes the technical spec + Test Plan in `dev/spec-needed/`, including BDD scenarios as acceptance tests. The `orchestrator` moves the file to `dev/spec-ready/`.
-10. **Spec technical review** (gate 3): human approves. The `orchestrator` moves the file to `dev/implementing/`.
-11. **Implementation** (inside the worktree): the `developer` runs TDD for each `R<n>` and each BDD scenario, writing code wherever the project defines. When finished and `init.sh` passes, the `orchestrator` moves the file to `dev/review/`.
-12. **Review**: the `auditor` audits against `sdd/quality-gates.md` C1–C7. If approved: moves the file to `dev/testing/` and awaits human validation of the merge. If rejected: moves the file to `dev/rejected/` with action items.
-13. **Testing** (gate 4): human validates the merge. The `orchestrator` merges the worktree to `main`, removes the worktree, and moves the file to `dev/done/`.
+2. **Create worktree** (on `main`): the human asks to build a feature. The `orchestrator` asks only for the feature slug and creates the worktree with `./scripts/sdd-worktree.sh create <feature-slug>`. No Issue files are written from `main`.
+3. **Switch to worktree**: the human moves to the worktree and starts a new Specter session there.
+4. **Idea** (inside the worktree): the `orchestrator` detects the feature worktree, asks the human what feature to build, and creates the first Issue `[Product]`.
+5. **Product Discovery** (inside the worktree): the `product_manager` interviews the human and writes the product spec + BDD scenarios in `product/discovery/`. The `orchestrator` moves the file to `product/product-ready/`.
+6. **Product review** (gate 0): human approves. The `[Product]` Issue remains in `product/product-ready/` and unlocks `[Design]`.
+7. **Spec Design** (inside the worktree): the `designer` interviews the human and writes the functional + UI/UX spec in `design/spec-needed/`, referencing the BDD scenarios from `[Product]`. The `orchestrator` moves the file to `design/designing/`.
+8. **Spec review** (gate 1): human approves the functional spec. The file stays in `design/designing/` for visual design.
+9. **Design iteration** in **Pencil.dev**: visual design (frames, components, views) is iterated in Pencil.dev via MCP. The designer records references in the Issue `[Design]` file.
+10. **Design review** (gate 2): human approves the Pencil.dev design. The `orchestrator` moves the file to `design/design-ready/`.
+11. **Spec Dev** (inside the worktree): the `tech_specifier` writes the technical spec + Test Plan in `dev/spec-needed/`, including BDD scenarios as acceptance tests. The `orchestrator` moves the file to `dev/spec-ready/`.
+12. **Spec technical review** (gate 3): human approves. The `orchestrator` moves the file to `dev/implementing/`.
+13. **Implementation** (inside the worktree): the `developer` runs TDD for each `R<n>` and each BDD scenario, writing code wherever the project defines. When finished and `init.sh` passes, the `orchestrator` moves the file to `dev/review/`.
+14. **Review**: the `auditor` audits against `sdd/quality-gates.md` C1–C7. If approved: moves the file to `dev/testing/` and awaits human validation of the merge. If rejected: moves the file to `dev/rejected/` with action items.
+15. **Testing** (gate 4): human validates the merge. The `orchestrator` merges the worktree to `main`, removes the worktree, and moves the file to `dev/done/`.
 
 ---
 

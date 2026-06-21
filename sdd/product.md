@@ -73,4 +73,12 @@
 
 ## Project Setup Gate
 
-Before creating any feature under `sdd/features/`, the Tech Lead must complete the project setup on `main`: fill `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md`, install dependencies, configure MCP servers, and set up GitHub. No feature worktree is created until this gate is complete.
+Before creating any feature under `sdd/features/`, the Tech Lead must complete the project setup on `main`:
+
+- Fill `sdd/architecture.md` (set **Pencil.dev** as the visual design tool).
+- Fill `sdd/conventions.md` (include the app's **color palette and design tokens**).
+- Fill `sdd/tech-stack.md` (include the **Pencil.dev MCP server** and any other MCPs).
+- Install dependencies and configure GitHub.
+- Configure the Pencil.dev MCP connection.
+
+No feature worktree is created until this gate is complete.

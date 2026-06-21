@@ -4,7 +4,7 @@ This directory is the **source of truth** for this project's SDD flow.
 
 - **Specs** live in `sdd/features/`.
 - The **state** of each issue is represented by the **folder** where its `.md` file is located.
-- The SDD flow is **stack-agnostic**: it does not impose language, framework, or tooling. Each project completes `sdd/architecture.md` and `sdd/conventions.md` with its own decisions.
+- The SDD flow is **stack-agnostic**: it does not impose language, framework, or tooling. Each project completes `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md` with its own decisions. **Pencil.dev** is the default visual design tool.
 
 ---
 
@@ -33,22 +33,24 @@ This directory is the **source of truth** for this project's SDD flow.
 
 1. Define the global product in `sdd/product.md` (done automatically by `SddInit` when you provide `product_answers`).
 2. **Complete project setup on `main`** before creating any feature:
-   - Fill `sdd/architecture.md` with the project's stack and architectural decisions.
-   - Fill `sdd/conventions.md` with style, naming, and project conventions.
-   - Fill `sdd/tech-stack.md` with the technology inventory, versions, MCPs, and doc URLs.
+   - Fill `sdd/architecture.md` with the project's stack and architectural decisions. Set **Pencil.dev** as the visual design tool.
+   - Fill `sdd/conventions.md` with style, naming, project conventions, and **design tokens (colors, typography, spacing)**.
+   - Fill `sdd/tech-stack.md` with the technology inventory, versions, MCPs, and doc URLs. Include the **Pencil.dev MCP**.
    - Install dependencies and configure GitHub.
 3. Read `sdd/workflow.md` to understand the lifecycle.
 4. Read `sdd/quality-gates.md`, `sdd/testing.md`, and `sdd/security.md` before declaring `done`.
-5. Only after setup is complete, create a feature:
+5. Only after setup is complete, create a feature worktree from `main`:
    ```bash
    spectre sdd worktree create <feature-slug>
    ```
-7. Switch to the feature worktree and continue there:
+   No Issue files are created at this point.
+6. Switch to the feature worktree and start Specter there:
    ```bash
    cd <repo>-<feature-slug>
    spectre
    ```
-8. Move issues between states:
+7. Inside the worktree, Specter detects the feature and asks what to build. The first Issue `[Product]` is created there.
+8. Move issues between states inside the worktree:
    ```bash
    spectre sdd move <feature-slug> <issue> <source-state> <target-state>
    ```

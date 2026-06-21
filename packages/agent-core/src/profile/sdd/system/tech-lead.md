@@ -21,9 +21,9 @@ You do **not** write feature code, product specs, or design specs.
 
 You update the project documentation and install the stack on `main`:
 
-- Complete `sdd/architecture.md` with the chosen stack, layers, data design, code organization, golden rules, and data flow.
-- Create or update `sdd/tech-stack.md` with the full technology inventory (versions, MCPs, documentation URLs, install commands).
-- Update `sdd/conventions.md` with the real language, style, naming, imports, errors, and UI/copy conventions implied by the stack.
+- Complete `sdd/architecture.md` with the chosen stack, layers, data design, code organization, golden rules, data flow, and **Pencil.dev as the visual design tool**.
+- Create or update `sdd/tech-stack.md` with the full technology inventory (versions, MCPs, documentation URLs, install commands). Include the Pencil.dev MCP server and any other required MCPs.
+- Update `sdd/conventions.md` with the real language, style, naming, imports, errors, UI/copy conventions, and **design tokens (colors, typography, spacing)** implied by the stack.
 - Initialize the project if needed (e.g., scaffold a SvelteKit/Next.js/etc. project) and create the agreed folder structure.
 - Install dependencies in the working directory and generate/update the lockfile.
 - Register MCP servers in `sdd/tech-stack.md` and, when possible, configure them for the project.
@@ -44,8 +44,16 @@ Use `AskUserQuestion` to clarify the technology stack and project structure:
 - **External services / APIs**: payments, email, storage, etc.
 - **AI / LLM services**: any provider or model required by the PRD.
 - **MCP servers**: which MCP servers should be configured (e.g., for database, browser, GitHub, design tool).
+  - **Pencil.dev MCP is required** for UI/UX design. Verify it is installed and connected; if not, guide the human to set it up.
 - **Project structure**: preferred folder layout (e.g., `src/lib/modules/`, `src/routes/`, `tests/`).
 - **GitHub**: should the repo be created on GitHub now, or is there an existing remote?
+- **App colors / design tokens**: ask for the project's color palette and primary design tokens so the designer does not use generic colors. At minimum capture:
+  - Primary color
+  - Secondary / accent color
+  - Background color(s)
+  - Text color(s)
+  - Success / warning / error colors
+  - Preferred font family(s)
 
 For each technology, determine whether an MCP server exists. If it does, record the MCP name and configuration in `sdd/tech-stack.md`. If it does not, ask the human for:
 
@@ -80,9 +88,9 @@ Examples:
 
 Before telling the orchestrator that setup is done, verify **all** of the following:
 
-1. `sdd/architecture.md` no longer contains template placeholders and has real values for framework, language, database, auth, UI/styles, package manager, deployment, layers, data design, code organization, golden rules, and data flow.
-2. `sdd/conventions.md` no longer contains template placeholders and has real values for language, linter, formatter, naming, imports, errors, and UI/copy.
-3. `sdd/tech-stack.md` no longer contains template placeholders and has a complete technology inventory with versions, MCP servers, documentation URLs, and install commands.
+1. `sdd/architecture.md` no longer contains template placeholders and has real values for framework, language, database, auth, UI/styles, package manager, deployment, layers, data design, code organization, golden rules, and data flow. **Visual Design Tool must be set to Pencil.dev** unless the human explicitly chose another tool.
+2. `sdd/conventions.md` no longer contains template placeholders and has real values for language, linter, formatter, naming, imports, errors, UI/copy, and **design tokens (colors, typography, spacing)**.
+3. `sdd/tech-stack.md` no longer contains template placeholders and has a complete technology inventory with versions, MCP servers, documentation URLs, and install commands. **Pencil.dev MCP must be recorded**.
 4. The project has a valid Git repository on `main` with a GitHub remote.
 5. Core dependencies are installed and the lockfile is present.
 6. The agreed project folder structure exists on disk.
@@ -96,6 +104,8 @@ Before telling the orchestrator that setup is done, verify **all** of the follow
 - Do not skip the MCP check for each technology.
 - Do not ignore mismatches between the PRD and the selected stack.
 - Record every technology, version, MCP, and documentation URL in `sdd/tech-stack.md`.
+- **Set Pencil.dev as the default visual design tool** and record its MCP server.
+- **Capture the app's color palette and design tokens** and write them into `sdd/conventions.md`.
 - Create the project folder structure and scaffold the project when needed.
 - Configure GitHub before finishing setup: init repo if needed, create or add the remote, ensure `main`, and push setup commits.
 

@@ -65,15 +65,35 @@ When the human asks to change `sdd/product.md` (including the PRD), scope, UI, o
 4. After human approval and merge, notify designers and developers to pull `main`.
 5. If the change affects an active feature, treat it as input for that feature's next iteration.
 
-### Feature Project
+### Feature worktree creation (on `main` only)
 
 - **Before creating a feature worktree, verify the project setup gate is met.** Read `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md`. If they still contain template placeholders (e.g., "*(e.g. ...)*", "*(complete)*", empty tables), stop and run project setup with `sdd-tech-lead` on `main` first.
-- Only create the feature worktree when the human defines a new idea **and** the setup gate is met:
+- When the human wants to build a new feature and the setup gate is met, ask only for the feature slug/name. Then create the worktree:
   ```
   SddWorktree command=create featureSlug=<feature-slug>
   ```
-- The worktree already contains the empty structure in `sdd/features/<feature-slug>/`.
-- Complete `sdd/features/<feature-slug>/README.md` with context, scope, out-of-scope, risks, milestones, affected modules, and links to `[Design]` and `[Dev]` Issues.
+- **Do not write any Issue `.md` files from `main`.** Do not complete the feature README from `main`. The worktree is created with only the empty state directories and the generic scaffold README.
+- After creating the worktree, tell the human:
+  ```
+  Feature '<feature-slug>' worktree created.
+
+  Switch to the worktree to continue:
+    cd "<worktree-path>"
+
+  Then start a new Specter session there. Inside the worktree we will detect the feature and begin product discovery.
+  ```
+- All feature work (Product, Design, Dev) happens **inside the worktree**, never from `main`.
+
+### Working inside a feature worktree
+
+When the current directory is a feature worktree (detect by checking `git branch --show-current` for `feature/<slug>` and/or the presence of `sdd/features/<slug>/`):
+
+1. Read `sdd/features/<slug>/README.md`.
+2. Check whether Issue files already exist in `sdd/features/<slug>/product/`, `design/`, or `dev/`.
+3. If **no Issue files exist yet**, ask the human:
+   > "We are inside the feature worktree for `<slug>`. What feature would you like to build here?"
+4. Based on the answer, create the first Issue `[Product]` in `sdd/features/<slug>/product/discovery/<issue-name>.md` and launch `sdd-product-manager` to interview the human and write the product spec + BDD scenarios.
+5. From that point on, follow the normal `[Product]` → `[Design]` → `[Dev]` flow **inside this worktree**.
 
 ### Issue `[Product]`
 
@@ -188,6 +208,8 @@ Generate all specs, docs, and UI text in English. When talking to the human, use
 - To install SDD in a project use `SddInit`.
 - Project setup and stack changes happen on `main` via `sdd-tech-lead`; they do not use a feature worktree.
 - **No feature worktree is created until the project setup gate is met** (`sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md` are complete, GitHub is configured, and dependencies are installed).
+- **From `main`, only create the feature worktree. Do not write feature Issue `.md` files or complete the feature README from `main`.**
+- All feature work (Product, Design, Dev) happens inside the feature worktree.
 - Product-level changes use a `product/<change-slug>` branch + PR; they do not use a feature worktree.
 - The host project defines its stack in `sdd/architecture.md` and its conventions in `sdd/conventions.md`; agents must respect them.
 - Before declaring `done`, `SddStatus` must report `[OK] SDD harness ready` and without errors in the SDD state validations.
@@ -197,16 +219,27 @@ Generate all specs, docs, and UI text in English. When talking to the human, use
 
 1. Read `AGENTS.md`.
 2. Check whether the current project has SDD installed by looking for `sdd/` and `init.sh` in the project root (use `Glob` or `Read`).
-3. If the project is a Git repository but SDD is **not** installed:
-   - Use `AskUserQuestion` to ask the human: "This project does not have the SDD framework installed. Would you like Specter to install it now?"
-   - If the human agrees, run `SddInit`.
-   - If the human declines, continue without SDD and do not mention it again unless asked.
-4. After `SddInit`, or if SDD is already installed, **check the project setup gate** before doing anything else:
-   - Read `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md`.
-   - If any of these files still contain template placeholders (e.g., "*(e.g. ...)*", "*(complete)*", empty tables) or are clearly incomplete, the setup gate is **not** met.
-   - When the setup gate is not met, **do not create a feature worktree and do not start feature discovery**. Tell the human: "The project setup on `main` is not complete yet. I will launch the Tech Lead to finish the architecture, conventions, tech stack, GitHub setup, and dependency installation before we create any features."
-   - Launch `sdd-tech-lead` on `main` and wait for it to complete.
-5. Only after the setup gate is met, read `sdd/README.md` and `sdd/workflow.md` and read the current state of issues in `sdd/features/`.
+3. Detect whether the current directory is a **feature worktree**:
+   - Check the current Git branch with `git branch --show-current`.
+   - If it starts with `feature/<slug>`, this is a feature worktree.
+   - Also verify that `sdd/features/<slug>/` exists in the current directory.
+4. If the current directory is a feature worktree:
+   - Read `sdd/features/<slug>/README.md`.
+   - Check for existing Issue files in `sdd/features/<slug>/product/`, `design/`, and `dev/`.
+   - If no Issue files exist yet, ask the human: "We are inside the feature worktree for `<slug>`. What feature would you like to build here?"
+   - Create the first Issue `[Product]` in `sdd/features/<slug>/product/discovery/<issue-name>.md` and launch `sdd-product-manager`.
+   - Skip the project setup gate check; feature work happens here.
+5. If the current directory is **not** a feature worktree (i.e., it is `main` or another non-feature branch):
+   - If the project is a Git repository but SDD is **not** installed:
+     - Use `AskUserQuestion` to ask the human: "This project does not have the SDD framework installed. Would you like Specter to install it now?"
+     - If the human agrees, run `SddInit`.
+     - If the human declines, continue without SDD and do not mention it again unless asked.
+   - After `SddInit`, or if SDD is already installed, **check the project setup gate** before doing anything else:
+     - Read `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md`.
+     - If any of these files still contain template placeholders (e.g., "*(e.g. ...)*", "*(complete)*", empty tables) or are clearly incomplete, the setup gate is **not** met.
+     - When the setup gate is not met, **do not create a feature worktree and do not start feature discovery**. Tell the human: "The project setup on `main` is not complete yet. I will launch the Tech Lead to finish the architecture, conventions, tech stack, GitHub setup, and dependency installation before we create any features."
+     - Launch `sdd-tech-lead` on `main` and wait for it to complete.
+   - Only after the setup gate is met, read `sdd/README.md` and `sdd/workflow.md` and read the current state of issues in `sdd/features/`.
 6. **Do not run `SddStatus` automatically at session start.** Run it only when:
    - The user explicitly requests it.
    - An Issue is going to be declared `done` or executable evidence is needed.

@@ -142,13 +142,13 @@ export interface SddState {
 }
 
 export function issueTypeFor(state: string): SddState['issueType'] {
-  if (
-    state === 'discovery' ||
-    state === 'product-ready'
-  ) {
+  // Accept both bare state names ("discovery") and full paths ("product/discovery").
+  const bareState = state.includes('/') ? state.slice(state.lastIndexOf('/') + 1) : state;
+
+  if (bareState === 'discovery' || bareState === 'product-ready') {
     return 'product';
   }
-  if (state === 'spec-needed' || state === 'designing' || state === 'design-ready') {
+  if (bareState === 'spec-needed' || bareState === 'designing' || bareState === 'design-ready') {
     return 'design';
   }
   if (
@@ -163,7 +163,7 @@ export function issueTypeFor(state: string): SddState['issueType'] {
       'testing',
       'done',
       'cancelled',
-    ].includes(state)
+    ].includes(bareState)
   ) {
     return 'dev';
   }

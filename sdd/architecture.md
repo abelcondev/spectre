@@ -16,7 +16,7 @@ Complete with the project's decisions:
 - **Authentication**: *(e.g. OAuth, OTP, JWT, sessions, etc.)*
 - **UI Components / Styles**: *(e.g. Tailwind, Material UI, CSS modules, etc.)*
 - **Package Manager**: *(e.g. bun, npm, pnpm, poetry, etc.)*
-- **Visual Design Tool**: *(e.g. Figma, Pencil, Sketch, etc.)*
+- **Visual Design Tool**: **Pencil.dev** (default; connected via MCP). Use another tool only if explicitly decided.
 
 > The detailed technology inventory — versions, MCP servers, documentation URLs, and install commands — lives in `sdd/tech-stack.md`. The Tech Lead creates and maintains that document on `main` during project setup.
 

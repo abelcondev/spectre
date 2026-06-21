@@ -15,6 +15,7 @@
 | Database | *(e.g. PostgreSQL)* | *(e.g. 16)* | ... |
 | Auth | *(e.g. Lucia)* | *(e.g. 3.x)* | ... |
 | UI / Styles | *(e.g. Tailwind CSS)* | *(e.g. 4.x)* | ... |
+| Visual Design | **Pencil.dev** | — | UI mockups, components, views |
 | Package manager | *(e.g. pnpm)* | *(e.g. 10.x)* | ... |
 | Deployment | *(e.g. Vercel)* | — | ... |
 
@@ -81,10 +82,20 @@
 
 > If the PRD mentions AI capabilities but this section is empty, the Tech Lead must ask the human which provider to use before finishing setup.
 
+## Visual design
+
+- **Tool**: Pencil.dev
+- **MCP server**: *(name of the Pencil.dev MCP server, e.g. `pencil-mcp`)*
+- **Configuration**: *(how the MCP is configured, e.g. `env: PENCIL_API_KEY`, port, etc.)*
+- **Documentation URL**: https://pencil.dev/docs
+- **Project file / workspace**: *(path or identifier of the Pencil project)*
+- **Design tokens source**: `sdd/conventions.md` → Design Tokens
+
 ## MCP servers
 
 | MCP server | Technology | Configuration | Status |
 |---|---|---|---|
+| Pencil.dev | Visual design | *(config)* | *(configured / pending)* |
 | *(e.g. @modelcontextprotocol/server-postgres)* | PostgreSQL | `env: DATABASE_URL` | configured |
 
 ## DevOps / deployment
@@ -111,10 +122,11 @@
 
 This section is used by the Orchestrator to decide whether the project setup gate is complete. Do not remove it.
 
-- [ ] **Stack overview** table has real technologies and versions (no `*(e.g. ...)*` placeholders).
+- [ ] **Stack overview** table has real technologies and versions (no `*(e.g. ...)*` placeholders). Visual Design must be **Pencil.dev**.
 - [ ] **Languages & runtimes** section has real values.
 - [ ] **Frontend**, **Backend**, **Database & storage**, and **Authentication & authorization** sections are filled.
 - [ ] **External services / APIs** and **AI / LLM services** sections are filled (or explicitly marked N/A).
+- [ ] **Visual design** section records the Pencil.dev MCP and configuration.
 - [ ] **MCP servers** section records configured MCPs (or explicitly states "none").
 - [ ] **DevOps / deployment** section has real values.
 - [ ] **Documentation URLs** table links to official docs for each technology.

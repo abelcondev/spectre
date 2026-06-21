@@ -75,9 +75,12 @@ Screen/Action 1 → Screen/Action 2 → Final result
 
 ### Design assets
 
-- Tool: *(Figma, Pencil, Sketch, etc.)*
-- File/Artboard: `<feature-slug>-<screen>`
-- Relevant screenshots: [links or exports]
+- **Tool**: Pencil.dev (default; connected via MCP)
+- **MCP status**: *(configured / pending)*
+- **Pencil frames / views**: list the frame names and view identifiers created in Pencil.dev
+- **Pencil components**: list reusable components created or reused in Pencil.dev
+- **Design tokens used**: reference `sdd/conventions.md` → Design Tokens; note any new tokens added for this feature
+- **Relevant screenshots / exports**: [links or exports]
 
 ## Handoff to Dev
 

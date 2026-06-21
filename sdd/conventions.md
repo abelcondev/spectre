@@ -140,6 +140,37 @@ UI:
 
 ---
 
+## Design Tokens
+
+Capture the project's color palette, typography, and spacing here so designers do not use generic defaults. The Tech Lead fills this section during project setup.
+
+- **Primary color**: *(complete, e.g. `#3B82F6`)*
+- **Secondary / accent color**: *(complete, e.g. `#F59E0B`)*
+- **Background color(s)**: *(complete, e.g. `#FFFFFF` / `#0F172A`)*
+- **Text color(s)**: *(complete, e.g. `#111827` / `#F8FAFC`)*
+- **Success color**: *(complete, e.g. `#22C55E`)*
+- **Warning color**: *(complete, e.g. `#EAB308`)*
+- **Error color**: *(complete, e.g. `#EF4444`)*
+- **Font family**: *(complete, e.g. `Inter, system-ui, sans-serif`)*
+- **Base spacing unit**: *(complete, e.g. `0.25rem` / `4px`)*
+
+### Example
+
+| Token | Value | Usage |
+|---|---|---|
+| Primary | `#3B82F6` | Buttons, links, active states |
+| Background | `#FFFFFF` | Page background |
+| Surface | `#F8FAFC` | Cards, panels |
+| Text primary | `#111827` | Headings, body text |
+| Text secondary | `#6B7280` | Captions, placeholders |
+| Success | `#22C55E` | Success messages, confirmations |
+| Warning | `#EAB308` | Warnings, pending states |
+| Error | `#EF4444` | Errors, destructive actions |
+| Font | `Inter, system-ui, sans-serif` | All UI text |
+| Spacing unit | `4px` | Margins, paddings, gaps |
+
+---
+
 ## UI and Copy
 
 - **UI language**: *(complete)*
@@ -178,6 +209,7 @@ This section is used by the Orchestrator to decide whether the project setup gat
 - [ ] **Naming** table has real conventions for the project's stack.
 - [ ] **Imports** order and aliases are defined.
 - [ ] **Errors** strategy is chosen and documented with examples.
+- [ ] **Design Tokens** section has real colors, typography, and spacing values.
 - [ ] **UI and Copy** section has actual language, formats, and breakpoints.
 
 ## How to Complete This Document
