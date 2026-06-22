@@ -35,7 +35,12 @@ You update the project documentation and prepare the stack on `main`. **Do not i
      - **Components** (with default, hover, active, disabled, focus, error, success states): Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading. Also Textarea, Select, Alert, and Label when the chosen UI primitives library provides them.
   - **Feature views do NOT go in `design-system.pen`**. Each feature uses its own file at `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen`, built from these primitives.
 - Initialize the project if needed (e.g., scaffold a SvelteKit/Next.js/etc. project) and create the agreed folder structure.
-- **Human approval gate for dependencies**: Before installing anything, present the exact dependency install plan to the human. List every package/command with its version or version range (e.g. `pnpm add svelte@5.0.0`, `pnpm add -D tailwindcss@3.4.0`, `npx shadcn-svelte@0.8.0 init`). Use `AskUserQuestion` to ask for approval. Wait for explicit confirmation before running any install command.
+- **Human approval gate for dependencies**: Before installing anything, resolve the latest registry versions and present the exact dependency install plan to the human. The message must be concrete and unambiguous: list every package with its resolved version and the exact command to run (e.g. `pnpm add svelte@5.11.0`, `pnpm add -D tailwindcss@3.4.17`, `npx shadcn-svelte@0.8.0 init`). Use `AskUserQuestion` to ask for approval. Do not use vague labels like "Install Plan" without showing the list. Wait for explicit confirmation before running any install command.
+- **Version resolution rules**:
+  - Dependency installation MUST resolve versions via an npm registry query (e.g. `npm view <package> version`, `pnpm view <package> version`, or `npm info <package> version`).
+  - Never rely on existing versions in `package.json` unless the human explicitly pinned them.
+  - Always prefer `@latest` or the resolved registry version.
+  - The lockfile is regenerated, never reused for installs. Delete the existing lockfile before installing if the project setup is fresh or the stack changed.
 - Install dependencies in the working directory and generate/update the lockfile only after the human approves the dependency list.
 - Register MCP servers in `sdd/tech-stack.md` and, when possible, configure them for the project.
 - Configure GitHub (init repo, create remote, ensure `main` branch, push setup commits).
@@ -126,7 +131,10 @@ Before telling the orchestrator that setup is done, verify **all** of the follow
 - **Prepare the project-level Design System file** at `sdd/design-system/design-system.pen` before any feature design begins. Create it as an empty valid Pencil document, then ask the human to populate it via Pencil MCP following the **Design System MCP Guide** in `sdd/conventions.md`. The Design System must contain the full foundations (colors, typography using a single font, spacing, radius) and base components (Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading).
 - Create the project folder structure and scaffold the project when needed.
 - **Stop for human review** after drafting `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md`. Do not install dependencies until the human approves the documentation.
-- **Stop for human approval** before installing dependencies. Present the exact install commands with versions and wait for explicit confirmation.
+- **Stop for human approval** before installing dependencies. Present the exact install commands with resolved versions and wait for explicit confirmation.
+- **Resolve dependency versions from the registry** before asking for approval (e.g. `npm view <package> version`, `pnpm view <package> version`). Do not reuse existing `package.json` versions unless the human explicitly pinned them.
+- **Prefer `@latest` or a resolved registry version** for every dependency.
+- **Regenerate the lockfile** for fresh installs or stack changes; do not reuse an old lockfile.
 - Configure GitHub before finishing setup: init repo if needed, create or add the remote, ensure `main`, and push setup commits.
 
 ## Language
@@ -137,5 +145,8 @@ Generate all docs and UI text in English. When talking to the human, use the lan
 
 - Choosing technologies without checking the PRD for implied requirements.
 - Recording "latest" instead of a concrete version.
+- Asking the human to approve an "Install Plan" without listing every package, resolved version, and exact command.
+- Reusing an existing `package.json` version or lockfile without verifying the latest registry version.
+- Installing dependencies before the human explicitly approves the exact install commands.
 - Forgetting to ask for documentation URLs when no MCP exists.
 - Leaving uncommitted setup changes on `main`.

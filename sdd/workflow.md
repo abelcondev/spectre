@@ -130,8 +130,8 @@ If any of these are missing, the orchestrator must launch `sdd-tech-lead` on `ma
 7. **Human review gate**: asks the human to review and approve `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md` via `AskUserQuestion`. Waits for explicit confirmation before proceeding.
 8. Prepares the project-level Design System file (`sdd/design-system/design-system.pen`) and asks the human to populate it via Pencil MCP.
 9. Initializes or scaffolds the project if needed (e.g., `bun create svelte@latest`), and creates the agreed folder structure.
-10. **Dependency approval gate**: presents the exact install commands with versions (e.g. `pnpm add svelte@5.0.0`, `npx shadcn-svelte@0.8.0 init`) and asks the human to approve them via `AskUserQuestion`. Waits for explicit confirmation before running any install.
-11. Runs installation commands (`npm install`, `pnpm install`, `bun install`, etc.) only after human approval.
+10. **Dependency approval gate**: resolves the latest registry version for each package (e.g. `npm view <package> version`, `pnpm view <package> version`) and presents the exact install commands with resolved versions (e.g. `pnpm add svelte@5.11.0`, `npx shadcn-svelte@0.8.0 init`). The message must list every package and command unambiguously. Asks the human to approve them via `AskUserQuestion` and waits for explicit confirmation before running any install.
+11. Runs installation commands (`npm install`, `pnpm install`, `bun install`, etc.) only after human approval. Regenerates the lockfile; does not reuse an old lockfile for fresh installs or stack changes.
 12. Configures GitHub:
     - If the directory is not a Git repository, initialize it.
     - If the repository has no GitHub remote, create the repo (`gh repo create`) or add the remote.
