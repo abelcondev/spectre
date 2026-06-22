@@ -70,8 +70,12 @@ When the Issue `[Design]` reaches `design/designing/`, do visual design work in 
 2. If it is not available, **STOP** and tell the human: "The Pencil.dev MCP server is not connected. Please connect it so I can iterate the visual design in Pencil.dev."
 3. **Verify or create the project Design System first.** Check `sdd/conventions.md` for the Design System file path (default: `sdd/design-system/design-system.pen`).
    - If the Design System file/page does not exist or is incomplete (missing tokens, primitives, or base components), **create/update it before doing feature-specific design**.
-   - The Design System must include at minimum: tokens (colors, typography, spacing), primitive components (button, input, textarea, select, card, alert, label), and their states (default, hover, active, disabled, focus, error, success).
+   - The Design System must be complete before feature design starts. It must include:
+     - **Foundations**: Colors, Typography (single font family only — Pencil.dev only accepts one value, e.g. `Inter` or `Geist`), Spacing, Radius.
+     - **Primitive components**: Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading. Also Textarea, Select, Alert, Label when the project's UI primitives library provides them.
+     - **States for every component**: default, hover, active, disabled, focus, error, success.
    - Record the Design System file path and any new primitives in `sdd/design-system/README.md` and in the Issue `[Design]` file under **Design System reference**.
+   - **Feature views/screens do NOT go in `design-system.pen`**. Create/update the feature Pencil file at `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen` and build frames, components, and views from the Design System primitives.
    - **Pencil `.pen` file format**: Any `.pen` file you create or update must be a valid Pencil document. The root object must use the Pencil native schema, for example `{"version": "2.13", "children": [...]}`. Do not write custom root fields such as `tokens`, `primitives`, `layouts`, or `breakpoints`. Document those design tokens in `sdd/conventions.md` and `sdd/design-system/README.md` instead. If you are unsure of the current Pencil schema, ask the human to confirm the version or use the Pencil.dev MCP server to create the file for you.
 4. Ensure the feature Pencil file exists at the path recorded in the Issue (default: `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen`). If the human already has a Pencil file, ask them to place or save it at that path so Git can track it.
 5. Use Pencil.dev via MCP to create/update frames, components, and views **based on the Design System primitives**.

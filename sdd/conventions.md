@@ -151,7 +151,7 @@ Capture the project's color palette, typography, and spacing here so designers d
 - **Success color**: *(complete, e.g. `#22C55E`)*
 - **Warning color**: *(complete, e.g. `#EAB308`)*
 - **Error color**: *(complete, e.g. `#EF4444`)*
-- **Font family**: *(complete, e.g. `Inter, system-ui, sans-serif`)*
+- **Font family**: *(complete, e.g. `Inter` or `Geist` — Pencil.dev only accepts a single font family, not a CSS stack)*
 - **Base spacing unit**: *(complete, e.g. `0.25rem` / `4px`)*
 
 ### Example
@@ -166,7 +166,7 @@ Capture the project's color palette, typography, and spacing here so designers d
 | Success | `#22C55E` | Success messages, confirmations |
 | Warning | `#EAB308` | Warnings, pending states |
 | Error | `#EF4444` | Errors, destructive actions |
-| Font | `Inter, system-ui, sans-serif` | All UI text |
+| Font | `Inter` | All UI text |
 | Spacing unit | `4px` | Margins, paddings, gaps |
 
 ---
@@ -175,14 +175,26 @@ Capture the project's color palette, typography, and spacing here so designers d
 
 - **UI primitives library**: *(complete, e.g. shadcn-svelte, Bits UI, Tailwind UI, Radix UI, Material UI)*
 - **Pencil Design System file**: default `sdd/design-system/design-system.pen`. If the project uses a shared Pencil file, the Design System lives as a dedicated page/frame inside that file.
-- **Design System contents**:
-  - Design tokens: colors, typography, spacing, shadows, radii.
-  - Primitive/base components: button, input, textarea, select, card, alert, label, etc.
-  - States: default, hover, active, disabled, focus, error, success.
-  - Layout basics: page containers, grids, responsive breakpoints.
+- **Design System contents** (must be complete before feature design begins):
+  - **Foundations**
+    - Colors: primary, secondary/accent, background, surface, text, success, warning, error, plus their states.
+    - Typography: one font family only (Pencil.dev only accepts a single value, e.g. `Inter` or `Geist`), type scale, weights, line heights.
+    - Spacing: base unit and scale.
+    - Radius: corner radius scale.
+  - **Primitive/base components** (with default, hover, active, disabled, focus, error, and success states):
+    - Button
+    - Input
+    - Card
+    - Modal
+    - Sheet
+    - Avatar
+    - Badge
+    - Loading
+    - Textarea, Select, Alert, Label (when the UI primitives library provides them).
 - The Design System must exist in Pencil **before** any feature-specific visual design.
 - Feature designs reuse the Design System primitives; new primitives are added to the Design System only when a feature genuinely needs them.
 - Developers implement UI using the project's chosen UI primitives library, styled to match the Pencil Design System exactly.
+- **Feature views do NOT live in `design-system.pen`**. Each feature has its own Pencil file at `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen`, built from the Design System primitives.
 
 ### Mapping Pencil → Code
 

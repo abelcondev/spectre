@@ -76,7 +76,8 @@ Screen/Action 1 → Screen/Action 2 → Final result
 
 ### Design System reference
 
-- **Design System file**: `sdd/design-system/design-system.pen` (or shared Pencil file page recorded in `sdd/conventions.md`)
+- **Design System file**: `sdd/design-system/design-system.pen` (or shared Pencil file page recorded in `sdd/conventions.md`). This file holds the project foundations and base components only; feature views/screens go in the feature Pencil file below.
+- **Feature Pencil file**: `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen` — where frames, views, and feature-specific components are created from the Design System primitives.
 - **UI primitives library**: *(e.g. shadcn-svelte, Bits UI, Tailwind UI)* — recorded in `sdd/conventions.md`
 - **Primitives this feature reuses**: list the base components from the Design System that this feature uses (e.g. Button, Input, Card)
 - **Primitives this feature extends or adds**: list any new primitive that must be added to the Design System before feature design

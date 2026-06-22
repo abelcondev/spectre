@@ -44,7 +44,7 @@ sdd/
 ├── decisions/                # ADRs per feature or global
 ├── templates/                # Templates for features and issues
 ├── design-system/            # Project-level design system (Pencil .pen + docs)
-│   ├── design-system.pen     # Pencil file with tokens, primitives, and base components
+│   ├── design-system.pen     # Foundations (colors, typography, spacing, radius) + base components (Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading)
 │   └── README.md             # Human-readable design system summary
 └── features/
     └── <feature-slug>/
@@ -235,9 +235,9 @@ Each feature has its own **isolated worktree** from the start. Inside the worktr
 8. **Functional spec review** (gate 1): human approves the functional spec. The file stays in `design/designing/` for visual design.
 9. **Design iteration** in **Pencil.dev** (inside the worktree):
    1. The `designer` verifies the Pencil.dev MCP server.
-   2. The `designer` checks whether the project already has a **Design System** in Pencil (tokens, primitives, base components) at `sdd/design-system/design-system.pen` (or the shared Pencil file page recorded in `sdd/conventions.md`).
+   2. The `designer` checks whether the project already has a complete **Design System** in Pencil at `sdd/design-system/design-system.pen` (or the shared Pencil file page recorded in `sdd/conventions.md`). It must include foundations (colors, typography with a single font, spacing, radius) and base components (Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading) with all required states.
    3. If the Design System is missing or incomplete, the `designer` creates/updates it first, with the human's approval.
-   4. Only after the Design System exists, the `designer` creates/updates the feature Pencil file at `sdd/features/<slug>/design/assets/<slug>.pen` and creates the planned frames, components, and views based on the Design System primitives.
+   4. Only after the Design System exists, the `designer` creates/updates the feature Pencil file at `sdd/features/<slug>/design/assets/<slug>.pen` and creates the planned frames, components, and views based on the Design System primitives. Feature views and screens never go in `design-system.pen`.
    5. The human iterates the visual design directly in Pencil.dev via MCP. The designer records references and any new design tokens or primitives in the Issue `[Design]` file.
 10. **Visual design review** (gate 2): human approves the Pencil.dev design. The `orchestrator` moves the file to `design/design-ready/`.
 11. **Spec Dev** (inside the worktree): the `tech_specifier` writes the technical spec + Test Plan in `dev/spec-needed/`, including BDD scenarios as acceptance tests. The `orchestrator` moves the file to `dev/spec-ready/`.
@@ -353,9 +353,9 @@ To remove:
 
 The SDD assumes the project uses a **visual design tool** as the reference for new screens and components. **Pencil.dev is the default tool**, connected via MCP.
 
-- Every project must have a **Design System** in Pencil.dev before feature visual design begins. It lives at `sdd/design-system/design-system.pen` (or a dedicated page in the shared Pencil file) and contains tokens, primitives, and base components.
+- Every project must have a **Design System** in Pencil.dev before feature visual design begins. It lives at `sdd/design-system/design-system.pen` (or a dedicated page in the shared Pencil file) and contains **foundations** (colors, typography with a single font, spacing, radius) and **base components** (Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading) with their states.
 - Every **new** component or screen must first exist in Pencil.dev.
-- The Pencil file for a feature lives at `sdd/features/<slug>/design/assets/<slug>.pen` and is tracked in Git.
+- The Pencil file for a feature lives at `sdd/features/<slug>/design/assets/<slug>.pen` and is tracked in Git. **Feature views and screens go in the feature file, not in `design-system.pen`.**
 - Feature designs are built from the Design System primitives. New primitives are added to the Design System, not invented per feature.
 - The Issue `[Design]` records: the Pencil file path, frame/view identifiers, reusable component names, design tokens used or added, and Design System primitives reused or extended.
 - Existing base components in code are the **functional source of truth**; Pencil acts as visual reference and documentation.
