@@ -175,6 +175,11 @@ Capture the project's color palette, typography, and spacing here so designers d
 
 - **UI primitives library**: *(complete, e.g. shadcn-svelte, Bits UI, Tailwind UI, Radix UI, Material UI)*
 - **Pencil Design System file**: default `sdd/design-system/design-system.pen`. If the project uses a shared Pencil file, the Design System lives as a dedicated page/frame inside that file.
+- **How the Design System is created**:
+  - The Tech Lead creates **only an empty, valid Pencil file** at `sdd/design-system/design-system.pen` (content: `{"version": "2.13", "children": []}`).
+  - The Tech Lead asks the human to open the file in the Pencil desktop app or VS Code extension and to populate it using the Pencil MCP server.
+  - The human builds the Design System by following the [Design System MCP Guide](#design-system-mcp-guide) below.
+  - Neither the Tech Lead nor the Designer writes the Design System `.pen` content manually or via raw JSON generation.
 - **Design System contents** (must be complete before feature design begins):
   - **Foundations** (stored as Pencil `variables` and visualized with valid Pencil nodes):
     - Colors: primary, secondary/accent, background, surface, text, success, warning, error.
@@ -195,6 +200,81 @@ Capture the project's color palette, typography, and spacing here so designers d
 - Feature designs reuse the Design System primitives; new primitives are added to the Design System only when a feature genuinely needs them.
 - Developers implement UI using the project's chosen UI primitives library, styled to match the Pencil Design System exactly.
 - **Feature views do NOT live in `design-system.pen`**. Each feature has its own Pencil file at `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen`, built from the Design System primitives.
+
+### Design System MCP Guide
+
+This guide is for the human (or the designer agent assisting via MCP). It replaces manual `.pen` editing. The Pencil MCP server must be installed and connected.
+
+**Prerequisites**
+
+- Pencil desktop app or VS Code extension installed.
+- Pencil MCP server configured in Spectre (`sdd/tech-stack.md` records the MCP name).
+- The empty `sdd/design-system/design-system.pen` file is open in Pencil.
+
+**Step 1 — Create the document variables**
+
+Using the MCP `set_variables` tool (or the Pencil variables panel), create these variables:
+
+```json
+{
+  "color.primary": { "type": "color", "value": "#3B82F6" },
+  "color.accent": { "type": "color", "value": "#F59E0B" },
+  "color.background": { "type": "color", "value": "#FFFFFF" },
+  "color.surface": { "type": "color", "value": "#F8FAFC" },
+  "color.text": { "type": "color", "value": "#111827" },
+  "color.text-secondary": { "type": "color", "value": "#6B7280" },
+  "color.success": { "type": "color", "value": "#22C55E" },
+  "color.warning": { "type": "color", "value": "#EAB308" },
+  "color.error": { "type": "color", "value": "#EF4444" },
+  "font.family": { "type": "string", "value": "Inter" },
+  "space.1": { "type": "number", "value": 4 },
+  "space.2": { "type": "number", "value": 8 },
+  "space.3": { "type": "number", "value": 12 },
+  "space.4": { "type": "number", "value": 16 },
+  "space.5": { "type": "number", "value": 20 },
+  "space.6": { "type": "number", "value": 24 },
+  "space.8": { "type": "number", "value": 32 },
+  "radius.none": { "type": "number", "value": 0 },
+  "radius.small": { "type": "number", "value": 4 },
+  "radius.base": { "type": "number", "value": 8 },
+  "radius.medium": { "type": "number", "value": 12 },
+  "radius.large": { "type": "number", "value": 16 },
+  "radius.full": { "type": "number", "value": 9999 }
+}
+```
+
+Adjust the hex values to the project's palette from the **Design Tokens** section above. The font family must be exactly one value (e.g. `Inter`).
+
+**Step 2 — Create the Foundations frame**
+
+Create a top-level `frame` named **Foundations** (`id: foundations`). Inside it create three child `frame`s:
+
+1. **Colors** — one row per color token. Each row has:
+   - a `rectangle` (`width`: 48, `height`: 48) with `fill: "$color.<name>"`
+   - a `text` label with the token name and hex value
+2. **Typography** — one `text` node per style (Heading XL, Heading LG, Heading MD, Heading SM, Body, Body Small, Caption) using `"fontFamily": "$font.family"`.
+3. **Spacing & Radius** — a `frame` with labeled `rectangle` or `text` samples that reference `$space.*` and `$radius.*`.
+
+**Step 3 — Create primitive components**
+
+For each component (Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading, and Textarea, Select, Alert, Label if applicable), create a top-level `frame` with `reusable: true`. Inside each component frame, create one child `frame` per state:
+
+- default
+- hover
+- active
+- disabled
+- focus
+- error
+- success
+
+Each state frame contains the actual Pencil nodes that represent that component state (rectangles, text, icons, etc.).
+
+**Step 4 — Validate before closing**
+
+- Every node has a valid `type` from the list in [Pencil Format Reference](#pencil-format-reference).
+- Every node has `id`, `x`, `y`, `width`, `height`.
+- All color, spacing, radius, and font values come from the document `variables`.
+- Save the file so Git can track it.
 
 ### Mapping Pencil → Code
 

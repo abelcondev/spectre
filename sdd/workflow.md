@@ -236,7 +236,7 @@ Each feature has its own **isolated worktree** from the start. Inside the worktr
 9. **Design iteration** in **Pencil.dev** (inside the worktree):
    1. The `designer` verifies the Pencil.dev MCP server.
    2. The `designer` checks whether the project already has a complete **Design System** in Pencil at `sdd/design-system/design-system.pen` (or the shared Pencil file page recorded in `sdd/conventions.md`). It must include foundations (colors, typography with a single font, spacing, radius) and base components (Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading) with all required states.
-   3. If the Design System is missing or incomplete, the `designer` creates/updates it first, with the human's approval.
+   3. If the Design System is missing or incomplete, the `designer` asks the human to populate it via Pencil MCP following the **Design System MCP Guide** in `sdd/conventions.md`. The `designer` does not write the `.pen` content manually.
    4. Only after the Design System exists, the `designer` creates/updates the feature Pencil file at `sdd/features/<slug>/design/assets/<slug>.pen` and creates the planned frames, components, and views based on the Design System primitives. Feature views and screens never go in `design-system.pen`.
    5. The human iterates the visual design directly in Pencil.dev via MCP. The designer records references and any new design tokens or primitives in the Issue `[Design]` file.
 10. **Visual design review** (gate 2): human approves the Pencil.dev design. The `orchestrator` moves the file to `design/design-ready/`.
@@ -354,6 +354,7 @@ To remove:
 The SDD assumes the project uses a **visual design tool** as the reference for new screens and components. **Pencil.dev is the default tool**, connected via MCP.
 
 - Every project must have a **Design System** in Pencil.dev before feature visual design begins. It lives at `sdd/design-system/design-system.pen` (or a dedicated page in the shared Pencil file) and contains **foundations** (colors, typography with a single font, spacing, radius) and **base components** (Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading) with their states.
+- The Tech Lead creates the Design System file as an empty valid Pencil document and asks the human to populate it via Pencil MCP, following the **Design System MCP Guide** in `sdd/conventions.md`. Agents do not write the `.pen` content manually.
 - Every **new** component or screen must first exist in Pencil.dev.
 - The Pencil file for a feature lives at `sdd/features/<slug>/design/assets/<slug>.pen` and is tracked in Git. **Feature views and screens go in the feature file, not in `design-system.pen`.**
 - Feature designs are built from the Design System primitives. New primitives are added to the Design System, not invented per feature.
