@@ -25,9 +25,10 @@ You update the project documentation and install the stack on `main`:
 - Create or update `sdd/tech-stack.md` with the full technology inventory (versions, MCPs, documentation URLs, install commands). Include the Pencil.dev MCP server, the chosen UI primitives library, and any other required MCPs.
 - Update `sdd/conventions.md` with the real language, style, naming, imports, errors, UI/copy conventions, **design tokens (colors, typography, spacing)**, and **Design System rules (UI primitives library, Pencil Design System file path)** implied by the stack.
 - Create the project-level **Design System** in Pencil.dev at `sdd/design-system/design-system.pen` (or a dedicated page in the shared Pencil file), containing foundations, primitive components, and their states. Create `sdd/design-system/README.md` with a human-readable summary. The `.pen` file must be a valid Pencil document using the native Pencil schema (e.g. `{"version": "2.13", "children": [...]}`), not a custom JSON schema with root fields like `tokens`, `primitives`, or `layouts`.
-  - **Foundations**: Colors, Typography (single font only), Spacing, Radius.
-  - **Components** (with default, hover, active, disabled, focus, error, success states): Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading. Also include Textarea, Select, Alert, and Label when the chosen UI primitives library provides them.
+  - **Foundations**: Colors, Typography (single font only), Spacing, Radius. Store tokens as Pencil `variables` at the document root and visualize them with valid Pencil nodes (`frame`, `rectangle`, `text`).
+  - **Components** (with default, hover, active, disabled, focus, error, success states): Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading. Also include Textarea, Select, Alert, and Label when the chosen UI primitives library provides them. Each component is a `frame` with `reusable: true` (or a set of variant `frame`s) — do not use an invented `component` type.
   - **Feature views do NOT go in `design-system.pen`**. Each feature uses its own file at `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen`, built from these primitives.
+  - **Before saving**, verify that every node has a valid Pencil `type` from this exact list: `frame`, `group`, `rectangle`, `ellipse`, `polygon`, `path`, `text`, `note`, `prompt`, `context`, `icon`, `script`, `ref`. Reject any invented types such as `page`, `color-swatch`, `text-style`, `spacing-token`, `radius-token`, or `component`.
 - Initialize the project if needed (e.g., scaffold a SvelteKit/Next.js/etc. project) and create the agreed folder structure.
 - Install dependencies in the working directory and generate/update the lockfile.
 - Register MCP servers in `sdd/tech-stack.md` and, when possible, configure them for the project.
@@ -97,7 +98,7 @@ Before telling the orchestrator that setup is done, verify **all** of the follow
 1. `sdd/architecture.md` no longer contains template placeholders and has real values for framework, language, database, auth, UI/styles, package manager, deployment, layers, data design, code organization, golden rules, and data flow. **Visual Design Tool must be set to Pencil.dev** unless the human explicitly chose another tool.
 2. `sdd/conventions.md` no longer contains template placeholders and has real values for language, linter, formatter, naming, imports, errors, UI/copy, **design tokens (colors, typography, spacing)**, and **Design System (UI primitives library + Pencil Design System file path)**.
 3. `sdd/tech-stack.md` no longer contains template placeholders and has a complete technology inventory with versions, MCP servers, documentation URLs, and install commands. **Pencil.dev MCP must be recorded**. The UI primitives library must be listed.
-4. The project-level **Design System** exists in Pencil.dev at `sdd/design-system/design-system.pen` (or shared file page) and contains the full foundations (colors, typography with a single font, spacing, radius) and base components (Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading) with all required states.
+4. The project-level **Design System** exists in Pencil.dev at `sdd/design-system/design-system.pen` (or shared file page), uses only valid Pencil node types (`frame`, `group`, `rectangle`, `ellipse`, `polygon`, `path`, `text`, `note`, `prompt`, `context`, `icon`, `script`, `ref`), stores design tokens as Pencil `variables`, and contains the full foundations (colors, typography with a single font, spacing, radius) and base components (Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading) with all required states.
 5. The project has a valid Git repository on `main` with a GitHub remote.
 6. Core dependencies are installed and the lockfile is present.
 7. The agreed project folder structure exists on disk.
@@ -114,7 +115,7 @@ Before telling the orchestrator that setup is done, verify **all** of the follow
 - **Set Pencil.dev as the default visual design tool** and record its MCP server.
 - **Capture the app's color palette and design tokens** and write them into `sdd/conventions.md`.
 - **Choose and record a UI primitives library** (e.g., shadcn-svelte, Bits UI) so developers build from real primitives.
-- **Create the project-level Design System in Pencil.dev** at `sdd/design-system/design-system.pen` with the full foundations (colors, typography using a single font, spacing, radius) and base components (Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading) before any feature design begins.
+- **Create the project-level Design System in Pencil.dev** at `sdd/design-system/design-system.pen` with the full foundations (colors, typography using a single font, spacing, radius) and base components (Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading) before any feature design begins. Use only valid Pencil node types and store design tokens as Pencil `variables`.
 - Create the project folder structure and scaffold the project when needed.
 - Configure GitHub before finishing setup: init repo if needed, create or add the remote, ensure `main`, and push setup commits.
 

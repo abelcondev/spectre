@@ -176,12 +176,12 @@ Capture the project's color palette, typography, and spacing here so designers d
 - **UI primitives library**: *(complete, e.g. shadcn-svelte, Bits UI, Tailwind UI, Radix UI, Material UI)*
 - **Pencil Design System file**: default `sdd/design-system/design-system.pen`. If the project uses a shared Pencil file, the Design System lives as a dedicated page/frame inside that file.
 - **Design System contents** (must be complete before feature design begins):
-  - **Foundations**
-    - Colors: primary, secondary/accent, background, surface, text, success, warning, error, plus their states.
+  - **Foundations** (stored as Pencil `variables` and visualized with valid Pencil nodes):
+    - Colors: primary, secondary/accent, background, surface, text, success, warning, error.
     - Typography: one font family only (Pencil.dev only accepts a single value, e.g. `Inter` or `Geist`), type scale, weights, line heights.
     - Spacing: base unit and scale.
     - Radius: corner radius scale.
-  - **Primitive/base components** (with default, hover, active, disabled, focus, error, and success states):
+  - **Primitive/base components** (each is a `frame` with `reusable: true`, with variants/frames for default, hover, active, disabled, focus, error, and success states):
     - Button
     - Input
     - Card
@@ -211,8 +211,106 @@ Capture the project's color palette, typography, and spacing here so designers d
 - **Pencil file per feature**: `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen`.
 - **Pencil Design System file**: `sdd/design-system/design-system.pen` (or shared Pencil file page).
 - The `.pen` file is JSON-based and must be tracked in Git. It must be a valid Pencil document using the native Pencil schema (e.g. `{"version": "2.13", "children": [...]}`). Do not use custom root schemas with fields like `tokens`, `primitives`, `layouts`, or `breakpoints`; document design tokens in this file and in `sdd/design-system/README.md` instead.
+- **Only use valid Pencil node types** (see [Pencil Format Reference](#pencil-format-reference) below). Do not invent types such as `page`, `color-swatch`, `text-style`, `spacing-token`, `radius-token`, or `component`.
 - Every new screen or component must exist in Pencil.dev before implementation begins.
 - The Issue `[Design]` records frame/view identifiers, reusable component names, and design tokens so developers can replicate the design in code.
+
+### Pencil Format Reference
+
+This section prevents invalid `.pen` files. Consult https://docs.pencil.dev/for-developers/the-pen-format for the full specification.
+
+**Valid node `type` values** (use only these; anything else will fail to open in Pencil):
+
+```text
+frame, group, rectangle, ellipse, polygon, path, text,
+note, prompt, context, icon, script, ref
+```
+
+**Document structure:**
+
+```json
+{
+  "version": "2.13",
+  "variables": {
+    "color.primary": { "type": "color", "value": "#3B82F6" },
+    "color.accent": { "type": "color", "value": "#F59E0B" },
+    "color.background": { "type": "color", "value": "#FFFFFF" },
+    "color.surface": { "type": "color", "value": "#F8FAFC" },
+    "color.text": { "type": "color", "value": "#111827" },
+    "color.text-secondary": { "type": "color", "value": "#6B7280" },
+    "color.success": { "type": "color", "value": "#22C55E" },
+    "color.warning": { "type": "color", "value": "#EAB308" },
+    "color.error": { "type": "color", "value": "#EF4444" },
+    "font.family": { "type": "string", "value": "Inter" },
+    "space.1": { "type": "number", "value": 4 },
+    "space.2": { "type": "number", "value": 8 },
+    "space.3": { "type": "number", "value": 12 },
+    "space.4": { "type": "number", "value": 16 },
+    "radius.base": { "type": "number", "value": 8 }
+  },
+  "children": [
+    {
+      "id": "foundations",
+      "type": "frame",
+      "name": "Foundations",
+      "x": 0,
+      "y": 0,
+      "width": 1200,
+      "height": 800,
+      "children": [
+        {
+          "id": "colors-frame",
+          "type": "frame",
+          "name": "Colors",
+          "x": 0,
+          "y": 0,
+          "width": 560,
+          "height": 360,
+          "children": [
+            {
+              "id": "primary-swatch",
+              "type": "rectangle",
+              "name": "Primary",
+              "x": 16,
+              "y": 16,
+              "width": 48,
+              "height": 48,
+              "fill": "$color.primary",
+              "cornerRadius": 8
+            },
+            {
+              "id": "primary-label",
+              "type": "text",
+              "name": "Primary label",
+              "x": 80,
+              "y": 16,
+              "width": 200,
+              "height": 24,
+              "content": "Primary",
+              "fontFamily": "$font.family",
+              "fontSize": 14
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Rules to avoid "Failed to open" errors:**
+
+1. Every node must have a `type` from the valid list above.
+2. Every node must have an `id` (no `/` characters).
+3. Every visual node must have `x`, `y`, `width`, and `height`.
+4. Use `variables` at the document root for design tokens (colors, numbers, strings).
+5. Reference variables with `$name`, e.g. `"fill": "$color.primary"`.
+6. Use `frame` for pages/sections; do not use `page`.
+7. Use `rectangle` with a `fill` for color swatches.
+8. Use `text` nodes for typography samples and labels.
+9. Use `frame` with `reusable: true` for base components; do not use `component`.
+10. Use `ref` to instantiate reusable components elsewhere.
+11. Do not use `color-swatch`, `text-style`, `spacing-token`, `radius-token`, or any other invented type.
 
 ## UI and Copy
 

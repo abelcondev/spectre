@@ -90,6 +90,7 @@ Screen/Action 1 → Screen/Action 2 → Final result
 - **Frames / views to create**: list the Pencil frames and views this feature needs
 - **Components to create or reuse**: list reusable components to create in Pencil or reuse from the design system; every new component must map to a Design System primitive
 - **Design tokens to use/add**: reference `sdd/conventions.md` → Design Tokens; note any new tokens needed
+- **Pencil format guard**: confirm that every node will use a valid Pencil type (`frame`, `group`, `rectangle`, `ellipse`, `polygon`, `path`, `text`, `note`, `prompt`, `context`, `icon`, `script`, `ref`) and that design tokens are stored as Pencil `variables`, not invented types like `page`, `color-swatch`, `text-style`, `spacing-token`, `radius-token`, or `component`
 
 ### Pencil artifacts (filled in `design/designing/`)
 

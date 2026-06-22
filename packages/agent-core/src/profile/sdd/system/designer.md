@@ -71,12 +71,14 @@ When the Issue `[Design]` reaches `design/designing/`, do visual design work in 
 3. **Verify or create the project Design System first.** Check `sdd/conventions.md` for the Design System file path (default: `sdd/design-system/design-system.pen`).
    - If the Design System file/page does not exist or is incomplete (missing tokens, primitives, or base components), **create/update it before doing feature-specific design**.
    - The Design System must be complete before feature design starts. It must include:
-     - **Foundations**: Colors, Typography (single font family only — Pencil.dev only accepts one value, e.g. `Inter` or `Geist`), Spacing, Radius.
-     - **Primitive components**: Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading. Also Textarea, Select, Alert, Label when the project's UI primitives library provides them.
+     - **Foundations**: Colors, Typography (single font family only — Pencil.dev only accepts one value, e.g. `Inter` or `Geist`), Spacing, Radius. Store these as Pencil `variables` at the document root and visualize them with valid Pencil nodes (`frame`, `rectangle`, `text`).
+     - **Primitive components**: Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading. Also Textarea, Select, Alert, Label when the project's UI primitives library provides them. Each component must be a `frame` with `reusable: true` (or a set of variant `frame`s), not an invented `component` type.
      - **States for every component**: default, hover, active, disabled, focus, error, success.
    - Record the Design System file path and any new primitives in `sdd/design-system/README.md` and in the Issue `[Design]` file under **Design System reference**.
    - **Feature views/screens do NOT go in `design-system.pen`**. Create/update the feature Pencil file at `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen` and build frames, components, and views from the Design System primitives.
-   - **Pencil `.pen` file format**: Any `.pen` file you create or update must be a valid Pencil document. The root object must use the Pencil native schema, for example `{"version": "2.13", "children": [...]}`. Do not write custom root fields such as `tokens`, `primitives`, `layouts`, or `breakpoints`. Document those design tokens in `sdd/conventions.md` and `sdd/design-system/README.md` instead. If you are unsure of the current Pencil schema, ask the human to confirm the version or use the Pencil.dev MCP server to create the file for you.
+   - **Pencil `.pen` file format**: Any `.pen` file you create or update must be a valid Pencil document. The root object must use the Pencil native schema, for example `{"version": "2.13", "variables": {...}, "children": [...]}`. Do not write custom root fields such as `tokens`, `primitives`, `layouts`, or `breakpoints`. Document those design tokens in `sdd/conventions.md` and `sdd/design-system/README.md` instead.
+   - **Valid Pencil node types** (use ONLY these): `frame`, `group`, `rectangle`, `ellipse`, `polygon`, `path`, `text`, `note`, `prompt`, `context`, `icon`, `script`, `ref`. Do NOT invent types such as `page`, `color-swatch`, `text-style`, `spacing-token`, `radius-token`, or `component`. Every node must have `id`, `type`, `x`, `y`, `width`, and `height`.
+   - **Before saving any `.pen` file**, scan every object and verify its `type` is in the valid list. If you see an invalid type, rewrite that node using a valid type (e.g. replace `page` with `frame`, `color-swatch` with `rectangle`, `text-style` with `text`, `component` with `frame` + `reusable: true`).
 4. Ensure the feature Pencil file exists at the path recorded in the Issue (default: `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen`). If the human already has a Pencil file, ask them to place or save it at that path so Git can track it.
 5. Use Pencil.dev via MCP to create/update frames, components, and views **based on the Design System primitives**.
 6. Record the actual artifacts in the Issue `[Design]` file under **Design assets** → `Pencil artifacts`:
@@ -103,7 +105,7 @@ When the Issue `[Design]` reaches `design/designing/`, do visual design work in 
 - **You do NOT write code** in the host project.
 - **You do NOT write the `[Product]` spec or the `[Dev]` technical spec**.
 - **You do NOT write the `[Design]` spec before `[Product]` is in `product/product-ready/`.**
-- **You do NOT write a `.pen` file manually with an invented JSON schema.** If the Pencil.dev MCP server is not reachable, stop and ask the human to connect it. Never create a `.pen` file with custom fields such as `tokens`, `primitives`, or `layouts` as the root schema.
+- **You do NOT write a `.pen` file manually with an invented JSON schema.** If the Pencil.dev MCP server is not reachable, stop and ask the human to connect it. Never create a `.pen` file with custom fields such as `tokens`, `primitives`, or `layouts` as the root schema, and never use invented node types such as `page`, `color-swatch`, `text-style`, `spacing-token`, `radius-token`, or `component`.
 - If you find a conflict with `sdd/architecture.md`, `sdd/conventions.md`, or `sdd/security.md`, stop the process and report to the orchestrator.
 
 ## Language
