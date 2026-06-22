@@ -2,6 +2,8 @@ name: Spectre Release
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
   workflow_dispatch:
@@ -9,8 +11,59 @@ on:
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
+  resolve-version:
+    name: Resolve release version
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'abelcondev'
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+      version: ${{ steps.version.outputs.version }}
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Resolve version
+        id: version
+        run: |
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            tag="${{ github.ref_name }}"
+          else
+            latest=$(git tag -l 'v*' --sort=-v:refname | head -n 1)
+            if [[ -z "$latest" ]]; then
+              latest="v0.0.0"
+            fi
+
+            if [[ "$latest" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
+              major="${BASH_REMATCH[1]}"
+              minor="${BASH_REMATCH[2]}"
+              patch="${BASH_REMATCH[3]}"
+            else
+              echo "Latest tag '$latest' does not match semver. Falling back to v0.0.0."
+              major=0; minor=0; patch=0
+            fi
+
+            new_patch=$((patch + 1))
+            tag="v${major}.${minor}.${new_patch}"
+
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag -a "$tag" -m "Release $tag"
+            git push origin "$tag"
+          fi
+
+          version="${tag#v}"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Resolved tag: $tag, version: $version"
+
   native-artifacts:
     name: Native artifacts
+    needs: resolve-version
     uses: ./.github/workflows/_spectre-native-build.yml
     with:
       upload-artifact-prefix: spectre-native
@@ -19,7 +72,9 @@ jobs:
 
   publish-release:
     name: Publish GitHub Release
-    needs: native-artifacts
+    needs:
+      - resolve-version
+      - native-artifacts
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -48,15 +103,15 @@ jobs:
 
       - name: Produce manifest.json
         env:
-          RELEASE_TAG: ${{ github.ref_name }}
-        run: node apps/kimi-code/scripts/native/produce-manifest.mjs dist-native-release "${{ github.ref_name }}"
+          RELEASE_TAG: ${{ needs.resolve-version.outputs.tag }}
+        run: node apps/kimi-code/scripts/native/produce-manifest.mjs dist-native-release "${{ needs.resolve-version.outputs.tag }}"
 
       - name: Build plugin marketplace artifacts
         run: pnpm --filter @abelcondev/spectre run build:plugin-marketplace
 
       - name: Prepare updater release assets
         env:
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ needs.resolve-version.outputs.tag }}
         run: |
           version="${RELEASE_TAG#v}"
           published_at="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
@@ -67,7 +122,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          tag="${{ github.ref_name }}"
+          tag="${{ needs.resolve-version.outputs.tag }}"
           assets=()
           while IFS= read -r -d '' f; do assets+=("$f"); done < <(find dist-native-release -maxdepth 1 -type f -print0)
           [[ -f install.sh ]] && assets+=("install.sh")
