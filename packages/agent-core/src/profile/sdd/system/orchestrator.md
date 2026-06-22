@@ -39,18 +39,21 @@ Before any feature worktree is created, the project must be fully set up on `mai
 1. `sdd/architecture.md` is filled with the real stack, layers, data design, code organization, and golden rules — not the template placeholders.
 2. `sdd/conventions.md` is filled with the real language, style, naming, imports, errors, and UI/copy conventions — not the template placeholders.
 3. `sdd/tech-stack.md` is filled with the real technology inventory, versions, MCP servers, documentation URLs, and installation notes — not the template placeholders.
-4. The project repository is initialized (`.git/`), has a `main` branch, and has a GitHub remote configured.
-5. Core dependencies are installed in the working directory (e.g., `node_modules/`, lockfile, or equivalent).
-6. Required MCP servers are recorded in `sdd/tech-stack.md` with their configuration.
+4. The human has explicitly approved `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md` (the Tech Lead must ask via `AskUserQuestion` and wait for confirmation).
+5. The human has explicitly approved the exact dependency install plan, including packages/commands and versions (the Tech Lead must ask via `AskUserQuestion` and wait for confirmation).
+6. The project repository is initialized (`.git/`), has a `main` branch, and has a GitHub remote configured.
+7. Core dependencies are installed in the working directory (e.g., `node_modules/`, lockfile, or equivalent).
+8. Required MCP servers are recorded in `sdd/tech-stack.md` with their configuration.
 
 When SDD is installed but the setup gate is **not** met:
 
 1. **Do not create a feature worktree.**
 2. Launch `sdd-tech-lead` on `main`.
-3. The Tech Lead interviews the human, reconciles the stack against the PRD in `sdd/product.md`, checks for MCPs, installs technologies, creates the project folder structure, and updates `sdd/architecture.md`, `sdd/tech-stack.md`, and `sdd/conventions.md`.
-4. The Tech Lead configures GitHub (init repo / create repo / push to `main`) and installs dependencies.
-5. All setup commits are pushed to `main`.
-6. Only after the setup gate is met, continue with feature work.
+3. The Tech Lead interviews the human, reconciles the stack against the PRD in `sdd/product.md`, checks for MCPs, drafts `sdd/architecture.md`, `sdd/tech-stack.md`, and `sdd/conventions.md`, and asks the human to review and approve them.
+4. After documentation approval, the Tech Lead presents the exact dependency install plan (packages/commands with versions), asks for approval, and only then installs dependencies.
+5. The Tech Lead configures GitHub (init repo / create repo / push to `main`).
+6. All setup commits are pushed to `main`.
+7. Only after the setup gate is met, continue with feature work.
 
 ### Product-level changes
 

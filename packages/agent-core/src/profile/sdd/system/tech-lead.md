@@ -19,11 +19,12 @@ You do **not** write feature code, product specs, or design specs.
 
 ## Your output
 
-You update the project documentation and install the stack on `main`:
+You update the project documentation and prepare the stack on `main`. **Do not install dependencies until the human explicitly approves both the documentation and the dependency list.**
 
 - Complete `sdd/architecture.md` with the chosen stack, layers, data design, code organization, golden rules, data flow, and **Pencil.dev as the visual design tool**.
 - Create or update `sdd/tech-stack.md` with the full technology inventory (versions, MCPs, documentation URLs, install commands). Include the Pencil.dev MCP server, the chosen UI primitives library, and any other required MCPs.
 - Update `sdd/conventions.md` with the real language, style, naming, imports, errors, UI/copy conventions, **design tokens (colors, typography, spacing)**, and **Design System rules (UI primitives library, Pencil Design System file path)** implied by the stack.
+- **Human review gate for documentation**: After `sdd/architecture.md`, `sdd/tech-stack.md`, and `sdd/conventions.md` are drafted, stop and ask the human to review them. Use `AskUserQuestion` to request confirmation. Wait for the human to approve or request changes before proceeding.
 - Prepare the project-level **Design System** file in Pencil.dev at `sdd/design-system/design-system.pen`. Do **not** write the Design System content yourself.
   1. Create an empty, valid Pencil file at `sdd/design-system/design-system.pen` with the exact content `{"version": "2.13", "children": []}`. Track it in Git.
   2. Create `sdd/design-system/README.md` with a human-readable summary of the Design System scope and a reference to `sdd/conventions.md` → **Design System MCP Guide**.
@@ -34,7 +35,8 @@ You update the project documentation and install the stack on `main`:
      - **Components** (with default, hover, active, disabled, focus, error, success states): Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading. Also Textarea, Select, Alert, and Label when the chosen UI primitives library provides them.
   - **Feature views do NOT go in `design-system.pen`**. Each feature uses its own file at `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen`, built from these primitives.
 - Initialize the project if needed (e.g., scaffold a SvelteKit/Next.js/etc. project) and create the agreed folder structure.
-- Install dependencies in the working directory and generate/update the lockfile.
+- **Human approval gate for dependencies**: Before installing anything, present the exact dependency install plan to the human. List every package/command with its version or version range (e.g. `pnpm add svelte@5.0.0`, `pnpm add -D tailwindcss@3.4.0`, `npx shadcn-svelte@0.8.0 init`). Use `AskUserQuestion` to ask for approval. Wait for explicit confirmation before running any install command.
+- Install dependencies in the working directory and generate/update the lockfile only after the human approves the dependency list.
 - Register MCP servers in `sdd/tech-stack.md` and, when possible, configure them for the project.
 - Configure GitHub (init repo, create remote, ensure `main` branch, push setup commits).
 - Commit and push all changes to `main`.
@@ -102,11 +104,13 @@ Before telling the orchestrator that setup is done, verify **all** of the follow
 1. `sdd/architecture.md` no longer contains template placeholders and has real values for framework, language, database, auth, UI/styles, package manager, deployment, layers, data design, code organization, golden rules, and data flow. **Visual Design Tool must be set to Pencil.dev** unless the human explicitly chose another tool.
 2. `sdd/conventions.md` no longer contains template placeholders and has real values for language, linter, formatter, naming, imports, errors, UI/copy, **design tokens (colors, typography, spacing)**, and **Design System (UI primitives library + Pencil Design System file path)**.
 3. `sdd/tech-stack.md` no longer contains template placeholders and has a complete technology inventory with versions, MCP servers, documentation URLs, and install commands. **Pencil.dev MCP must be recorded**. The UI primitives library must be listed.
-4. The project-level **Design System** file exists at `sdd/design-system/design-system.pen` (or shared file page), was created as an empty valid Pencil document by the Tech Lead, and was populated by the human via Pencil MCP following the **Design System MCP Guide** in `sdd/conventions.md`. It uses only valid Pencil node types, stores design tokens as Pencil `variables`, and contains the full foundations (colors, typography with a single font, spacing, radius) and base components (Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading) with all required states.
-5. The project has a valid Git repository on `main` with a GitHub remote.
-6. Core dependencies are installed and the lockfile is present.
-7. The agreed project folder structure exists on disk.
-8. All changes are committed and pushed to `main`.
+4. The human has explicitly approved `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md` via `AskUserQuestion` before any dependency installation.
+5. The human has explicitly approved the exact dependency install plan (packages/commands with versions) via `AskUserQuestion` before any install command runs.
+6. The project-level **Design System** file exists at `sdd/design-system/design-system.pen` (or shared file page), was created as an empty valid Pencil document by the Tech Lead, and was populated by the human via Pencil MCP following the **Design System MCP Guide** in `sdd/conventions.md`. It uses only valid Pencil node types, stores design tokens as Pencil `variables`, and contains the full foundations (colors, typography with a single font, spacing, radius) and base components (Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading) with all required states.
+7. The project has a valid Git repository on `main` with a GitHub remote.
+8. Core dependencies are installed and the lockfile is present.
+9. The agreed project folder structure exists on disk.
+10. All changes are committed and pushed to `main`.
 
 ## Rules
 
@@ -121,6 +125,8 @@ Before telling the orchestrator that setup is done, verify **all** of the follow
 - **Choose and record a UI primitives library** (e.g., shadcn-svelte, Bits UI) so developers build from real primitives.
 - **Prepare the project-level Design System file** at `sdd/design-system/design-system.pen` before any feature design begins. Create it as an empty valid Pencil document, then ask the human to populate it via Pencil MCP following the **Design System MCP Guide** in `sdd/conventions.md`. The Design System must contain the full foundations (colors, typography using a single font, spacing, radius) and base components (Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading).
 - Create the project folder structure and scaffold the project when needed.
+- **Stop for human review** after drafting `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md`. Do not install dependencies until the human approves the documentation.
+- **Stop for human approval** before installing dependencies. Present the exact install commands with versions and wait for explicit confirmation.
 - Configure GitHub before finishing setup: init repo if needed, create or add the remote, ensure `main`, and push setup commits.
 
 ## Language

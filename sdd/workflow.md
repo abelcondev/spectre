@@ -101,9 +101,11 @@ The setup gate is considered complete only when **all** of these are true:
 1. `sdd/architecture.md` is complete: real stack, layers, data design, code organization, golden rules, and data flow (no template placeholders).
 2. `sdd/conventions.md` is complete: real language, linter, formatter, naming, imports, errors, and UI/copy conventions (no template placeholders).
 3. `sdd/tech-stack.md` is complete: full technology inventory with versions, MCP servers, documentation URLs, and install commands (no template placeholders).
-4. The repository has a `main` branch and a GitHub remote configured.
-5. Core dependencies are installed and the lockfile is present.
-6. The agreed project folder structure exists on disk.
+4. The human has approved `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md` via `AskUserQuestion`.
+5. The human has approved the exact dependency install plan (packages/commands with versions) via `AskUserQuestion`.
+6. The repository has a `main` branch and a GitHub remote configured.
+7. Core dependencies are installed and the lockfile is present.
+8. The agreed project folder structure exists on disk.
 
 If any of these are missing, the orchestrator must launch `sdd-tech-lead` on `main` before allowing feature creation.
 
@@ -125,18 +127,23 @@ If any of these are missing, the orchestrator must launch `sdd-tech-lead` on `ma
    - If the PRD requires a capability (e.g., "AI-generated summaries") but no matching technology was chosen, ask the human for the missing provider/library.
 5. Updates `sdd/architecture.md` and creates/maintains `sdd/tech-stack.md`.
 6. Updates `sdd/conventions.md` when a technology choice implies naming or style rules.
-7. Initializes or scaffolds the project if needed (e.g., `bun create svelte@latest`), and creates the agreed folder structure.
-8. Runs installation commands (`npm install`, `pnpm install`, `bun install`, etc.).
-9. Configures GitHub:
-   - If the directory is not a Git repository, initialize it.
-   - If the repository has no GitHub remote, create the repo (`gh repo create`) or add the remote.
-   - If the repository is already on GitHub, commit the setup changes and push to `main`.
+7. **Human review gate**: asks the human to review and approve `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md` via `AskUserQuestion`. Waits for explicit confirmation before proceeding.
+8. Prepares the project-level Design System file (`sdd/design-system/design-system.pen`) and asks the human to populate it via Pencil MCP.
+9. Initializes or scaffolds the project if needed (e.g., `bun create svelte@latest`), and creates the agreed folder structure.
+10. **Dependency approval gate**: presents the exact install commands with versions (e.g. `pnpm add svelte@5.0.0`, `npx shadcn-svelte@0.8.0 init`) and asks the human to approve them via `AskUserQuestion`. Waits for explicit confirmation before running any install.
+11. Runs installation commands (`npm install`, `pnpm install`, `bun install`, etc.) only after human approval.
+12. Configures GitHub:
+    - If the directory is not a Git repository, initialize it.
+    - If the repository has no GitHub remote, create the repo (`gh repo create`) or add the remote.
+    - If the repository is already on GitHub, commit the setup changes and push to `main`.
 
 ### 3.4 Output
 
 - `sdd/architecture.md` — stack and layers completed.
 - `sdd/conventions.md` — style, naming, and project conventions completed.
 - `sdd/tech-stack.md` — technology inventory with versions, MCPs, and doc URLs.
+- Human approval recorded for `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md`.
+- Human approval recorded for the exact dependency install plan.
 - Project folder structure created and scaffolded if needed.
 - Dependencies installed in the working directory.
 - GitHub remote configured and setup commits pushed to `main`.
