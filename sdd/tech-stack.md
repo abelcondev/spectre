@@ -112,6 +112,24 @@
 |---|---|
 | *(e.g. SvelteKit)* | https://svelte.dev/docs/kit |
 
+## Install commands
+
+List every command needed to reproduce the project setup from scratch, in execution order. The human reviews this list before any install runs.
+
+```bash
+# Example (replace with the real commands for this project):
+# bun create svelte@latest my-app
+# cd my-app
+# bun install
+# bun add -D tailwindcss@3.4.17 postcss autoprefixer
+# bun add bits-ui@2.18.1
+```
+
+- **Scaffold command**: *(e.g. `bun create svelte@latest`)*
+- **Core install command**: *(e.g. `bun install`)*
+- **Framework/UI additions**: *(e.g. `bun add -D tailwindcss@3.4.17`, `bun add bits-ui@2.18.1`)*
+- **Other dependencies**: *(list every remaining command with pinned or resolved version)*
+
 ## Versions & lockfile
 
 - **Lockfile**: *(e.g. pnpm-lock.yaml, package-lock.json)*

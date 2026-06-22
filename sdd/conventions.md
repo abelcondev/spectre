@@ -207,8 +207,9 @@ This guide is for the human (or the designer agent assisting via MCP). It replac
 
 **Prerequisites**
 
-- Pencil desktop app or VS Code extension installed.
-- Pencil MCP server configured in Spectre (`sdd/tech-stack.md` records the MCP name).
+- Pencil desktop app or VS Code extension installed on the human's machine.
+- Pencil MCP server configured in **Spectre via `/mcp`** (e.g. MCP name `pencil`). Pencil is an external design tool, not a project dependency; it is not installed with `npm`/`pnpm`/`bun` and does not appear in `package.json`.
+- The agent confirms the connection by calling the Pencil MCP `get_editor_state` tool.
 - The empty `sdd/design-system/design-system.pen` file is open in Pencil.
 
 **Step 1 — Create the document variables**

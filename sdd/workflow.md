@@ -100,14 +100,15 @@ The setup gate is considered complete only when **all** of these are true:
 
 1. `sdd/architecture.md` is complete: real stack, layers, data design, code organization, golden rules, and data flow (no template placeholders).
 2. `sdd/conventions.md` is complete: real language, linter, formatter, naming, imports, errors, and UI/copy conventions (no template placeholders).
-3. `sdd/tech-stack.md` is complete: full technology inventory with versions, MCP servers, documentation URLs, and install commands (no template placeholders).
-4. The human has approved `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md` via `AskUserQuestion`.
-5. The human has approved the exact dependency install plan (packages/commands with versions) via `AskUserQuestion`.
-6. The repository has a `main` branch and a GitHub remote configured.
-7. Core dependencies are installed and the lockfile is present.
-8. The agreed project folder structure exists on disk.
+3. `sdd/tech-stack.md` is complete: full technology inventory with resolved versions, MCP servers, documentation URLs, and install commands (no template placeholders). It includes the **Install commands** section.
+4. All technology versions were resolved from the registry **before** writing the MDs.
+5. The human has approved `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md` via `AskUserQuestion` after reading them.
+6. The human has approved the **Install commands** section in `sdd/tech-stack.md` via `AskUserQuestion`.
+7. The repository has a `main` branch and a GitHub remote configured.
+8. Core dependencies are installed and the lockfile is present.
+9. The agreed project folder structure exists on disk.
 
-If any of these are missing, the orchestrator must launch `sdd-tech-lead` on `main` before allowing feature creation.
+If any of these are missing, the Orchestrator must launch `sdd-tech-lead` on `main`. Only the Orchestrator decides when to launch the next agent.
 
 ### 3.3 What the Tech Lead does
 
@@ -120,30 +121,42 @@ If any of these are missing, the orchestrator must launch `sdd-tech-lead` on `ma
    - Preferred project folder structure.
    - GitHub setup (create repo now or use existing remote).
 3. For each technology:
-   - Check whether an MCP server is available.
+   - Check whether an MCP server is available (for Pencil and other tools, configuration is in Spectre `/mcp`, not in `package.json`).
    - If an MCP exists: record the MCP name/configuration in `sdd/tech-stack.md`.
-   - If no MCP exists: ask for the official documentation URL and the exact version to install.
-4. Reconciles the selected stack against the PRD:
+   - If no MCP exists: ask for the official documentation URL and whether the version should be pinned.
+4. Resolves the latest registry version for every installable technology **before** writing the docs (e.g. `npm view <package> version`, `pnpm view <package> version`, `bun pm view <package> version`).
+5. Reconciles the selected stack against the PRD:
    - If the PRD requires a capability (e.g., "AI-generated summaries") but no matching technology was chosen, ask the human for the missing provider/library.
-5. Updates `sdd/architecture.md` and creates/maintains `sdd/tech-stack.md`.
-6. Updates `sdd/conventions.md` when a technology choice implies naming or style rules.
-7. **Human review gate**: asks the human to review and approve `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md` via `AskUserQuestion`. Waits for explicit confirmation before proceeding.
-8. Prepares the project-level Design System file (`sdd/design-system/design-system.pen`) and asks the human to populate it via Pencil MCP.
-9. Initializes or scaffolds the project if needed (e.g., `bun create svelte@latest`), and creates the agreed folder structure.
-10. **Dependency approval gate**: resolves the latest registry version for each package (e.g. `npm view <package> version`, `pnpm view <package> version`) and presents the exact install commands with resolved versions (e.g. `pnpm add svelte@5.11.0`, `npx shadcn-svelte@0.8.0 init`). The message must list every package and command unambiguously. Asks the human to approve them via `AskUserQuestion` and waits for explicit confirmation before running any install.
-11. Runs installation commands (`npm install`, `pnpm install`, `bun install`, etc.) only after human approval. Regenerates the lockfile; does not reuse an old lockfile for fresh installs or stack changes.
-12. Configures GitHub:
+6. Updates `sdd/architecture.md` and creates/maintains `sdd/tech-stack.md` with resolved versions and a complete **Install commands** section.
+7. Updates `sdd/conventions.md` when a technology choice implies naming or style rules.
+8. **Human review gate**: asks the human to read and approve `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md` via `AskUserQuestion`. Does not list the technologies in the question; points the human to the MD files. Waits for explicit confirmation before proceeding.
+9. Prepares the project-level Design System file (`sdd/design-system/design-system.pen`) as an empty valid Pencil document and creates `sdd/design-system/README.md` referencing the **Design System MCP Guide**. The Tech Lead does not populate the Design System.
+10. Initializes or scaffolds the project if needed (e.g., `bun create svelte@latest`), and creates the agreed folder structure.
+11. **Dependency approval gate**: asks the human to read the **Install commands** section in `sdd/tech-stack.md` and approve it via `AskUserQuestion`. Waits for explicit confirmation before running any install.
+12. Runs installation commands only after human approval. Regenerates the lockfile; does not reuse an old lockfile for fresh installs or stack changes.
+13. Configures GitHub:
     - If the directory is not a Git repository, initialize it.
     - If the repository has no GitHub remote, create the repo (`gh repo create`) or add the remote.
     - If the repository is already on GitHub, commit the setup changes and push to `main`.
+14. **Reports back to the Orchestrator**. The Tech Lead does not launch the Designer itself.
 
-### 3.4 Output
+### 3.4 Orchestrator handoff to Designer
+
+After the Tech Lead reports back, the Orchestrator checks whether the Design System is populated. If `sdd/design-system/design-system.pen` is empty or incomplete, the Orchestrator:
+
+1. Tells the human: "The Tech Lead finished the project structure and dependencies. Now I will launch the Designer to populate the Design System in Pencil.dev with you."
+2. Launches `sdd-designer` to populate the Design System via Pencil MCP following the **Design System MCP Guide** in `sdd/conventions.md`.
+3. Waits for the Designer to report back before continuing.
+
+### 3.5 Output
 
 - `sdd/architecture.md` — stack and layers completed.
 - `sdd/conventions.md` — style, naming, and project conventions completed.
-- `sdd/tech-stack.md` — technology inventory with versions, MCPs, and doc URLs.
+- `sdd/tech-stack.md` — technology inventory with versions, MCPs, doc URLs, and install commands.
 - Human approval recorded for `sdd/architecture.md`, `sdd/conventions.md`, and `sdd/tech-stack.md`.
-- Human approval recorded for the exact dependency install plan.
+- Human approval recorded for the **Install commands** section.
+- Empty `sdd/design-system/design-system.pen` and `sdd/design-system/README.md` created by the Tech Lead.
+- Design System populated by the Designer with the human via Pencil MCP.
 - Project folder structure created and scaffolded if needed.
 - Dependencies installed in the working directory.
 - GitHub remote configured and setup commits pushed to `main`.
@@ -241,11 +254,12 @@ Each feature has its own **isolated worktree** from the start. Inside the worktr
 7. **Spec Design** (inside the worktree): the `designer` interviews the human and writes the functional + UI/UX spec in `design/spec-needed/`, referencing the BDD scenarios from `[Product]`. The spec includes a **Pencil plan** (frames, views, and components to create) but does not yet claim the Pencil artifacts exist. The `orchestrator` moves the file to `design/designing/`.
 8. **Functional spec review** (gate 1): human approves the functional spec. The file stays in `design/designing/` for visual design.
 9. **Design iteration** in **Pencil.dev** (inside the worktree):
-   1. The `designer` verifies the Pencil.dev MCP server.
-   2. The `designer` checks whether the project already has a complete **Design System** in Pencil at `sdd/design-system/design-system.pen` (or the shared Pencil file page recorded in `sdd/conventions.md`). It must include foundations (colors, typography with a single font, spacing, radius) and base components (Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading) with all required states.
-   3. If the Design System is missing or incomplete, the `designer` asks the human to populate it via Pencil MCP following the **Design System MCP Guide** in `sdd/conventions.md`. The `designer` does not write the `.pen` content manually.
-   4. Only after the Design System exists, the `designer` creates/updates the feature Pencil file at `sdd/features/<slug>/design/assets/<slug>.pen` and creates the planned frames, components, and views based on the Design System primitives. Feature views and screens never go in `design-system.pen`.
-   5. The human iterates the visual design directly in Pencil.dev via MCP. The designer records references and any new design tokens or primitives in the Issue `[Design]` file.
+   1. The Orchestrator launches `sdd-designer`.
+   2. The `designer` verifies the Pencil.dev MCP server via `get_editor_state`.
+   3. The `designer` checks whether the project already has a complete **Design System** in Pencil at `sdd/design-system/design-system.pen` (or the shared Pencil file page recorded in `sdd/conventions.md`). It must include foundations (colors, typography with a single font, spacing, radius) and base components (Button, Input, Card, Modal, Sheet, Avatar, Badge, Loading) with all required states.
+   4. If the Design System is missing or incomplete, the `designer` populates or asks the human to populate it via Pencil MCP following the **Design System MCP Guide** in `sdd/conventions.md`. The `designer` does not write the `.pen` content manually.
+   5. Only after the Design System exists, the `designer` creates/updates the feature Pencil file at `sdd/features/<slug>/design/assets/<slug>.pen` and creates the planned frames, components, and views based on the Design System primitives. Feature views and screens never go in `design-system.pen`.
+   6. The human iterates the visual design directly in Pencil.dev via MCP. The designer records references and any new design tokens or primitives in the Issue `[Design]` file.
 10. **Visual design review** (gate 2): human approves the Pencil.dev design. The `orchestrator` moves the file to `design/design-ready/`.
 11. **Spec Dev** (inside the worktree): the `tech_specifier` writes the technical spec + Test Plan in `dev/spec-needed/`, including BDD scenarios as acceptance tests. The `orchestrator` moves the file to `dev/spec-ready/`.
 12. **Spec technical review** (gate 3): human approves. The `orchestrator` moves the file to `dev/implementing/`.
