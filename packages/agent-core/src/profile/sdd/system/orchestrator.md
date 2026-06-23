@@ -52,7 +52,12 @@ Before any feature worktree is created, `main` must be fully set up in two phase
 
 1. Tell the human: "Technical setup is done. Now I will launch the Designer to set up the Design System in Pencil."
 2. Run the **Pencil readiness gate**: launch `sdd-designer` with a "verify-only first" prompt. The Designer calls `mcp__pencil__get_editor_state` and reports whether the MCP is connected.
-3. If the gate fails, ask the human to configure the `pencil` MCP via `/mcp` and open the expected `.pen` file, then repeat the gate.
+3. If the gate fails, the Orchestrator attempts to **auto-configure the Pencil MCP**:
+   - Run `node scripts/detect-pencil-mcp.mjs --write` in the project root.
+   - If the script finds the Pencil MCP server binary, it writes `.mcp.json` with the correct `stdio` entry.
+   - Tell the human: "Detected Pencil and wrote the MCP config. Please restart Spectre with `/new` so the `pencil` MCP server loads."
+   - After the human restarts, repeat the Pencil readiness gate.
+   - If the script does not find Pencil, ask the human to install the Pencil desktop app or VS Code extension, or to provide the path to the MCP server binary.
 4. Once the gate succeeds, launch `sdd-designer` to:
    - Interview the human about colors, borders, styles, typography, spacing, radius, and base components.
    - Create `sdd/design-system/design-system-spec.md` mapping tokens and primitives.
@@ -87,7 +92,7 @@ Only create a feature worktree when `main` is fully set up (technical + Design S
 
 - Launch `sdd-designer` to write the functional spec and Pencil plan in `design/spec-needed/`.
 - Move to `design/designing/` when the human approves the functional spec.
-- Run the Pencil readiness gate, then launch `sdd-designer` to create/update the feature `.pen` using the Design System library.
+- Run the Pencil readiness gate (auto-configure with `scripts/detect-pencil-mcp.mjs` if needed), then launch `sdd-designer` to create/update the feature `.pen` using the Design System library.
 - Move to `design/design-ready/` when the human approves the visual design.
 
 ### `[Dev]` — technical spec + implementation

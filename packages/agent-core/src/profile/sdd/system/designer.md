@@ -15,7 +15,7 @@ You may ask the human direct questions about colors, styles, components, and vis
 For every Pencil-related task, follow this protocol before any other action:
 
 1. **Call `mcp__pencil__get_editor_state`**. This is the only valid diagnostic.
-   - If it fails, stop and tell the human: "The Pencil MCP is not connected. Please configure it via `/mcp`, open the expected `.pen` file, and tell me when it is ready."
+   - If it fails, **stop and report back to the Orchestrator immediately**. Do not try to fix the MCP connection yourself. The Orchestrator will run `scripts/detect-pencil-mcp.mjs` to auto-configure Pencil or ask the human for help.
    - If the active file is wrong, ask the human to open the correct file.
 2. **Never use Bash to diagnose Pencil.** Do not run `pencil status`, `find`, `curl`, `lsof`, or Python scripts.
 3. **Use the Pencil MCP tools** (`batch_design`, `batch_get`, `set_variables`, etc.) to create and edit nodes. Never write raw `.pen` JSON.
