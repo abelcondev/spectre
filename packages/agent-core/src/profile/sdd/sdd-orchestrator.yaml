@@ -36,14 +36,14 @@ tools:
   - FetchURL
 subagents:
   sdd-tech-lead:
-    description: Bootstraps the project stack on main, installs technologies, and registers MCPs.
-  sdd-product-manager:
-    description: Discovers the problem and writes the [Product] spec + BDD scenarios.
+    description: Bootstraps the project on main. Stack, dependencies, folder structure, and minimal docs. No design questions.
   sdd-designer:
-    description: Writes the [Design] functional + UI/UX spec based on approved [Product].
+    description: Owns Pencil. Sets up the Design System library on main and designs feature .pen files in worktrees.
+  sdd-product-manager:
+    description: Product discovery. Writes a concise [Product] issue with BDD scenarios.
   sdd-tech-specifier:
     description: Writes the [Dev] technical spec + Test Plan based on approved [Design].
   sdd-developer:
-    description: Implements with TDD in the feature worktree.
+    description: Implements features with TDD using Design → Code from the Pencil files.
   sdd-auditor:
-    description: Audits against quality gates C1–C7 and emits a verdict.
+    description: Tests the implementation, compares with design, and gives actionable feedback.

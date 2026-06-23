@@ -174,12 +174,15 @@ Capture the project's color palette, typography, and spacing here so designers d
 ## Design System
 
 - **UI primitives library**: *(complete, e.g. shadcn-svelte, Bits UI, Tailwind UI, Radix UI, Material UI)*
-- **Pencil Design System file**: default `sdd/design-system/design-system.pen`. If the project uses a shared Pencil file, the Design System lives as a dedicated page/frame inside that file.
+- **Pencil Design System library file**: default `sdd/design-system/design-system.lib.pen`. This file is marked as a **Design Library** in Pencil so its components can be imported into any feature `.pen`.
+- **Design System spec file**: `sdd/design-system/design-system-spec.md` — a concise map of tokens and primitive components written by the Designer before building the library.
 - **How the Design System is created**:
-  - The Tech Lead creates **only an empty, valid Pencil file** at `sdd/design-system/design-system.pen` (content: `{"version": "2.13", "children": []}`).
-  - The Tech Lead asks the human to open the file in the Pencil desktop app or VS Code extension and to populate it using the Pencil MCP server.
-  - The human builds the Design System by following the [Design System MCP Guide](#design-system-mcp-guide) below.
-  - Neither the Tech Lead nor the Designer writes the Design System `.pen` content manually or via raw JSON generation.
+  - The Tech Lead does **not** create the Design System file.
+  - The Designer creates and populates `sdd/design-system/design-system.lib.pen` using the Pencil MCP server.
+  - The Designer interviews the human to capture colors, typography, spacing, radius, and base components.
+  - The Designer writes `sdd/design-system/design-system-spec.md` as the human-readable contract.
+  - The human marks `design-system.lib.pen` as a Design Library in Pencil (Libraries panel → "Turn this file into a library").
+  - Feature `.pen` files import this library and reuse its assets.
 - **Design System contents** (must be complete before feature design begins):
   - **Foundations** (stored as Pencil `variables` and visualized with valid Pencil nodes):
     - Colors: primary, secondary/accent, background, surface, text, success, warning, error.
@@ -196,21 +199,28 @@ Capture the project's color palette, typography, and spacing here so designers d
     - Badge
     - Loading
     - Textarea, Select, Alert, Label (when the UI primitives library provides them).
-- The Design System must exist in Pencil **before** any feature-specific visual design.
-- Feature designs reuse the Design System primitives; new primitives are added to the Design System only when a feature genuinely needs them.
+- The Design System library must exist and be marked as a library **before** any feature-specific visual design.
+- Feature designs reuse the library assets; new primitives are added to the library only when a feature genuinely needs them.
 - Developers implement UI using the project's chosen UI primitives library, styled to match the Pencil Design System exactly.
-- **Feature views do NOT live in `design-system.pen`**. Each feature has its own Pencil file at `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen`, built from the Design System primitives.
+- **Feature views do NOT live in `design-system.lib.pen`**. Each feature has its own Pencil file at `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen`, built from the Design System library.
 
 ### Design System MCP Guide
 
-This guide is for the human (or the designer agent assisting via MCP). It replaces manual `.pen` editing. The Pencil MCP server must be installed and connected.
+This guide is for the human and the `sdd-designer` agent. It replaces manual `.pen` editing. The Pencil MCP server is configured in **Spectre via `/mcp`**; it is not a dependency of the project.
+
+**What Pencil is in this workflow**
+
+- Pencil.dev is a **design tool connected to Spectre through an MCP server** (e.g. MCP name `pencil`).
+- It does **not** live in `package.json`, `node_modules`, or the project `PATH`.
+- It is **not** started, stopped, or authenticated from the project terminal. The human configures it once in Spectre (`/mcp`) and keeps the target `.pen` file open in the Pencil app / VS Code extension.
+- The Designer agent interacts with Pencil **only** through the `mcp__pencil__*` tools; it never uses Bash (`pencil status`, `find`, `curl`, `lsof`) to check connectivity.
 
 **Prerequisites**
 
 - Pencil desktop app or VS Code extension installed on the human's machine.
-- Pencil MCP server configured in **Spectre via `/mcp`** (e.g. MCP name `pencil`). Pencil is an external design tool, not a project dependency; it is not installed with `npm`/`pnpm`/`bun` and does not appear in `package.json`.
-- The agent confirms the connection by calling the Pencil MCP `get_editor_state` tool.
-- The empty `sdd/design-system/design-system.pen` file is open in Pencil.
+- Pencil MCP server configured in **Spectre via `/mcp`** (e.g. MCP name `pencil`).
+- The agent confirms the connection by calling the Pencil MCP `get_editor_state` tool before any other action.
+- The target `.pen` file (Design System library or feature file) is open in Pencil so the MCP can operate on it.
 
 **Step 1 — Create the document variables**
 
@@ -277,6 +287,15 @@ Each state frame contains the actual Pencil nodes that represent that component 
 - All color, spacing, radius, and font values come from the document `variables`.
 - Save the file so Git can track it.
 
+### Troubleshooting Pencil MCP
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| `mcp__pencil__get_editor_state` fails or returns no tools | The `pencil` MCP is not connected in Spectre. | Open Spectre settings, add/configure the `pencil` MCP via `/mcp`, and ensure the server is running. |
+| `get_editor_state` succeeds but the active file is wrong | The target `.pen` is not open in Pencil. | Open the expected file (`sdd/design-system/design-system.lib.pen` or the feature `.pen`) in the Pencil app / VS Code extension. |
+| Changes disappear after closing | The file was not saved/exported from Pencil. | Save the file in Pencil so Git can track the updated `.pen`. |
+| Agent tries `pencil status`, `curl`, or `find` | Outdated mental model: treating Pencil as a local CLI. | Stop the agent and remind it: Pencil is an MCP server; the only diagnostic is `mcp__pencil__get_editor_state`. |
+
 ### Mapping Pencil → Code
 
 | Pencil artifact | Code source |
@@ -286,14 +305,35 @@ Each state frame contains the actual Pencil nodes that represent that component 
 | Composite/feature components | Built from primitives, styled per Pencil frames |
 | Layout patterns | Reused from Design System page frames |
 
+### Design → Code workflow
+
+The default implementation flow is **Design → Code**:
+
+1. The Developer opens the feature `.pen` and the Design System `.lib.pen` in Pencil.
+2. The Developer uses Pencil AI (`Cmd/Ctrl+K`) or `export_html` (html-tailwind) to generate a starting point.
+3. The Developer adapts the generated code to the project's stack and UI primitives library.
+4. The Developer runs TDD for each `R<n>` from the approved `[Design]`.
+
+If Pencil AI does not produce usable code, fall back to the HTML export as a visual reference and build manually from the Design System primitives.
+
+### Design Library usage
+
+1. Create and populate `sdd/design-system/design-system.lib.pen`.
+2. In Pencil, open the Libraries panel and click **"Turn this file into a library"**.
+3. In each feature `.pen`, open the Libraries panel and import `sdd/design-system/design-system.lib.pen`.
+4. Drag assets from the Assets panel onto the feature canvas.
+
+> A file marked as a Design Library cannot be unmarked. Make sure the Design System is stable before converting it.
+
 ## Visual Design Files
 
 - **Default tool**: Pencil.dev, connected via MCP.
+- **Design System library**: `sdd/design-system/design-system.lib.pen` — marked as a Design Library in Pencil and imported into feature files.
 - **Pencil file per feature**: `sdd/features/<feature-slug>/design/assets/<feature-slug>.pen`.
-- **Pencil Design System file**: `sdd/design-system/design-system.pen` (or shared Pencil file page).
-- The `.pen` file is JSON-based and must be tracked in Git. It must be a valid Pencil document using the native Pencil schema (e.g. `{"version": "2.13", "children": [...]}`). Do not use custom root schemas with fields like `tokens`, `primitives`, `layouts`, or `breakpoints`; document design tokens in this file and in `sdd/design-system/README.md` instead.
+- The `.pen` file is JSON-based and must be tracked in Git. It must be a valid Pencil document using the native Pencil schema (e.g. `{"version": "2.13", "children": [...]}`). Do not use custom root schemas with fields like `tokens`, `primitives`, `layouts`, or `breakpoints`; document design tokens in `sdd/design-system/design-system-spec.md` instead.
 - **Only use valid Pencil node types** (see [Pencil Format Reference](#pencil-format-reference) below). Do not invent types such as `page`, `color-swatch`, `text-style`, `spacing-token`, `radius-token`, or `component`.
 - Every new screen or component must exist in Pencil.dev before implementation begins.
+- Feature files must import the Design System library via the Pencil Libraries panel before designing.
 - The Issue `[Design]` records frame/view identifiers, reusable component names, and design tokens so developers can replicate the design in code.
 
 ### Pencil Format Reference
@@ -432,8 +472,8 @@ This section is used by the Orchestrator to decide whether the project setup gat
 - [ ] **Imports** order and aliases are defined.
 - [ ] **Errors** strategy is chosen and documented with examples.
 - [ ] **Design Tokens** section has real colors, typography, and spacing values.
-- [ ] **Design System** section records the UI primitives library and the Pencil Design System file path.
-- [ ] **Visual Design Files** section records the Pencil file location and MCP configuration.
+- [ ] **Design System** section records the UI primitives library and the Pencil Design System library file path (`design-system.lib.pen`).
+- [ ] **Visual Design Files** section records the Pencil file location, Design Library usage, and MCP configuration.
 - [ ] **UI and Copy** section has actual language, formats, and breakpoints.
 
 ## How to Complete This Document
