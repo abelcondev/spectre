@@ -109,6 +109,15 @@ async function collectFiles() {
     console.warn('Missing generic SDD AGENTS.md template: sdd/AGENTS.md');
   }
 
+  // Projects receiving SDD get a generic root CLAUDE.md copied from sdd/CLAUDE.md.
+  const claudeMdPath = join(SDD_ROOT, 'CLAUDE.md');
+  try {
+    const s = await stat(claudeMdPath);
+    if (s.isFile()) files.push(claudeMdPath);
+  } catch {
+    console.warn('Missing generic SDD CLAUDE.md template: sdd/CLAUDE.md');
+  }
+
   files.sort((a, b) => a.localeCompare(b));
   return files;
 }
@@ -118,12 +127,17 @@ function toPosixPath(path) {
 }
 
 function toAssetPath(absolutePath) {
-  const rel = relative(REPO_ROOT, absolutePath);
-  return toPosixPath(rel);
+  const relSdd = relative(SDD_ROOT, absolutePath);
+  if (!relSdd.startsWith('..') && !relSdd.startsWith('/')) {
+    return toPosixPath(join('sdd', relSdd));
+  }
+  const relRepo = relative(REPO_ROOT, absolutePath);
+  return toPosixPath(relRepo);
 }
 
 const ASSET_PATH_RENAMES = {
   'sdd/AGENTS.md': 'AGENTS.md',
+  'sdd/CLAUDE.md': 'CLAUDE.md',
   'sdd/init-project.sh': 'init.sh',
 };
 

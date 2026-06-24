@@ -226,7 +226,7 @@ export class Session {
 
   async createMain() {
     const { agent } = await this.createAgent({ type: 'main' }, {
-      profile: DEFAULT_AGENT_PROFILES['sdd-orchestrator'],
+      profile: DEFAULT_AGENT_PROFILES['agent'],
     });
     await this.triggerSessionStart('startup');
     return agent;
@@ -247,7 +247,7 @@ export class Session {
     // default profile so the resumed session is usable. Native sessions always
     // replay a non-empty system prompt and never enter this branch.
     const main = this.getReadyAgent('main');
-    const profile = DEFAULT_AGENT_PROFILES['sdd-orchestrator'];
+    const profile = DEFAULT_AGENT_PROFILES['agent'];
     if (main !== undefined && profile !== undefined && main.config.systemPrompt === '') {
       await this.bootstrapAgentProfile(main, profile);
     }

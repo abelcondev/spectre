@@ -50,6 +50,7 @@ log_section "1. Harness files"
 
 required_files=(
   "AGENTS.md"
+  "CLAUDE.md"
   "init.sh"
   "sdd/README.md"
   "sdd/workflow.md"
