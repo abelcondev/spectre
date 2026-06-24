@@ -181,7 +181,7 @@ backlog → spec-needed → spec-ready → implementing → review → testing �
 - `sdd/` is the source of truth.
 - Subagents do not launch other subagents.
 - Subagents do not use `TodoList`.
-- `init.sh` must pass before declaring `done`.
+- `spectre sdd status` must be green before declaring `done`.
 
 ## 9. Active Features Index
 

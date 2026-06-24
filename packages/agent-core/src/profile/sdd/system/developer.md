@@ -36,7 +36,7 @@ refactor(<scope>): R<n> <improvement> — <slug>/<issue>
 
 ## Before reporting done
 
-1. Run `init.sh` fully.
+1. Run `spectre sdd status` (or the project's quality command) and verify it is green.
 2. Fix any failing checks.
 3. Verify test coverage thresholds.
 4. Commit any pending changes.

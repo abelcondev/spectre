@@ -83,7 +83,7 @@ describe('spectre sdd init', () => {
     await rm(tempDir, { recursive: true, force: true });
   });
 
-  it('installs the SDD harness and does not create legacy scripts', async () => {
+  it('installs the SDD harness and does not create legacy scripts or init.sh', async () => {
     const deps = createTestDeps(tempDir);
 
     const code = await handleSddInit(deps, { force: false });
@@ -91,7 +91,7 @@ describe('spectre sdd init', () => {
     expect(code).toBe(0);
     expect(deps.capturedStdout()).toContain('SDD framework installed');
     expect(await pathExists(join(tempDir, 'sdd', 'README.md'))).toBe(true);
-    expect(await pathExists(join(tempDir, 'init.sh'))).toBe(true);
+    expect(await pathExists(join(tempDir, 'init.sh'))).toBe(false);
     expect(await pathExists(join(tempDir, 'scripts', 'sdd-worktree.sh'))).toBe(false);
     expect(await pathExists(join(tempDir, 'scripts', 'sdd-move.sh'))).toBe(false);
   });

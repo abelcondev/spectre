@@ -2,9 +2,14 @@
 
 Reply in the same language as the user.
 
-This is **Spectre**, a fork of [Kimi Code](https://github.com/MoonshotAI/kimi-code) built for agent-assisted development. Spectre adds native SDD (Spec-Driven Development) capabilities, but **Spectre itself is developed as a normal TypeScript monorepo**, not as an SDD project. The SDD framework lives under `packages/agent-core/src/tools/builtin/sdd/framework/` and is copied into other projects as a template set.
+This is **Spectre**, a fork of [Kimi Code](https://github.com/MoonshotAI/kimi-code) built for agent-assisted development. Spectre adds native SDD (Spec-Driven Development) capabilities, but **Spectre itself is developed as a normal TypeScript monorepo**, not as an SDD project. The SDD framework lives under `packages/agent-core/src/tools/builtin/sdd/framework/` and is installed into user projects via `spectre sdd init`.
 
 Keep the root `AGENTS.md` limited to hot-path rules: the project map, hard constraints, and workflow requirements — things every task needs to know.
+
+## Spectre Development vs. Spectre as a Product
+
+- **Developing Spectre**: we use Kimi Code CLI in normal codebase mode. We do *not* run `spectre sdd init` on this repo and we do *not* follow the SDD workflow for Spectre's own code.
+- **Spectre as a product**: end users run Spectre, and Spectre guides them through SDD in *their* projects. The SDD orchestrator is the default `agent` profile in `packages/agent-core/src/profile/default/`.
 
 ## Working Principles
 

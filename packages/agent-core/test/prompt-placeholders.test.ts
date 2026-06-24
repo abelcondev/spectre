@@ -33,6 +33,7 @@ const TEMPLATED = new Set([
 const STATIC_PLACEHOLDER_PROTOCOL_FILES = new Set([
   'agent/swarm/enter-reminder.md',
   'tools/builtin/collaboration/agent-swarm.md',
+  'tools/builtin/sdd/framework/conventions.md',
 ]);
 
 function collectMdFiles(dir: string): string[] {

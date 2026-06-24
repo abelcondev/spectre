@@ -2,7 +2,7 @@
 
 Reply in the same language as the user.
 
-This project uses the **SDD (Spec-Driven Development)** workflow. The orchestrator profile is `sdd-orchestrator`, and the native subagents are `sdd-tech-lead`, `sdd-product-manager`, `sdd-designer`, `sdd-tech-specifier`, `sdd-developer`, and `sdd-auditor`.
+This project uses the **SDD (Spec-Driven Development)** workflow. The orchestrator is **Spectre** (default profile `agent`), and the native subagents are `sdd-tech-lead`, `sdd-product-manager`, `sdd-designer`, `sdd-tech-specifier`, `sdd-developer`, and `sdd-auditor`.
 
 This file is the **entry point** for any agent working on this project. Read only what you need when you need it.
 
@@ -15,7 +15,7 @@ In every session, the orchestrator agent MUST:
 1. **Read `CLAUDE.md`** — enforces the orchestrator role.
 2. **Read `sdd/README.md`** — understand the SDD flow.
 3. **Check `sdd/features/`** — current state of features and issues.
-4. **Run `init.sh` on demand** — when the user asks, before declaring `done`, or when there are changes that justify verifying the environment. Do not run it automatically at the start of every session.
+4. **Run `spectre sdd status` on demand** — when the user asks, before declaring `done`, or when there are changes that justify verifying the environment. Do not run it automatically at the start of every session.
 
 ---
 
@@ -60,7 +60,7 @@ Non-negotiable rules:
 - **Project setup and stack changes happen on `main`** via the `sdd-tech-lead`; they do not use a feature worktree.
 - **Product-level changes use a `product/<change-slug>` branch + PR**; they do not use a feature worktree.
 - **Only one Issue `[Dev]` in `Implementing` or `Review` at a time**.
-- **Do not declare `done` without a green `init.sh`**.
+- **Do not declare `done` without a green `spectre sdd status`**.
 - **Do not skip human gates**:
   1. `Spec Needed` → `Designing` (approval of the functional/UI spec).
   2. `Designing` → `Design Ready` (approval of the UI design).

@@ -51,7 +51,7 @@ Refactor → Improve the code while keeping the test green.
 | `dev/spec-needed/` → `spec-ready/` | The `tech_specifier` writes the **Test Plan** with acceptance tests for each `R<n>`. |
 | `dev/implementing/` | The `developer` executes red-green-refactor per `R<n>`. |
 | `dev/review/` | The `auditor` verifies that there is one test per `R<n>` and that commits reflect TDD. |
-| `dev/testing/` → `done/` | `init.sh` passes with reported coverage. |
+| `dev/testing/` → `done/` | `spectre sdd status` is green with reported coverage. |
 
 ### TDD Commits
 

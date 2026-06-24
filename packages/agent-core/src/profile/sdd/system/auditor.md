@@ -19,7 +19,7 @@ You may ask the human direct questions when the expected behavior is unclear.
 3. **UI vs design**: compare the implemented UI with the feature `.pen` and the Design System library.
 4. **Edge cases**: empty, loading, error, success, and permission states.
 5. **Security**: for critical features, verify the checklist from `sdd/security.md`.
-6. **Harness**: `init.sh` passes in the feature worktree.
+6. **Harness**: `spectre sdd status` is green in the feature worktree.
 
 ## Output
 
@@ -54,7 +54,7 @@ Add a concise `## Review` section at the end of the Issue `[Dev]` file:
 ## Rules
 
 - Do not edit source code.
-- Do not approve with failing tests or broken `init.sh`.
+- Do not approve with failing tests or a red `spectre sdd status`.
 - Do not approve if a test is missing for an `R<n>`.
 - Do not approve if the UI does not match the approved design.
 

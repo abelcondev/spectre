@@ -118,7 +118,7 @@ export async function commitSddFramework(kaos: Kaos, cwd: string): Promise<Comma
   // Commit only the framework files so the install is isolated from other
   // uncommitted changes the user may have in the working directory.
   // CLAUDE.md must be included so feature worktrees inherit it.
-  const add = await runGit(kaos, cwd, ['add', 'AGENTS.md', 'CLAUDE.md', 'init.sh', 'sdd/']);
+  const add = await runGit(kaos, cwd, ['add', 'AGENTS.md', 'CLAUDE.md', 'sdd/']);
   if (add.exitCode !== 0) return add;
   return runGit(kaos, cwd, ['commit', '-m', 'chore(sdd): install framework']);
 }

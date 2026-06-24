@@ -96,7 +96,7 @@ Brief description of the change.
 | R2 | tests/unit/... | ✅ |
 
 ## Checklist
-- [ ] `init.sh` passes in the worktree.
+- [ ] `spectre sdd status` is green in the worktree.
 - [ ] Minimum coverage reached.
 - [ ] No dependencies added without justification.
 
@@ -129,7 +129,7 @@ Merge is **NOT automatic**. It requires:
 
 1. ✅ verdict from the `auditor`.
 2. Explicit human approval (human gate 4).
-3. Green `init.sh` in the worktree.
+3. Green `spectre sdd status` in the worktree.
 4. Dependency audit without critical vulnerabilities (for critical features).
 
 Only then does the `orchestrator` merge the PR and move the Issue file to `dev/done/`.
@@ -161,7 +161,7 @@ When a `[Dev]` Issue reaches `dev/done/`, the `orchestrator`:
 
 Before declaring a session closed:
 
-1. Run `init.sh`. It must print the configured success message.
+1. Run `spectre sdd status`. It must report success.
 2. If a `[Dev]` Issue was finished, ensure its file is in `dev/done/`.
 3. If a `[Design]` Issue was closed, ensure its file is in `design/design-ready/`.
 4. Update `sdd/README.md` with the current project state.
@@ -173,7 +173,7 @@ Before declaring a session closed:
 ## 6. Delivery Anti-Patterns
 
 - Merging without auditor and human approval.
-- Marking `done` without green `init.sh`.
+- Marking `done` without green `spectre sdd status`.
 - Giant commits mixing multiple features.
 - PRs without description or traceability.
 - Leaving orphan worktrees after merging.

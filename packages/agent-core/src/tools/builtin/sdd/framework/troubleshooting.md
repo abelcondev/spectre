@@ -83,11 +83,11 @@ git branch -D feature/<slug>
 
 1. In `main`, verify the files are tracked:
    ```bash
-   git ls-tree -r --name-only HEAD | grep -E '^(CLAUDE\.md|AGENTS\.md|init\.sh|sdd/)'
+   git ls-tree -r --name-only HEAD | grep -E '^(CLAUDE\.md|AGENTS\.md|sdd/)'
    ```
 2. If they are missing, commit them in `main`:
    ```bash
-   git add CLAUDE.md AGENTS.md init.sh sdd/
+   git add CLAUDE.md AGENTS.md sdd/
    git commit -m "chore(sdd): install framework"
    ```
 3. Remove the incomplete worktree and recreate it:
@@ -180,7 +180,7 @@ ls sdd/features/<slug>/dev/*/
 
 ---
 
-## `init.sh` Fails
+## `spectre sdd status` Fails
 
 ### `[FAIL] <project> has no [Design] Issue` / `[Dev]`
 
@@ -269,4 +269,4 @@ git commit -m "chore(sdd): <issue> [Dev|Design] <source> → <destination>"
 
 - Workflow and states: `sdd/workflow.md`
 - Scripts: `scripts/sdd-worktree.sh`, `scripts/sdd-move.sh`, `install.sh`
-- Verification: `init.sh`
+- Verification: `spectre sdd status`

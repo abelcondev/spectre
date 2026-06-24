@@ -1,8 +1,8 @@
 /**
  * SddStatusTool — verify that the SDD harness is present and consistent.
  *
- * This is the native equivalent of running `./init.sh`. It checks files,
- * directories, and the state layout without spawning a shell script.
+ * This replaces the legacy `./init.sh` check. It validates files, directories,
+ * and the state layout natively without spawning a shell script.
  */
 
 import type { Kaos } from '@moonshot-ai/kaos';
@@ -22,7 +22,6 @@ export type SddStatusInput = z.infer<typeof SddStatusInputSchema>;
 const REQUIRED_FILES = [
   'AGENTS.md',
   'CLAUDE.md',
-  'init.sh',
   'sdd/README.md',
   'sdd/workflow.md',
   'sdd/architecture.md',
@@ -47,11 +46,11 @@ export class SddStatusTool implements BuiltinTool<SddStatusInput> {
     return {
       description: 'Verifying SDD harness',
       approvalRule: this.name,
-      execute: () => this.execution(),
+      execute: () => this.check(),
     };
   }
 
-  private async execution(): Promise<ExecutableToolResult> {
+  async check(): Promise<ExecutableToolResult> {
     const repoRoot = await findProjectRoot(this.kaos, this.cwd);
     if (repoRoot === null) {
       return {
@@ -81,18 +80,6 @@ export class SddStatusTool implements BuiltinTool<SddStatusInput> {
       ok.push('[OK] sdd/decisions/ exists');
     } else {
       errors.push('[WARN] Missing sdd/decisions/');
-    }
-
-    // Validate init.sh is executable.
-    const initShPath = join(repoRoot, 'init.sh');
-    if (await pathExists(this.kaos, initShPath)) {
-      const statResult = await this.kaos.stat(initShPath);
-      const isExecutable = (statResult.stMode & 0o111) !== 0;
-      if (isExecutable) {
-        ok.push('[OK] init.sh is executable');
-      } else {
-        errors.push('[FAIL] init.sh is not executable');
-      }
     }
 
     const output = [...ok, ...errors].join('\n');

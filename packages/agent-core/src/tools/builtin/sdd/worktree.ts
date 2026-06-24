@@ -21,6 +21,7 @@ import {
   validateFeatureSlug,
   worktreePathFor,
 } from './sdd-utils';
+import { SddStatusTool } from './status';
 import DESCRIPTION from './worktree.md?raw';
 
 export const SddWorktreeInputSchema = z.object({
@@ -274,14 +275,16 @@ export class SddWorktreeTool implements BuiltinTool<SddWorktreeInput> {
     output += `  Branch: ${branch.stdout.trim()}\n`;
     output += `  Git:    ${dirty}\n`;
 
-    // Run init.sh if available.
-    const initPath = join(worktreePath, 'init.sh');
-    if (await pathExists(this.kaos, initPath)) {
-      const init = await runCommand(this.kaos, worktreePath, ['./init.sh'], 60_000);
-      output += `\ninit.sh:\n${init.stdout}\n${init.stderr}`;
-      if (init.exitCode !== 0) {
-        return { isError: true, output };
-      }
+    // Run native SDD status check in the worktree.
+    const statusTool = new SddStatusTool(this.kaos, worktreePath);
+    const statusResult = await statusTool.check();
+    const statusOutput =
+      typeof statusResult.output === 'string'
+        ? statusResult.output
+        : JSON.stringify(statusResult.output);
+    output += `\n${statusOutput}`;
+    if (statusResult.isError) {
+      return { isError: true, output };
     }
 
     return { output };

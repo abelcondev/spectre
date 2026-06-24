@@ -63,7 +63,7 @@ This directory is the **source of truth** for this project's SDD flow.
 - `[Dev]` does not advance until `[Design]` is in `design/design-ready/`.
 - `[Design]` does not advance until `[Product]` is in `product/product-ready/`.
 - Tests before implementation (TDD).
-- `init.sh` green before declaring `done`.
+- `spectre sdd status` green before declaring `done`.
 - `sdd/` is the source of truth.
 
 ---

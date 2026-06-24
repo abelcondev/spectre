@@ -132,8 +132,8 @@ describe('multi-segment thinking', () => {
       ['tool.progress', { toolCallId: 't1', update: { kind: 'stdout', text: 'running tests\n' } }],
     ]);
 
-    const turns = messagesToTurns(state.messagesBySession[SESSION]!, []);
-    const block = turns[0]!.blocks!.find((b) => b.kind === 'tool');
+    const turns = messagesToTurns(state.messagesBySession[SESSION], []);
+    const block = turns[0].blocks!.find((b) => b.kind === 'tool');
     expect(block).toMatchObject({
       kind: 'tool',
       tool: {
@@ -182,7 +182,7 @@ describe('snapshot turn grouping', () => {
     );
 
     expect(turns.map((turn) => turn.role)).toEqual(['user', 'assistant']);
-    const assistant = turns[1]!;
+    const assistant = turns[1];
     expect(assistant.blocks?.map((block) => block.kind)).toEqual(['thinking', 'tool', 'text']);
     expect(assistant.blocks?.[1]).toMatchObject({
       kind: 'tool',
@@ -230,7 +230,7 @@ describe('prompt.submitted projection', () => {
       ['turn.ended', { turnId: 1, reason: 'completed' }],
     ]);
 
-    const messages = state.messagesBySession[SESSION]!;
+    const messages = state.messagesBySession[SESSION];
     expect(messages[0]).toMatchObject({
       id: 'msg_user_1',
       sessionId: SESSION,

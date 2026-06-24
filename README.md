@@ -123,6 +123,8 @@ pnpm lint       # oxlint
 pnpm build      # build all packages
 ```
 
+> **Note:** Spectre is developed as a normal TypeScript monorepo with Kimi Code CLI. We do *not* use `spectre sdd init` on this repository. SDD is the workflow Spectre offers to its users, not the workflow used to build Spectre itself.
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the full contribution guide.
 
 ## Community

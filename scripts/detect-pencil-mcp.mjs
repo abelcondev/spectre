@@ -128,9 +128,9 @@ async function main() {
   }
 
   const merged = {
-    ...(existing || {}),
+    ...existing,
     mcpServers: {
-      ...(existing?.mcpServers || {}),
+      ...existing?.mcpServers,
       ...config.mcpServers,
     },
   };

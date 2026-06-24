@@ -25,7 +25,7 @@ A `[Dev]` Issue is ready to move from `dev/spec-ready/` to `dev/implementing/` w
 A `[Dev]` Issue is ready to move from `dev/review/` to `dev/testing/` when:
 
 - [ ] All `R<n>` are implemented and tested.
-- [ ] `init.sh` passes in the worktree.
+- [ ] `spectre sdd status` is green in the worktree.
 - [ ] Minimum coverage is reached per `sdd/testing.md`.
 - [ ] `R<n>` → test traceability is documented.
 - [ ] There are no debug logs or dead code.
@@ -37,7 +37,7 @@ A `[Dev]` Issue is ready to move from `dev/review/` to `dev/testing/` when:
 
 ## 3. Mandatory Quality Gates
 
-Before declaring `done`, `init.sh` must pass. The project defines in `init.sh` or its toolchain which commands to run. Typical example:
+Before declaring `done`, `spectre sdd status` must be green. The project defines in `sdd/architecture.md` / `sdd/conventions.md` which commands to run. Typical example:
 
 ```bash
 <test-runner> --coverage    # tests with coverage
@@ -67,7 +67,7 @@ Before declaring `done`, `init.sh` must pass. The project defines in `init.sh` o
 
 ### 4.3 Build and Quality Gates
 
-Verified by `init.sh` (see section 3).
+Verified by `spectre sdd status` (see section 3).
 
 ### 4.4 Requirements Traceability
 
@@ -101,7 +101,7 @@ The `auditor` verifies each item before approving moving an Issue to `done`.
 - [ ] `sdd/security.md` exists.
 - [ ] `sdd/delivery.md` exists.
 - [ ] `.claude/agents/` has `orchestrator.md`, `product_manager.md`, `designer.md`, `tech_specifier.md`, `developer.md`, `auditor.md`.
-- [ ] `init.sh` exists and is executable.
+- [ ] `spectre sdd status` reports success.
 - [ ] `sdd/features/` exists and has at least one project.
 
 ### C2 — State Coherence
@@ -140,7 +140,7 @@ The `auditor` verifies each item before approving moving an Issue to `done`.
 
 ### C5 — Clean Session Closure
 
-- [ ] `init.sh` prints the configured success message.
+- [ ] `spectre sdd status` reports success.
 - [ ] There are no suspicious untracked files.
 - [ ] If a `[Dev]` Issue was closed, its file is in `dev/done/`.
 - [ ] If a `[Design]` Issue was closed, its file is in `design/design-ready/`.
@@ -175,7 +175,7 @@ If **any** checkbox from C1–C7 is empty, the verdict is **❌ Rejected** with 
 - "It should work" without an executable test.
 - A test that only verifies it does not crash.
 - Excessive mocking of the filesystem or network.
-- Declaring `done` without a green `init.sh`.
+- Declaring `done` without a green `spectre sdd status`.
 - Merging without auditor and human approval.
 - Moving a `[Dev]` Issue to `implementing/` without `[Design]` being in `design/design-ready/`.
 - Modifying existing base components without prior approval.

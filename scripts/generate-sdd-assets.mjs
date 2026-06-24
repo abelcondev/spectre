@@ -40,7 +40,6 @@ const SDD_GLOBS = [
   'troubleshooting.md',
   'product.md',
   'tech-stack.md',
-  'init-project.sh',
   'templates/**/*.md',
   'decisions/**/*.md',
 ];
@@ -138,7 +137,6 @@ function toAssetPath(absolutePath) {
 const ASSET_PATH_RENAMES = {
   'sdd/AGENTS.md': 'AGENTS.md',
   'sdd/CLAUDE.md': 'CLAUDE.md',
-  'sdd/init-project.sh': 'init.sh',
 };
 
 async function main() {

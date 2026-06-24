@@ -158,7 +158,6 @@ export async function handleSddStatus(deps: SddDeps): Promise<number> {
   const requiredFiles = [
     'AGENTS.md',
     'CLAUDE.md',
-    'init.sh',
     'sdd/README.md',
     'sdd/workflow.md',
     'sdd/architecture.md',
