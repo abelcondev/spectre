@@ -17,17 +17,19 @@ For the general SDD index, see `sdd/README.md`.
 
 ## 1.1 Roles
 
-| Role | Responsible for | SDD Phase |
-|---|---|---|
-| `orchestrator` | Coordinates the flow, launches subagents, manages human gates, moves issues between states. | Whole cycle |
-| `tech_lead` | Technical setup on `main`: stack, dependencies, folder structure, minimal docs. | Project setup (technical) |
-| `designer` | Pencil owner. Sets up the Design System library on `main` and designs feature `.pen` files. | Project setup (design) + `[Design]` |
-| `product_manager` | Product discovery and `[Product]` spec. | `[Product]` |
-| `tech_specifier` | Technical spec for `[Dev]` (when needed). | `[Dev]` (spec) |
-| `developer` | TDD implementation using Design → Code. | `[Dev]` (implementation) |
-| `auditor` | Tests the implementation and gives feedback. | `[Dev]` (review) |
+**Spectre (Orchestrator mode)** is the brain of the session. It acts directly by default and delegates to subagents only for long or specialized tasks.
 
-Subagents may ask the human direct questions within their own domain. The Orchestrator remains the decision point for flow changes and gates.
+| Role | Type | Responsible for | SDD Phase |
+|---|---|---|---|
+| `orchestrator` | Core mode of Spectre | Coordinates the flow, talks to the human, manages gates, moves issues. | Whole cycle |
+| `product_manager` | Optional subagent | Complex product discovery and `[Product]` spec. | `[Product]` |
+| `tech_lead` | Optional subagent | Complex technical setup on `main`. | Project setup (technical) |
+| `designer` | Optional subagent | Large Design System build or complex feature design in Pencil. | Project setup (design) + `[Design]` |
+| `tech_specifier` | Optional subagent | Technical spec for complex `[Dev]`. | `[Dev]` (spec) |
+| `developer` | Subagent | TDD implementation using Design → Code. | `[Dev]` (implementation) |
+| `auditor` | Subagent | Tests the implementation and gives feedback. | `[Dev]` (review) |
+
+Spectre may do creative Pencil work directly with the human; the `designer` subagent is only used when the task is too large or the human prefers to delegate.
 
 ## 2. Structure
 
@@ -92,16 +94,18 @@ The Tech Lead does **not** ask about colors, typography, spacing, radius, or com
 
 ### 3.2 Phase B — Design System setup
 
-After the Tech Lead reports back, the Orchestrator launches the `designer` to set up the visual layer.
+After the technical setup, Spectre sets up the visual layer, usually acting directly with the human via the Pencil MCP tools. It may launch the `designer` subagent only if the build is large or the human prefers to delegate.
 
-The Designer:
+Spectre:
 
 1. Runs the Pencil readiness gate (`mcp__pencil__get_editor_state`).
+   - If it fails, run `node scripts/detect-pencil-mcp.mjs --write` to auto-configure the Pencil MCP.
+   - If auto-detection succeeds, ask the human to restart Spectre (`/new`) and repeat the gate.
 2. Interviews the human about colors, borders, styles, typography, spacing, radius, and base components.
 3. Writes `sdd/design-system/design-system-spec.md` mapping tokens and primitives.
-4. Creates `sdd/design-system/design-system.lib.pen` with foundations and primitive components.
+4. Creates `sdd/design-system/design-system.lib.pen` with foundations and primitive components (directly via MCP or via the `designer` subagent).
 5. Asks the human to mark the file as a Design Library in Pencil (Libraries panel → "Turn this file into a library").
-6. Reports back to the Orchestrator.
+6. Declares `main` ready for features.
 
 ### 3.3 Setup gate
 
@@ -138,17 +142,17 @@ backlog → spec-needed → spec-ready → implementing → review → testing �
 
 ## 5. Feature Workflow
 
-1. **Create worktree** (on `main`): the Orchestrator creates the worktree with `SddWorktree`.
-2. **Product Discovery**: the Orchestrator launches `sdd-product-manager` to write a concise `[Product]` issue.
+1. **Create worktree** (on `main`): Spectre creates the worktree with `SddWorktree`.
+2. **Product Discovery**: Spectre interviews the human and writes a concise `[Product]` issue directly. Launch `sdd-product-manager` only for complex discovery.
 3. **Product approval** (gate 0): human approves. Move to `product/product-ready/`.
-4. **Functional spec**: the Orchestrator launches `sdd-designer` to write the functional spec + Pencil plan in `design/spec-needed/`.
+4. **Functional spec**: Spectre writes the functional spec + Pencil plan in `design/spec-needed/` directly. Launch `sdd-designer` only for complex specs.
 5. **Functional spec approval** (gate 1): human approves. Move to `design/designing/`.
-6. **Visual design**: the Orchestrator runs the Pencil readiness gate, then launches `sdd-designer` to create/update the feature `.pen` using the Design System library.
+6. **Visual design**: Spectre runs the Pencil readiness gate and does the creative design work directly with the human via Pencil MCP. Launch `sdd-designer` only if the design task is too large.
 7. **Visual design approval** (gate 2): human approves. Move to `design/design-ready/`.
-8. **Technical spec** (optional): the Orchestrator launches `sdd-tech-specifier` for complex features.
+8. **Technical spec** (optional): Spectre writes the spec directly or launches `sdd-tech-specifier` for complex features.
 9. **Technical spec approval** (gate 3): human approves. Move to `dev/implementing/`.
-10. **Implementation**: the Orchestrator launches `sdd-developer` for TDD using Design → Code.
-11. **Review**: the Orchestrator launches `sdd-auditor` to test and give feedback.
+10. **Implementation**: Spectre launches `sdd-developer` for TDD using Design → Code.
+11. **Review**: Spectre launches `sdd-auditor` to test and give feedback.
 12. **Merge validation** (gate 4): human approves. Merge to `main` and move to `dev/done/`.
 
 ## 6. Visual Design

@@ -36,14 +36,14 @@ tools:
   - FetchURL
 subagents:
   sdd-tech-lead:
-    description: Bootstraps the project on main. Stack, dependencies, folder structure, and minimal docs. No design questions.
+    description: Optional subagent for complex technical setup on main. Stack, dependencies, folder structure, and minimal docs. No design questions.
   sdd-designer:
-    description: Owns Pencil. Sets up the Design System library on main and designs feature .pen files in worktrees.
+    description: Optional subagent for large Pencil work. Sets up the Design System library or designs complex feature .pen files. Spectre handles creative iteration directly.
   sdd-product-manager:
-    description: Product discovery. Writes a concise [Product] issue with BDD scenarios.
+    description: Optional subagent for complex product discovery. Writes a concise [Product] issue with BDD scenarios.
   sdd-tech-specifier:
-    description: Writes the [Dev] technical spec + Test Plan based on approved [Design].
+    description: Optional subagent for complex [Dev] technical specs + Test Plan.
   sdd-developer:
-    description: Implements features with TDD using Design → Code from the Pencil files.
+    description: Subagent for TDD feature implementation using Design → Code from the Pencil files.
   sdd-auditor:
-    description: Tests the implementation, compares with design, and gives actionable feedback.
+    description: Subagent for testing the implementation, comparing with design, and giving actionable feedback.

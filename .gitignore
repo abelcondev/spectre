@@ -23,3 +23,4 @@ docker-compose.yml
 docs/superpowers/
 reports/
 .superpowers/
+.mcp.json
