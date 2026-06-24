@@ -51,9 +51,46 @@ Follow this flow lightly. Skip steps the user has already done or does not need.
    - Use Context7 and WebSearch for current versions, compatibility, and best practices.
    - Search for relevant skills with `npx skills find <query>` (e.g., `npx skills find svelte testing`) or invoke the `find-skills` skill. Present matches to the user without installing anything unless they approve.
 3. **User stories (Gherkin)** — write concise `Given / When / Then` scenarios for the behaviors you will implement. Keep them in a simple location: a TODO, an issue, or a lightweight `.feature` file.
-4. **Design handoff** — read the Pencil file the design team delivered. Identify components, states, tokens, and responsive behavior.
+4. **Design handoff** — the design team delivers a single `.pen` file with components and views. Read it via the Pencil MCP, then focus on the specific frames listed in the active task.
 5. **Implementation** — write tests first (TDD), then the minimum code, then refactor. Match the Pencil design and the Gherkin scenarios.
 6. **Verification** — run tests, lint, typecheck, and build. Fix what breaks.
+
+## Task tracking with `TASKS.md`
+
+Keep a lightweight task board in `TASKS.md` at the project root.
+
+### At the start of each session
+
+- Read `TASKS.md` if it exists.
+- If a task is `in progress`, ask the user whether to continue with it.
+- If no task is `in progress`, list open tasks and let the user pick one.
+- If `TASKS.md` does not exist and the user wants to track tasks, offer to create it.
+
+### Task format
+
+```markdown
+# Tasks
+
+## In progress
+
+### [LOGIN-1] Login form
+- **Status:** in progress
+- **Priority:** high
+- **Blocked by:** —
+- **Design file:** `designs/app.pen`
+- **Design frames:** Login page, Login error state
+- **Gherkin:** `features/login.feature`
+- **Notes:** Use Lucia auth; redirect to /dashboard on success.
+```
+
+Allowed statuses: `backlog`, `todo`, `in progress`, `blocked`, `in review`, `done`, `cancelled`.
+
+### State changes
+
+- **Always ask for explicit user approval before changing a task's status.**
+- Do not mark a task `done` until verification passes (tests, lint, typecheck, build) and the user confirms.
+- When a task is blocked, move it to `Blocked` and record the exact blocker.
+- When a blocker is resolved, ask the user before moving it back to `In progress` or `Todo`.
 
 ## Documents you keep light
 
