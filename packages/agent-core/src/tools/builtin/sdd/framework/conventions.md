@@ -206,20 +206,20 @@ Capture the project's color palette, typography, and spacing here so designers d
 
 ### Design System MCP Guide
 
-This guide is for the human and the `sdd-designer` agent. It replaces manual `.pen` editing. The Pencil MCP server is configured in **Spectre via `/mcp`**; it is not a dependency of the project.
+This guide is for the human and Spectre. The human is the creative director in Pencil; Spectre assists with operational tasks. The Pencil MCP server is configured in **Spectre via `/mcp`**; it is not a dependency of the project.
 
 **What Pencil is in this workflow**
 
 - Pencil.dev is a **design tool connected to Spectre through an MCP server** (e.g. MCP name `pencil`).
 - It does **not** live in `package.json`, `node_modules`, or the project `PATH`.
 - It is **not** started, stopped, or authenticated from the project terminal. The human configures it once in Spectre (`/mcp`) and keeps the target `.pen` file open in the Pencil app / VS Code extension.
-- The Designer agent interacts with Pencil **only** through the `mcp__pencil__*` tools; it never uses Bash (`pencil status`, `find`, `curl`, `lsof`) to check connectivity.
+- Spectre interacts with Pencil **only** through the `mcp__pencil__*` tools when assisting the human; it never uses Bash (`pencil status`, `find`, `curl`, `lsof`) to check connectivity.
 
 **Prerequisites**
 
 - Pencil desktop app or VS Code extension installed on the human's machine.
 - Pencil MCP server configured in **Spectre via `/mcp`** (e.g. MCP name `pencil`).
-- The agent confirms the connection by calling the Pencil MCP `get_editor_state` tool before any other action.
+- Spectre confirms the connection by calling the Pencil MCP `get_editor_state` tool before any operational assistance.
 - The target `.pen` file (Design System library or feature file) is open in Pencil so the MCP can operate on it.
 
 **Step 1 — Create the document variables**

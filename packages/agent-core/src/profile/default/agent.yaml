@@ -49,8 +49,6 @@ subagents:
     description: Complex product discovery and BDD scenarios.
   sdd-tech-lead:
     description: Complex technical setup and stack decisions on main.
-  sdd-designer:
-    description: Large Pencil design system or complex feature design.
   sdd-tech-specifier:
     description: Complex technical specs and test plans.
   sdd-developer:

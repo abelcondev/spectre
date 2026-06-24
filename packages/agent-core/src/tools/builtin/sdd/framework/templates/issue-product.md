@@ -30,6 +30,7 @@ Then <expected result>
 
 ## Dependencies
 
+- Depends on: `sdd/brand.md`
 - Blocks: `[Design] <issue-design>`
 
 ## Review

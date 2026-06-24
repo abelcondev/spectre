@@ -100,7 +100,7 @@ The `auditor` verifies each item before approving moving an Issue to `done`.
 - [ ] `sdd/testing.md` exists.
 - [ ] `sdd/security.md` exists.
 - [ ] `sdd/delivery.md` exists.
-- [ ] `.claude/agents/` has `orchestrator.md`, `product_manager.md`, `designer.md`, `tech_specifier.md`, `developer.md`, `auditor.md`.
+- [ ] `.claude/agents/` has `orchestrator.md`, `product_manager.md`, `tech_specifier.md`, `developer.md`, `auditor.md`.
 - [ ] `spectre sdd status` reports success.
 - [ ] `sdd/features/` exists and has at least one project.
 

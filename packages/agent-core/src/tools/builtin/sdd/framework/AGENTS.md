@@ -2,7 +2,9 @@
 
 Reply in the same language as the user.
 
-This project uses the **SDD (Spec-Driven Development)** workflow. The orchestrator is **Spectre** (default profile `agent`), and the native subagents are `sdd-tech-lead`, `sdd-product-manager`, `sdd-designer`, `sdd-tech-specifier`, `sdd-developer`, and `sdd-auditor`.
+This project uses the **SDD (Spec-Driven Development)** workflow. The orchestrator is **Spectre** (default profile `agent`), and the native subagents are `sdd-tech-lead`, `sdd-product-manager`, `sdd-tech-specifier`, `sdd-developer`, and `sdd-auditor`.
+
+Pencil.dev is a free-form design tool for the human. Spectre assists with operational Pencil tasks, but the human is the creative director.
 
 This file is the **entry point** for any agent working on this project. Read only what you need when you need it.
 

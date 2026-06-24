@@ -14,6 +14,7 @@ This directory is the **source of truth** for this project's SDD flow.
 |---|---|
 | `sdd/README.md` | This index. |
 | `sdd/product.md` | **Global product definition**. Vision, users, value proposition, and roadmap. |
+| `sdd/brand.md` | **Brand and identity**. Colors, typography, tone of voice, visual style, terminology. |
 | `sdd/workflow.md` | States, workflow, worktrees, golden rules. |
 | `sdd/architecture.md` | **Template** for defining the project's stack, layers, and architectural decisions. |
 | `sdd/conventions.md` | **Template** for defining code style, naming, and project conventions. |
@@ -31,11 +32,14 @@ This directory is the **source of truth** for this project's SDD flow.
 
 ## How to Start
 
-1. Define the global product in `sdd/product.md` (done automatically by `SddInit` when you provide `product_answers`).
+1. **Product + Brand Discovery** (on `main`): Spectre guides the human through research, proposal, and brand-direction decisions. Once approved, it writes `sdd/product.md` and `sdd/brand.md`.
 2. **Complete project setup on `main`** before creating any feature:
    - Fill `sdd/architecture.md` with the project's stack and architectural decisions. Set **Pencil.dev** as the visual design tool.
-   - Fill `sdd/conventions.md` with style, naming, project conventions, and **design tokens (colors, typography, spacing)**.
+   - Fill `sdd/conventions.md` with style, naming, project conventions, and UI/copy conventions.
    - Fill `sdd/tech-stack.md` with the technology inventory, versions, MCPs, and doc URLs. Include the **Pencil.dev MCP**.
+   - Launch `sdd-tech-lead` to orient the human on the technology, dependencies, architecture, and repo structure.
+   - Let the Tech Lead create the project structure, including an empty placeholder `sdd/design-system/design-system.lib.pen`.
+   - Build the Design System library freely in Pencil using `sdd/brand.md` as the source of truth; Spectre assists with operational tasks.
    - Install dependencies and configure GitHub.
 3. Read `sdd/workflow.md` to understand the lifecycle.
 4. Read `sdd/quality-gates.md`, `sdd/testing.md`, and `sdd/security.md` before declaring `done`.
@@ -49,7 +53,7 @@ This directory is the **source of truth** for this project's SDD flow.
    cd <repo>-<feature-slug>
    spectre
    ```
-7. Inside the worktree, Spectre detects the feature and asks what to build. The first Issue `[Product]` is created there.
+7. Inside the worktree, Spectre detects the feature and guides the human step by step through **research**, **proposal + brand direction**, and the first Issue `[Product]`. The Issue is created only after the proposal is approved.
 8. Move issues between states inside the worktree:
    ```bash
    spectre sdd move <feature-slug> <issue> <source-state> <target-state>
@@ -65,6 +69,8 @@ This directory is the **source of truth** for this project's SDD flow.
 - Tests before implementation (TDD).
 - `spectre sdd status` green before declaring `done`.
 - `sdd/` is the source of truth.
+- The Orchestrator guides the human step by step in conversation; it does not use `TodoList` to manage the human flow.
+- The human is the creative director in Pencil; Spectre assists only with operational tasks.
 
 ---
 
