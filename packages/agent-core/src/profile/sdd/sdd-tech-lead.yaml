@@ -19,4 +19,5 @@ tools:
   - TodoList
   - WebSearch
   - FetchURL
+  - Context7
   - mcp__*

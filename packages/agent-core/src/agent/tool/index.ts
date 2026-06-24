@@ -426,6 +426,7 @@ export class ToolManager {
           new b.AgentSwarmTool(this.agent.subagentHost, this.agent.swarmMode),
         toolServices?.webSearcher && new b.WebSearchTool(toolServices.webSearcher),
         toolServices?.urlFetcher && new b.FetchURLTool(toolServices.urlFetcher),
+        toolServices?.context7 && new b.Context7Tool(toolServices.context7),
       ]
         .filter((tool) => !!tool)
         .map((tool) => [tool.name, tool] as const),

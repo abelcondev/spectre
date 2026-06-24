@@ -4,6 +4,7 @@ import { homedir } from 'node:os';
 import { ErrorCodes, KimiError } from '#/errors';
 import { getRootLogger, log } from '#/logging/logger';
 import { PluginManager } from '#/plugin';
+import { Context7ApiProvider } from '#/tools/providers/context7-api';
 import { LocalFetchURLProvider } from '#/tools/providers/local-fetch-url';
 import { MoonshotFetchURLProvider } from '#/tools/providers/moonshot-fetch-url';
 import { MoonshotWebSearchProvider } from '#/tools/providers/moonshot-web-search';
@@ -987,6 +988,7 @@ async function createRuntimeConfig(input: {
   const localFetcher = new LocalFetchURLProvider();
   const searchService = input.config.services?.moonshotSearch;
   const fetchService = input.config.services?.moonshotFetch;
+  const context7Service = input.config.services?.context7;
 
   return {
     urlFetcher:
@@ -1005,6 +1007,13 @@ async function createRuntimeConfig(input: {
             baseUrl: searchService.baseUrl,
             defaultHeaders: input.kimiRequestHeaders,
             ...serviceCredentials(searchService, input.resolveOAuthTokenProvider),
+          }),
+    context7:
+      context7Service === undefined
+        ? undefined
+        : new Context7ApiProvider({
+            baseUrl: context7Service.baseUrl,
+            ...serviceCredentials(context7Service, input.resolveOAuthTokenProvider),
           }),
   };
 }

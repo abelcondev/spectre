@@ -21,6 +21,7 @@ export * from './goal/update-goal';
 export * from './planning/enter-plan-mode';
 export * from './planning/exit-plan-mode';
 export * from './sdd';
+export * from './context7';
 export * from './shell/bash';
 export * from './state/todo-list';
 export * from './web/fetch-url';

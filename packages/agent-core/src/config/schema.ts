@@ -131,6 +131,7 @@ export type MoonshotServiceConfig = z.infer<typeof MoonshotServiceConfigSchema>;
 export const ServicesConfigSchema = z.object({
   moonshotSearch: MoonshotServiceConfigSchema.optional(),
   moonshotFetch: MoonshotServiceConfigSchema.optional(),
+  context7: MoonshotServiceConfigSchema.optional(),
 });
 
 export type ServicesConfig = z.infer<typeof ServicesConfigSchema>;

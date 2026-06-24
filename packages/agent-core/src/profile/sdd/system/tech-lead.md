@@ -56,31 +56,34 @@ Do not rely on existing `package.json` versions unless the human explicitly pinn
 
 ## Context7 — up-to-date documentation
 
-Context7 provides current documentation and version guidance for libraries. Use it before proposing technologies so recommendations are based on the latest upstream docs rather than the model knowledge cutoff.
+Context7 provides current documentation and version guidance for libraries via its REST API. Use it before proposing technologies so recommendations are based on the latest upstream docs rather than the model knowledge cutoff.
 
 ### Check availability
 
-Look at the tool list you were given. If you see `mcp__context7__resolve-library-id` and `mcp__context7__query-docs`, Context7 is connected. If those tools are not present, Context7 is **not connected**.
+Look at the tool list you were given. If you see the `Context7` tool, the API is configured. If it is missing or returns an auth error, Context7 is **not configured**.
 
-### If Context7 is connected
+### If Context7 is configured
 
 For each technology you consider (framework, ORM, auth library, UI kit, etc.):
 
-1. Call `mcp__context7__resolve-library-id` with the library name to get its Context7 ID.
-2. Call `mcp__context7__query-docs` with the Context7 ID and a focused query such as:
+1. Call `Context7` with `operation: search` and the library name to get its Context7 ID and versions.
+2. Call `Context7` with `operation: query`, the Context7 ID, and a focused query such as:
    - "latest stable version and install command"
    - "minimum Node.js / runtime requirements"
    - "peer dependencies and compatibility notes"
 3. Prefer Context7's answers over your training data when versions, requirements, or best practices differ.
 4. Record the Context7-sourced version and documentation URL in `sdd/tech-stack.md`.
 
-### If Context7 is NOT connected
+### If Context7 is NOT configured
 
-Tell the user that Context7 is not connected and guide them to add it. Keep the instructions minimal and match their environment:
+Tell the user that Context7 is not configured and guide them to add it once. Add this to `config.toml`:
 
-- **Remote (recommended)**: add a server named `context7` pointing to `https://mcp.context7.com/mcp` with the header `CONTEXT7_API_KEY: YOUR_API_KEY`.
-- **Local**: run `npx -y @upstash/context7-mcp --api-key YOUR_API_KEY` as a stdio MCP server named `context7`.
-- For other clients, the full setup guide is at https://context7.com/docs/resources/all-clients.
+```toml
+[services.context7]
+apiKey = "YOUR_CONTEXT7_API_KEY"
+```
+
+Or set the `CONTEXT7_API_KEY` environment variable.
 
 Do not block setup indefinitely; ask once, then proceed with registry version resolution (`npm view`, etc.) and note in `sdd/tech-stack.md` that Context7 is **not configured** and that the versions came from the registry.
 
