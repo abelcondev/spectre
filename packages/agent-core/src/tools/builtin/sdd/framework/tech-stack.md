@@ -95,6 +95,7 @@
 
 | MCP server | Technology | Configuration | Status |
 |---|---|---|---|
+| Context7 | Up-to-date library docs | `url: https://mcp.context7.com/mcp` + `CONTEXT7_API_KEY` header, or local `npx -y @upstash/context7-mcp` | *(configured / not configured)* |
 | Pencil.dev | Visual design | *(config)* | *(configured / pending)* |
 | *(e.g. @modelcontextprotocol/server-postgres)* | PostgreSQL | `env: DATABASE_URL` | configured |
 

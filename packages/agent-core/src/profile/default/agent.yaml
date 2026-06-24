@@ -1,5 +1,5 @@
 name: agent
-description: Default Kimi Code agent
+description: Spectre — senior development co-pilot for product discovery, stack decisions, Gherkin stories, Pencil-to-code implementation, and TDD
 
 systemPromptPath: ./system.md
 promptVars:

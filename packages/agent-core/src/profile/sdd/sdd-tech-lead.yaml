@@ -19,3 +19,4 @@ tools:
   - TodoList
   - WebSearch
   - FetchURL
+  - mcp__*

@@ -21,7 +21,8 @@ describe('default agent profiles', () => {
   it('loads the bundled default system prompt from embedded sources', () => {
     const prompt = DEFAULT_AGENT_PROFILES['agent']?.systemPrompt(promptContext);
 
-    expect(prompt).toContain('You are Kimi Code CLI');
+    expect(prompt).toContain('Spectre');
+    expect(prompt).toContain('Senior Development Co-pilot');
     expect(prompt).toContain('Available skills');
     expect(prompt).toContain('/workspace');
   });
@@ -29,7 +30,7 @@ describe('default agent profiles', () => {
   it('keeps static instructions before dynamic prompt context', () => {
     const prompt = DEFAULT_AGENT_PROFILES['agent']?.systemPrompt(promptContext) ?? '';
 
-    expect(prompt.indexOf('Use this as your basic understanding of the project structure.')).toBeLessThan(
+    expect(prompt.indexOf('The current working directory is')).toBeLessThan(
       prompt.indexOf('LISTING_SNAPSHOT'),
     );
     expect(prompt.indexOf('User instructions given directly in the conversation')).toBeLessThan(
