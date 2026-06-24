@@ -26,7 +26,6 @@ const OUTPUT_FILE = join(
 const ROOT_FILES = [
   // The root AGENTS.md belongs to the Spectre repo itself; projects receiving
   // SDD keep their own AGENTS.md or get the generic SDD one in sdd/AGENTS.md.
-  'CLAUDE.md',
 ];
 
 const SDD_GLOBS = [
