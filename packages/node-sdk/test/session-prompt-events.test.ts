@@ -208,7 +208,7 @@ describe('Session.prompt events', () => {
           reason: 'completed',
         }),
       );
-      expect(fakeProviderState.calls[0]?.systemPrompt).toContain('# Role: Orchestrator (SDD)');
+      expect(fakeProviderState.calls[0]?.systemPrompt).toContain('# Role: Spectre — Senior Development Co-pilot');
       expect(fakeProviderState.calls[0]?.systemPrompt).toContain('Spectre');
       expect(fakeProviderState.providerConfigs[0]).toMatchObject({
         type: 'kimi',

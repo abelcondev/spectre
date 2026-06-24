@@ -59,7 +59,7 @@ describe('HarnessAPI session skills', () => {
       source: 'project',
       disableModelInvocation: true,
     });
-    expect(listed?.path.endsWith('/.kimi-code/skills/phase-one-review/SKILL.md')).toBe(true);
+    expect(listed?.path.endsWith('/.spectre/skills/phase-one-review/SKILL.md')).toBe(true);
     expect(JSON.stringify(skills)).not.toContain('Review the requested file.');
   });
 
@@ -193,7 +193,7 @@ describe('HarnessAPI session skills', () => {
     const records = await readMainWire(created.sessionDir);
     const prompt = records.find((record) => record['type'] === 'turn.prompt');
     const userMessage = records.find((record) => record['type'] === 'context.append_message');
-    const skillDir = await realpath(join(workDir, '.kimi-code', 'skills', 'phase-one-review'));
+    const skillDir = await realpath(join(workDir, '.spectre', 'skills', 'phase-one-review'));
     const expectedPrompt = [
       'User activated the skill "phase-one-review". Follow the loaded skill instructions.',
       '',
@@ -283,7 +283,7 @@ describe('HarnessAPI session skills', () => {
 
     const records = await readMainWire(created.sessionDir);
     const prompt = records.find((record) => record['type'] === 'turn.prompt');
-    const skillDir = await realpath(join(workDir, '.kimi-code', 'skills', 'templated-review'));
+    const skillDir = await realpath(join(workDir, '.spectre', 'skills', 'templated-review'));
     const expectedPrompt = [
       'User activated the skill "templated-review". Follow the loaded skill instructions.',
       '',
@@ -330,7 +330,7 @@ describe('HarnessAPI session skills', () => {
     const prompt = records.find((record) => record['type'] === 'turn.prompt');
     const text = (prompt as { input?: Array<{ text?: string }> } | undefined)?.input?.[0]?.text;
 
-    const skillDir = await realpath(join(workDir, '.kimi-code', 'skills', 'brainstorm'));
+    const skillDir = await realpath(join(workDir, '.spectre', 'skills', 'brainstorm'));
     expect(text).toContain('User activated the skill "brainstorm". Follow the loaded skill instructions.');
     expect(text).toContain(
       `<kimi-skill-loaded name="brainstorm" trigger="user-slash" source="project" dir="${skillDir}" args="">`,
@@ -434,7 +434,7 @@ describe('HarnessAPI session skills', () => {
     const resumed = await second.rpc.resumeSession({ sessionId: created.id });
 
     expect(second.events.some((event) => event.type === 'skill.activated')).toBe(false);
-    const skillDir = await realpath(join(workDir, '.kimi-code', 'skills', 'phase-one-review'));
+    const skillDir = await realpath(join(workDir, '.spectre', 'skills', 'phase-one-review'));
     const context = await second.rpc.getContext({ sessionId: created.id, agentId: 'main' });
     expect(context.history).toMatchObject([
       {
@@ -494,7 +494,7 @@ describe('HarnessAPI session skills', () => {
       '',
       'Run the bundled helper script to do the work.',
     ]);
-    const scriptDir = join(workDir, '.kimi-code', 'skills', 'bundled-tool', 'scripts');
+    const scriptDir = join(workDir, '.spectre', 'skills', 'bundled-tool', 'scripts');
     await mkdir(scriptDir, { recursive: true });
     await writeFile(join(scriptDir, 'run.sh'), '#!/bin/sh\necho hi\n');
 
@@ -514,7 +514,7 @@ describe('HarnessAPI session skills', () => {
     await second.rpc.resumeSession({ sessionId: created.id });
     const context = await second.rpc.getContext({ sessionId: created.id, agentId: 'main' });
 
-    const skillDir = await realpath(join(workDir, '.kimi-code', 'skills', 'bundled-tool'));
+    const skillDir = await realpath(join(workDir, '.spectre', 'skills', 'bundled-tool'));
     const skillMessage = context.history.find(
       (entry) =>
         entry.origin?.kind === 'skill_activation' &&
@@ -634,7 +634,7 @@ describe('HarnessAPI session skills', () => {
   });
 
   async function writeSkill(name: string, lines: readonly string[]): Promise<void> {
-    const dir = join(workDir, '.kimi-code', 'skills', name);
+    const dir = join(workDir, '.spectre', 'skills', name);
     await mkdir(dir, { recursive: true });
     await writeFile(join(dir, 'SKILL.md'), lines.join('\n'));
   }
@@ -644,7 +644,7 @@ describe('HarnessAPI session skills', () => {
     name: string,
     description: string,
   ): Promise<void> {
-    await writeSkillFile(join(userHomeDir, '.kimi-code', 'skills', name), name, description);
+    await writeSkillFile(join(userHomeDir, '.spectre', 'skills', name), name, description);
   }
 
   async function writeBrandUserSkill(
@@ -666,7 +666,7 @@ describe('HarnessAPI session skills', () => {
   }
 
   async function writeFlatSkill(name: string, lines: readonly string[]): Promise<void> {
-    const dir = join(workDir, '.kimi-code', 'skills');
+    const dir = join(workDir, '.spectre', 'skills');
     await mkdir(dir, { recursive: true });
     await writeFile(join(dir, `${name}.md`), lines.join('\n'));
   }

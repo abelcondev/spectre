@@ -12,7 +12,7 @@ import { createDecorator } from '../../di';
 
 export interface IEnvironmentService {
   readonly _serviceBrand: undefined;
-  /** Resolved kimi home directory (e.g. `~/.kimi-code`). */
+  /** Resolved Spectre home directory (e.g. `~/.spectre`). */
   readonly homeDir: string;
   /** Resolved absolute path to `config.toml`. */
   readonly configPath: string;

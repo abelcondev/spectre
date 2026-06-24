@@ -10,22 +10,22 @@ Help the user design, write, and apply a custom color theme for the kimi-code TU
 ## Rules of engagement
 
 - **Never write a theme until the user has explicitly clarified what they want.** This skill may only run after the user has confirmed light vs dark, the style or mood, any specific colors they care about, and the intended filename. If any of these are missing, ask before creating files.
-- **Never assume the data directory is `~/.kimi-code`.** Always resolve `$KIMI_CODE_HOME` first with the Bash command below.
+- **Never assume the data directory is `~/.spectre`.** Always resolve `$KIMI_CODE_HOME` first with the Bash command below.
 - **Never edit a live theme file in place.** Always create a `.json.new` candidate, validate it, back up the old file, and then `mv` it into place.
 - **Never overwrite an existing theme without reading it first.** Read, back up, then overwrite only after the user confirms.
 
 ## Where a theme lives
 
-The kimi-code runtime resolves the data directory as `KIMI_CODE_HOME` first, falling back to `~/.kimi-code`. Theme files live inside the `themes/` subdirectory of that data directory.
+The Spectre runtime resolves the data directory as `KIMI_CODE_HOME` first, falling back to `~/.spectre`. Theme files live inside the `themes/` subdirectory of that data directory.
 
-Before doing anything, resolve the actual data root with Bash so you don't write to the wrong place. Check whether `KIMI_CODE_HOME` is set and fall back to `~/.kimi-code` when it is empty:
+Before doing anything, resolve the actual data root with Bash so you don't write to the wrong place. Check whether `KIMI_CODE_HOME` is set and fall back to `~/.spectre` when it is empty:
 
 ```bash
 echo "$KIMI_CODE_HOME"
-echo "$HOME/.kimi-code"
+echo "$HOME/.spectre"
 ```
 
-Use the first line when it is non-empty; otherwise use the second line. In the rest of this skill, `<KIMI_CODE_HOME>` means that resolved data root — **never assume `~/.kimi-code`**. Theme files live at `<KIMI_CODE_HOME>/themes/<name>.json`. Create the `themes/` directory if it doesn't exist.
+Use the first line when it is non-empty; otherwise use the second line. In the rest of this skill, `<KIMI_CODE_HOME>` means that resolved data root — **never assume `~/.spectre`**. Theme files live at `<KIMI_CODE_HOME>/themes/<name>.json`. Create the `themes/` directory if it doesn't exist.
 
 ## What a theme is
 
@@ -90,7 +90,7 @@ Only set tokens from this set — unknown keys are silently ignored at load. If 
    For the discrete choices (light vs dark, a few style options), prefer **AskUserQuestion** if it is available. If you are running in **auto mode** and `AskUserQuestion` is unavailable, ask the same question as a plain-text message with clear numbered or bulleted options, and wait for the user's reply. Don't start picking colors until you at least know light-vs-dark and the rough style.
 
 2. **Resolve the actual theme directory and current theme(s).**
-   - Resolve the data root by checking `echo "$KIMI_CODE_HOME"`; if empty, use `echo "$HOME/.kimi-code"`. Use `<root>/themes` for every subsequent step.
+   - Resolve the data root by checking `echo "$KIMI_CODE_HOME"`; if empty, use `echo "$HOME/.spectre"`. Use `<root>/themes` for every subsequent step.
    - If tweaking an existing custom theme, **Read** `<KIMI_CODE_HOME>/themes/<name>.json` first — never overwrite a theme you haven't read.
    - Starting fresh: build a `colors` object from the token table. You can `ls <KIMI_CODE_HOME>/themes/` and Read one of the user's existing themes as a reference for the format.
 

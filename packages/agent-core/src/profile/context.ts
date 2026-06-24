@@ -42,10 +42,10 @@ export async function loadAgentsMd(kaos: Kaos, brandHome?: string): Promise<stri
   };
 
   // User-level files come first so any project-level AGENTS.md overrides them.
-  // The brand dir follows KIMI_CODE_HOME (default ~/.kimi-code); the generic
+  // The brand dir follows KIMI_CODE_HOME (default ~/.spectre); the generic
   // .agents dir stays under the real OS home so it can be shared across tools.
   const realHome = kaos.gethome();
-  const brandDir = brandHome ?? join(realHome, '.kimi-code');
+  const brandDir = brandHome ?? join(realHome, '.spectre');
   await collect(join(brandDir, 'AGENTS.md'));
 
   // Generic user-level dir (.agents) matches skill discovery.
@@ -58,7 +58,7 @@ export async function loadAgentsMd(kaos: Kaos, brandHome?: string): Promise<stri
   }
 
   for (const dir of dirs) {
-    await collect(join(dir, '.kimi-code', 'AGENTS.md'));
+    await collect(join(dir, '.spectre', 'AGENTS.md'));
     for (const fileName of ['AGENTS.md', 'agents.md']) {
       if (await collect(join(dir, fileName))) break;
     }

@@ -617,7 +617,7 @@ describe('runShell', () => {
     });
     mocks.detectPendingMigration.mockResolvedValue({ totalSessions: 1 });
     mocks.harnessGetConfig.mockRejectedValue(
-      new Error('Invalid configuration in ~/.kimi-code/config.toml'),
+      new Error('Invalid configuration in ~/.spectre/config.toml'),
     );
 
     // A broken config.toml must fail loudly — `kimi migrate` must not swallow

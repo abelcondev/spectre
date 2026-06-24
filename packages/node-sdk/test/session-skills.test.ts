@@ -99,7 +99,7 @@ describe('Session skills', () => {
         source: 'project',
         disableModelInvocation: true,
       });
-      expect(listed?.path.endsWith('/.kimi-code/skills/review/SKILL.md')).toBe(true);
+      expect(listed?.path.endsWith('/.spectre/skills/review/SKILL.md')).toBe(true);
       expect(JSON.stringify(skills)).not.toContain('Review the requested file.');
     } finally {
       await harness.close();
@@ -172,7 +172,7 @@ describe('Session skills', () => {
       expect(state['isCustomTitle']).toBe(false);
       expect(state['lastPrompt']).toBe('/review src/app.ts');
 
-      const skillDir = await realpath(join(workDir, '.kimi-code', 'skills', 'review'));
+      const skillDir = await realpath(join(workDir, '.spectre', 'skills', 'review'));
       await expect(
         waitForAgentWireEvent(
           homeDir,
@@ -298,7 +298,7 @@ describe('Session skills', () => {
 });
 
 async function writeSkill(workDir: string, name: string, lines: readonly string[]): Promise<void> {
-  const dir = join(workDir, '.kimi-code', 'skills', name);
+  const dir = join(workDir, '.spectre', 'skills', name);
   await mkdir(dir, { recursive: true });
   await writeFile(join(dir, 'SKILL.md'), lines.join('\n'));
 }
@@ -308,7 +308,7 @@ async function writeLegacyUserSkill(
   name: string,
   description: string,
 ): Promise<void> {
-  await writeSkillFile(join(userHomeDir, '.kimi-code', 'skills', name), name, description);
+  await writeSkillFile(join(userHomeDir, '.spectre', 'skills', name), name, description);
 }
 
 async function writeBrandUserSkill(

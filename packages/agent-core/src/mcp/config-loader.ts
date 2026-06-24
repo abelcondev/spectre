@@ -27,7 +27,7 @@ export async function resolveMcpJsonPaths(input: ResolveMcpJsonPathsInput): Prom
   return {
     user: join(resolveKimiHome(input.homeDir), 'mcp.json'),
     projectRoot: join(projectRoot, '.mcp.json'),
-    project: join(input.cwd, '.kimi-code', 'mcp.json'),
+    project: join(input.cwd, '.spectre', 'mcp.json'),
   };
 }
 
@@ -37,11 +37,11 @@ export interface LoadMcpServersInput {
 }
 
 /**
- * Load MCP server declarations from the user-global `~/.kimi-code/mcp.json`,
+ * Load MCP server declarations from the user-global `~/.spectre/mcp.json`,
  * the project-root `<project root>/.mcp.json`, and the project-local
- * `<cwd>/.kimi-code/mcp.json`. Entries in later files override earlier files
+ * `<cwd>/.spectre/mcp.json`. Entries in later files override earlier files
  * with the same key, so a repo can specialise or replace a shared definition,
- * and Kimi-specific project config wins over the Claude-compatible root file.
+ * and Spectre-specific project config wins over the Claude-compatible root file.
  *
  * Note: project-local entries may spawn stdio commands at session start, so
  * opening a session inside an untrusted checkout will execute whatever its

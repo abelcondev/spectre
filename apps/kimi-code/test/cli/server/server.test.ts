@@ -636,12 +636,12 @@ describe('resolveDaemonProgram', () => {
     // name (`kimi`), not a path. Resolving it against cwd produced `<cwd>/kimi`
     // and crashed the spawn with ENOENT.
     const { resolveDaemonProgram } = await import('#/cli/sub/server/daemon');
-    expect(resolveDaemonProgram(['/Users/x/.kimi-code/bin/kimi', 'kimi', 'web'], '/Users/x', '/Users/x/.kimi-code/bin/kimi', true)).toBe('/Users/x/.kimi-code/bin/kimi');
+    expect(resolveDaemonProgram(['/Users/x/.spectre/bin/kimi', 'kimi', 'web'], '/Users/x', '/Users/x/.spectre/bin/kimi', true)).toBe('/Users/x/.spectre/bin/kimi');
   });
 
   it('returns execPath in SEA mode for a spawned `server` child', async () => {
     const { resolveDaemonProgram } = await import('#/cli/sub/server/daemon');
-    expect(resolveDaemonProgram(['/Users/x/.kimi-code/bin/kimi', 'server', 'run'], '/Users/x', '/Users/x/.kimi-code/bin/kimi', true)).toBe('/Users/x/.kimi-code/bin/kimi');
+    expect(resolveDaemonProgram(['/Users/x/.spectre/bin/kimi', 'server', 'run'], '/Users/x', '/Users/x/.spectre/bin/kimi', true)).toBe('/Users/x/.spectre/bin/kimi');
   });
 });
 

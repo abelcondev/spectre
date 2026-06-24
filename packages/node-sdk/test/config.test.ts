@@ -356,7 +356,7 @@ micro_compaction = false
     await harness.ensureConfigFile();
 
     const text = await readFile(configPath, 'utf-8');
-    expect(text).toContain('Runtime settings for Kimi Code.');
+    expect(text).toContain('Runtime settings for Spectre.');
     expect(text).not.toMatch(/^default_thinking =/m);
     expect(text).not.toMatch(/^default_model =/m);
 

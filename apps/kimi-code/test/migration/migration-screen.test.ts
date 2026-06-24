@@ -34,7 +34,7 @@ describe('MigrationScreenComponent — ask phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: () => {},
     });
     const out = render(c);
@@ -53,7 +53,7 @@ describe('MigrationScreenComponent — ask phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: () => {},
     });
     const out = render(c);
@@ -66,7 +66,7 @@ describe('MigrationScreenComponent — ask phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: (r) => {
         result = r;
       },
@@ -81,7 +81,7 @@ describe('MigrationScreenComponent — ask phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       runMigration: async (input) => {
         captured = input;
         return makeReport();
@@ -99,7 +99,7 @@ describe('MigrationScreenComponent — ask phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       runMigration: async (input) => {
         captured = input;
         return makeReport();
@@ -117,7 +117,7 @@ describe('MigrationScreenComponent — ask phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan({ totalSessions: 1365 }),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: () => {},
     });
     c.handleInput('\r'); // ask1: Migrate now -> ask2
@@ -133,7 +133,7 @@ describe('MigrationScreenComponent — ask phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan({ totalSessions: 0 }),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: () => {},
     });
     c.handleInput('\r'); // ask1 -> ask2
@@ -147,7 +147,7 @@ describe('MigrationScreenComponent — ask phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       skipDecisionStep: true,
       onComplete: () => {},
     });
@@ -162,7 +162,7 @@ describe('MigrationScreenComponent — ask phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       skipDecisionStep: true,
       runMigration: async (input) => {
         captured = input;
@@ -181,7 +181,7 @@ describe('MigrationScreenComponent — progress phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: () => {},
     });
     // expose progress rendering via the test hook (see Step 5.2)
@@ -200,7 +200,7 @@ describe('MigrationScreenComponent — progress phase', () => {
       const c = new MigrationScreenComponent({
         plan: makePlan(),
         sourceHome: '/x/.kimi',
-        targetHome: '/y/.kimi-code',
+        targetHome: '/y/.spectre',
         skipDecisionStep: true,
         // A migration that never settles keeps the screen in the progress
         // phase so the spinner animation can be observed.
@@ -224,7 +224,7 @@ describe('MigrationScreenComponent — progress phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: () => {},
     });
     c._testEnterProgress();
@@ -248,7 +248,7 @@ function makeReport(
     completedAt: 'e',
     migratorVersion: '0.1.1',
     source: '/x/.kimi',
-    target: '/y/.kimi-code',
+    target: '/y/.spectre',
     summary: {
       config: {
         migrated: true,
@@ -299,7 +299,7 @@ describe('MigrationScreenComponent — result phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: () => {},
     });
     c._testShowResult(makeReport());
@@ -313,7 +313,7 @@ describe('MigrationScreenComponent — result phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: () => {},
     });
     c._testShowResult(
@@ -346,7 +346,7 @@ describe('MigrationScreenComponent — result phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: (r) => {
         result = r;
       },
@@ -361,7 +361,7 @@ describe('MigrationScreenComponent — result phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: () => {},
     });
     // config skipped (e.g. a malformed legacy config.toml).
@@ -396,7 +396,7 @@ describe('MigrationScreenComponent — result phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: () => {},
     });
     c._testShowResult(
@@ -436,7 +436,7 @@ describe('MigrationScreenComponent — result phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: () => {},
     });
     c._testShowResult(
@@ -477,7 +477,7 @@ describe('MigrationScreenComponent — result phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: () => {},
     });
     c._testShowResult(makeReport({ sessionsSkippedEmpty: 3 }));
@@ -491,7 +491,7 @@ describe('MigrationScreenComponent — result phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: () => {},
     });
     c._testShowResult(
@@ -523,7 +523,7 @@ describe('MigrationScreenComponent — result phase', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: () => {},
     });
     c._testShowResult(makeReport({}, {}, { mcpOauthServersRequiringReauth: ['srv-a', 'srv-b'] }));
@@ -539,7 +539,7 @@ describe('MigrationScreenComponent — execution wiring', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: (r) => {
         onCompleteResult = r;
       },
@@ -560,7 +560,7 @@ describe('MigrationScreenComponent — execution wiring', () => {
     const c = new MigrationScreenComponent({
       plan: makePlan(),
       sourceHome: '/x/.kimi',
-      targetHome: '/y/.kimi-code',
+      targetHome: '/y/.spectre',
       onComplete: () => {},
       runMigration: async () => {
         throw new Error('boom');

@@ -1,24 +1,24 @@
 ---
 name: update-config
-description: Inspect or edit kimi-code's own config — `config.toml` (model, provider, permission, hooks) and `tui.toml` (theme, editor, notifications, auto-update). Use when the user asks what a setting does or wants to change one.
+description: Inspect or edit Spectre's own config — `config.toml` (model, provider, permission, hooks) and `tui.toml` (theme, editor, notifications, auto-update). Use when the user asks what a setting does or wants to change one.
 ---
 
-# Configure kimi-code (update-config)
+# Configure Spectre (update-config)
 
-Help the user inspect, change, and validate kimi-code's configuration files. The files are **TOML** with **snake_case** keys.
+Help the user inspect, change, and validate Spectre's configuration files. The files are **TOML** with **snake_case** keys.
 
 ## The two config files
 
-kimi-code has two TOML config files, both under `<KIMI_CODE_HOME>/`, both snake_case, but with different ownership — decide which one the user means before doing anything.
+Spectre has two TOML config files, both under `<KIMI_CODE_HOME>/`, both snake_case, but with different ownership — decide which one the user means before doing anything.
 
-The runtime resolves the data directory as `KIMI_CODE_HOME` first, falling back to `~/.kimi-code`. Before doing anything, resolve the actual directory with Bash so you don't write to the wrong place. Check whether `KIMI_CODE_HOME` is set and fall back to `~/.kimi-code` when it is empty:
+The Spectre runtime resolves the data directory as `KIMI_CODE_HOME` first, falling back to `~/.spectre`. Before doing anything, resolve the actual directory with Bash so you don't write to the wrong place. Check whether `KIMI_CODE_HOME` is set and fall back to `~/.spectre` when it is empty:
 
 ```bash
 echo "$KIMI_CODE_HOME"
-echo "$HOME/.kimi-code"
+echo "$HOME/.spectre"
 ```
 
-Use the first line when it is non-empty; otherwise use the second line. In the rest of this skill, `<KIMI_CODE_HOME>` means that resolved root — **never assume `~/.kimi-code`**.
+Use the first line when it is non-empty; otherwise use the second line. In the rest of this skill, `<KIMI_CODE_HOME>` means that resolved root — **never assume `~/.spectre`**.
 
 - **`config.toml`** — agent / runtime settings: `default_model`, `providers`, `models`, `thinking`, `permission`, `hooks`, `loop_control`, etc.
 - **`tui.toml`** — terminal-UI / client preferences: `theme`, `[editor].command`, `[notifications]`, `[upgrade].auto_install` (auto-update). These can usually also be changed with the interactive commands `/config`, `/theme`, `/editor`, which is easier — prefer pointing the user at those.
