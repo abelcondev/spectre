@@ -1,6 +1,6 @@
 # Contributing to Spectre
 
-Thanks for taking the time to contribute! This project moves quickly, and thoughtful contributions from the community are what keep it sharp. The guide below walks you through how we work so your PR has the best chance of landing smoothly.
+Thanks for taking the time to contribute! Spectre is an independent fork of [Kimi Code](https://github.com/MoonshotAI/kimi-code). We do not send PRs upstream; we evolve Spectre on its own repository and roadmap. The guide below walks you through how we work so your PR has the best chance of landing smoothly.
 
 ## Before You Start
 
@@ -27,10 +27,12 @@ We only merge PRs aligned with the roadmap. Drive-by refactors without context a
 
 This is a pnpm monorepo. The most relevant entry points are:
 
-- `apps/kimi-code` — CLI / TUI
+- `apps/kimi-code` — CLI / TUI (`spectre` command)
 - `apps/vis` — session replay & debugging visualizer
 - `packages/node-sdk` — public TypeScript SDK (`@moonshot-ai/kimi-code-sdk`)
 - `packages/agent-core`, `kosong`, `kaos`, `oauth`, `telemetry` — internal engine packages
+
+The published Spectre CLI package is `@abelcondev/spectre`.
 - `docs/` — VitePress bilingual docs site
 
 For the full project map, see [AGENTS.md](AGENTS.md).
