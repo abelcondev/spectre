@@ -16,7 +16,7 @@ import { mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { dirname, join, relative } from 'node:path';
 
 const REPO_ROOT = new URL('..', import.meta.url).pathname;
-const SDD_ROOT = join(REPO_ROOT, 'sdd');
+const SDD_ROOT = join(REPO_ROOT, 'packages/agent-core/src/tools/builtin/sdd/framework');
 const SCRIPTS_ROOT = join(REPO_ROOT, 'scripts');
 const OUTPUT_FILE = join(
   REPO_ROOT,
