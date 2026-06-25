@@ -199,6 +199,20 @@ export const BUILTIN_SLASH_COMMANDS = [
     description: 'Analyze the codebase and generate AGENTS.md',
   },
   {
+    name: 'sdd-setup',
+    aliases: [],
+    description: 'Create the lightweight sdd/ project memory structure',
+    priority: 60,
+    availability: 'always',
+  },
+  {
+    name: 'sdd-status',
+    aliases: [],
+    description: 'Check that the sdd/ project memory structure is complete',
+    priority: 60,
+    availability: 'always',
+  },
+  {
     name: 'fork',
     aliases: [],
     description: 'Fork the current session',

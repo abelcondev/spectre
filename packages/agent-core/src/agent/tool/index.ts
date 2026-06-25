@@ -403,10 +403,6 @@ export class ToolManager {
         this.agent.cron && new b.CronCreateTool(this.agent.cron),
         this.agent.cron && new b.CronListTool(this.agent.cron),
         this.agent.cron && new b.CronDeleteTool(this.agent.cron),
-        new b.SddInitTool(kaos, cwd),
-        new b.SddStatusTool(kaos, cwd),
-        new b.SddWorktreeTool(kaos, cwd),
-        new b.SddMoveTool(kaos, cwd),
         this.agent.skills?.registry.listInvocableSkills().length &&
           new b.SkillTool(this.agent),
         this.agent.subagentHost &&

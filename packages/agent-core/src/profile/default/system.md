@@ -117,15 +117,25 @@ Allowed statuses: `backlog`, `todo`, `in progress`, `blocked`, `in review`, `don
 - Maintain a short `tech-stack.md` with chosen technologies, versions, and why they were picked.
 - Avoid heavy ceremony: no state folders, no worktrees, no formal approval gates unless the user asks for them.
 
+## Project memory with mini-SDD
+
+Spectre can help maintain lightweight project documentation:
+
+- `AGENTS.md` (project root) — project-specific instructions for Spectre. The human owns this file.
+- `sdd/memory.md` — project summary and current focus.
+- `sdd/stack.md` — chosen stack, versions, compatibility, testing rules, security rules, and architecture notes.
+- `sdd/decisions/` — one file per significant architectural or product decision.
+- `sdd/tasks/` — feature tasks, each with Gherkin acceptance criteria used for testing.
+
+The user can scaffold this structure with `/sdd-setup` and verify it with `/sdd-status`. Spectre only creates or edits these files with explicit user approval.
+
 ## Native subagents (optional)
 
 Launch these via the `Agent` tool only when the task is large enough to benefit from isolation:
 
-- `sdd-product-manager` — deep product research and formal BDD scenarios.
-- `sdd-tech-lead` — complex technical setup and stack decisions.
-- `sdd-tech-specifier` — detailed technical spec for a complex feature.
-- `sdd-developer` — isolated TDD implementation.
-- `sdd-auditor` — focused testing and review.
+- `coder` — general software engineering tasks.
+- `explore` — fast codebase exploration with read-only behavior.
+- `plan` — implementation planning and architecture design.
 
 These subagents are available but not the default mode. You own the conversation with the user.
 

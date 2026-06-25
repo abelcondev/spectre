@@ -2,14 +2,14 @@
 
 Reply in the same language as the user.
 
-This is **Spectre**, a fork of [Kimi Code](https://github.com/MoonshotAI/kimi-code) built for agent-assisted development. Spectre adds native SDD (Spec-Driven Development) capabilities, but **Spectre itself is developed as a normal TypeScript monorepo**, not as an SDD project. The SDD framework lives under `packages/agent-core/src/tools/builtin/sdd/framework/` and is installed into user projects via `spectre sdd init`.
+This is **Spectre**, a fork of [Kimi Code](https://github.com/MoonshotAI/kimi-code) built for agent-assisted development. Spectre offers a lightweight **mini-SDD** project-memory scaffold via TUI slash commands (`/sdd-setup`, `/sdd-status`), but **Spectre itself is developed as a normal TypeScript monorepo**, not as an SDD project.
 
 Keep the root `AGENTS.md` limited to hot-path rules: the project map, hard constraints, and workflow requirements — things every task needs to know.
 
 ## Spectre Development vs. Spectre as a Product
 
-- **Developing Spectre**: we use Kimi Code CLI in normal codebase mode. We do *not* run `spectre sdd init` on this repo and we do *not* follow the SDD workflow for Spectre's own code.
-- **Spectre as a product**: end users run Spectre, and Spectre guides them through SDD in *their* projects. The SDD orchestrator is the default `agent` profile in `packages/agent-core/src/profile/default/`.
+- **Developing Spectre**: we use Kimi Code CLI in normal codebase mode. We do *not* run `/sdd-setup` on this repo and we do *not* follow the SDD workflow for Spectre's own code.
+- **Spectre as a product**: end users run Spectre. In *their* projects they can use `/sdd-setup` and `/sdd-status` to scaffold and verify a lightweight `sdd/` project-memory folder. The default `agent` profile in `packages/agent-core/src/profile/default/` reads `AGENTS.md` (project root) and any `sdd/` files as context, but never edits `AGENTS.md` automatically.
 
 ## Working Principles
 
@@ -24,7 +24,7 @@ Keep the root `AGENTS.md` limited to hot-path rules: the project map, hard const
 - `apps/kimi-code`: the CLI / TUI application. It consumes core capabilities through `@moonshot-ai/kimi-code-sdk` and must not depend directly on `@moonshot-ai/agent-core`. When writing or modifying its terminal UI, use the `write-tui` skill (`.agents/skills/write-tui/SKILL.md`).
 - `apps/kimi-web`: the browser web UI, a peer to the TUI. Vue 3 + Vite + vue-i18n; talks to the server over REST + WebSocket under `/api/v1`. It must not depend on `@moonshot-ai/agent-core` (wire types are re-implemented locally). See `apps/kimi-web/AGENTS.md`.
 - `apps/vis`, `apps/vis/server`, `apps/vis/web`: visual debugging tools for sessions and replays.
-- `packages/agent-core`: the unified agent engine, including Agent, Session, profile, skills, tools, plan, permission, background, records, the in-process DI service layer (`src/services/`), and other core capabilities. The SDD profiles and framework live here.
+- `packages/agent-core`: the unified agent engine, including Agent, Session, profile, skills, tools, plan, permission, background, records, the in-process DI service layer (`src/services/`), and other core capabilities.
 - `packages/node-sdk`: the public TypeScript SDK and harness.
 - `packages/kosong`: the LLM / provider abstraction layer.
 - `packages/kaos`: the execution environment and file/process abstractions.

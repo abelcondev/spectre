@@ -69,40 +69,34 @@ For Zed, add this to `~/.config/zed/settings.json`:
 
 Then open a new conversation in Zed's Agent panel.
 
-## Spectre SDD
+## Spectre mini-SDD
 
-Spectre uses the SDD (Spec-Driven Development) workflow natively. The `spectre sdd` command manages the SDD harness directly in the CLI, without relying on external scripts.
+Spectre includes a lightweight project-memory scaffold inspired by SDD (Spec-Driven Development). Use slash commands inside the TUI to create and verify a minimal `sdd/` folder.
 
-Initialize the SDD harness in the current Git repository:
-
-```sh
-spectre sdd init
-```
-
-Create a feature worktree (a sibling directory with its own branch):
+Scaffold the project-memory files in the current working directory:
 
 ```sh
-spectre sdd worktree create <feature-slug>
+/sdd-setup
 ```
 
-Move an Issue between state folders and commit the change:
+Check that the memory structure is present and that a root `AGENTS.md` exists:
 
 ```sh
-spectre sdd move <feature-slug> <issue-name> <source-state> <target-state>
+/sdd-status
 ```
 
-Example:
+The scaffold creates:
 
-```sh
-spectre sdd move login-y-dashboard-layout login design/spec-needed design/designing
-```
+- `sdd/memory.md` — project overview, current focus, and links to decisions/tasks.
+- `sdd/stack.md` — tech stack, versions, testing/security rules.
+- `sdd/decisions/` — folder for decision records.
+- `sdd/tasks/` — folder for task notes.
 
-The legacy shell scripts `scripts/sdd-worktree.sh` and `scripts/sdd-move.sh` are no longer installed by `spectre sdd init`; they remain in the repository only as reference/legacy.
+`AGENTS.md` stays at the project root and remains human-owned; Spectre reads it for context but does not edit it automatically.
 
 ## Docs
 
 - [Documentation](docs/en/)
-- [SDD Workflow](sdd/README.md)
 - [Contributing](CONTRIBUTING.md)
 
 ## Develop
@@ -123,7 +117,7 @@ pnpm lint       # oxlint
 pnpm build      # build all packages
 ```
 
-> **Note:** Spectre is developed as a normal TypeScript monorepo with Kimi Code CLI. We do *not* use `spectre sdd init` on this repository. SDD is the workflow Spectre offers to its users, not the workflow used to build Spectre itself.
+> **Note:** Spectre is developed as a normal TypeScript monorepo with Kimi Code CLI. We do *not* use `/sdd-setup` on this repository. Mini-SDD is a lightweight memory scaffold Spectre offers to its users, not the workflow used to build Spectre itself.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the full contribution guide.
 

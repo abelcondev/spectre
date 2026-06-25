@@ -56,7 +56,7 @@ Useful scripts:
 - `pnpm lint:fix` — oxlint with auto-fix
 - `pnpm build` — build all packages
 
-> **Note:** Spectre is developed as a normal TypeScript monorepo with Kimi Code CLI. We do *not* run `spectre sdd init` on this repository, and we do *not* follow the SDD workflow for Spectre's own code. SDD is the workflow Spectre provides to its users.
+> **Note:** Spectre is developed as a normal TypeScript monorepo with Kimi Code CLI. We do *not* run `/sdd-setup` on this repository, and we do *not* follow the SDD workflow for Spectre's own code. Mini-SDD is a lightweight memory scaffold Spectre provides to its users.
 
 ## Commit Convention
 

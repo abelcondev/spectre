@@ -42,6 +42,7 @@ import { handleProviderCommand } from './provider';
 import type { BuiltinSlashCommandName } from './registry';
 import { handleReloadCommand, handleReloadTuiCommand } from './reload';
 import { resolveSlashCommandInput, slashBusyMessage } from './resolve';
+import { handleSddSetupCommand, handleSddStatusCommand } from './sdd';
 import {
   handleExportDebugZipCommand,
   handleExportMdCommand,
@@ -309,6 +310,12 @@ async function handleBuiltInSlashCommand(
       return;
     case 'init':
       await handleInitCommand(host);
+      return;
+    case 'sdd-setup':
+      await handleSddSetupCommand(host);
+      return;
+    case 'sdd-status':
+      await handleSddStatusCommand(host);
       return;
     case 'fork':
       await handleForkCommand(host, args);

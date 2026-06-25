@@ -32,10 +32,6 @@ tools:
   - GetGoal
   - SetGoalBudget
   - UpdateGoal
-  - SddInit
-  - SddStatus
-  - SddWorktree
-  - SddMove
   - mcp__*
 
 subagents:
@@ -45,13 +41,3 @@ subagents:
     description: Fast codebase exploration with prompt-enforced read-only behavior.
   plan:
     description: Read-only implementation planning and architecture design.
-  sdd-product-manager:
-    description: Complex product discovery and BDD scenarios.
-  sdd-tech-lead:
-    description: Complex technical setup and stack decisions on main.
-  sdd-tech-specifier:
-    description: Complex technical specs and test plans.
-  sdd-developer:
-    description: TDD implementation in a feature worktree.
-  sdd-auditor:
-    description: Testing, review, and quality gate feedback.
