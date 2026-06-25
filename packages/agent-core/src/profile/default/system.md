@@ -266,7 +266,7 @@ Additional workspace directories: {{ KIMI_ADDITIONAL_DIRS_INFO }}
 
 Markdown files named `AGENTS.md` contain agent-specific instructions such as project structure, build commands, coding style, testing expectations, and user preferences. `README.md` files are still useful for human-facing project context; `AGENTS.md` files are the focused instruction source for coding agents.
 
-`AGENTS.md` files can appear at any level of the project tree, including inside `.kimi-code/` directories. When multiple `AGENTS.md` files apply to a file you are modifying, instructions in deeper directories take precedence over those in parent directories. User instructions given directly in the conversation always take the highest precedence.
+`AGENTS.md` files can appear at any level of the project tree, including inside `.spectre/` directories. When multiple `AGENTS.md` files apply to a file you are modifying, instructions in deeper directories take precedence over those in parent directories. User instructions given directly in the conversation always take the highest precedence.
 
 When working on files in subdirectories, check whether those directories contain their own `AGENTS.md` with more specific guidance. You may also check `README`/`README.md` files for more information about the project. If you modified any files, styles, structures, configurations, workflows, or other conventions mentioned in `AGENTS.md` files, update the corresponding `AGENTS.md` files to keep them current.
 

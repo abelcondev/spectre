@@ -229,7 +229,7 @@ function appendTrace(text, trace) {
 
 function resolveKimiHome() {
   const explicit = process.env.KIMI_CODE_HOME?.trim();
-  return explicit && explicit.length > 0 ? explicit : path.join(homedir(), '.kimi-code');
+  return explicit && explicit.length > 0 ? explicit : path.join(homedir(), '.spectre');
 }
 
 function datasourceApiUrl() {

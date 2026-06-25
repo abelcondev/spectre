@@ -2,7 +2,7 @@
  * `kimi server ps` — list clients currently connected to the running server.
  *
  * Talks to the running server over HTTP (`GET /api/v1/connections`) using the
- * single-instance lock (`~/.kimi-code/server/lock`) to discover its origin —
+ * single-instance lock (`~/.spectre/server/lock`) to discover its origin —
  * the same way `kimi web` locates the daemon.
  */
 

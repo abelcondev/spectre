@@ -1,13 +1,13 @@
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 
-/** Resolve KIMI_CODE_HOME (env > ~/.kimi-code). */
+/** Resolve KIMI_CODE_HOME (env > ~/.spectre). */
 export function resolveKimiCodeHome(): string {
   const envHome = process.env['KIMI_CODE_HOME'];
   if (envHome !== undefined && envHome.length > 0) {
     return envHome;
   }
-  return join(homedir(), '.kimi-code');
+  return join(homedir(), '.spectre');
 }
 
 /** HTTP port for the vis API server. */
