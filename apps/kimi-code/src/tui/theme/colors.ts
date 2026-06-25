@@ -74,7 +74,7 @@ export interface ColorPalette {
 }
 
 export const darkColors: ColorPalette = {
-  primary: '#4FA8FF',
+  primary: '#E94444',
   accent: '#5BC0BE',
 
   text: '#E0E0E0',
@@ -100,7 +100,7 @@ export const darkColors: ColorPalette = {
 };
 
 export const lightColors: ColorPalette = {
-  primary: '#1565C0',
+  primary: '#E94444',
   accent: '#00838F',
 
   text: '#1A1A1A',

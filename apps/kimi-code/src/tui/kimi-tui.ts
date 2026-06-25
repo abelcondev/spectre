@@ -170,6 +170,7 @@ function createInitialAppState(input: KimiTUIStartupInput): AppState {
     permissionMode: startupPermission,
     planMode: input.cliOptions.plan,
     swarmMode: false,
+    autoCommit: false,
     thinking: false,
     contextUsage: 0,
     contextTokens: 0,
@@ -1620,7 +1621,7 @@ export class KimiTUI {
         this.state.ui.requestRender();
         return;
       case 'waiting': {
-        const spinner = this.ensureActivitySpinner('moon');
+        const spinner = this.ensureActivitySpinner('rainbow-text');
         this.syncAgentSwarmActivitySpinner(placeSpinnerInAgentSwarm ? spinner : undefined);
         if (placeSpinnerInAgentSwarm) break;
         this.state.activityContainer.addChild(
@@ -1650,7 +1651,7 @@ export class KimiTUI {
         break;
       }
       case 'tool': {
-        const spinner = this.ensureActivitySpinner('moon');
+        const spinner = this.ensureActivitySpinner('rainbow-text');
         this.syncAgentSwarmActivitySpinner(placeSpinnerInAgentSwarm ? spinner : undefined);
         if (placeSpinnerInAgentSwarm) break;
         this.state.activityContainer.addChild(

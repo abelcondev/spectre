@@ -139,6 +139,22 @@ describe('QuestionDialogComponent', () => {
     expect(out).toContain('Other');
   });
 
+  it('does not add a synthetic Other option when the question already provides one', () => {
+    const pending = makePending([
+      {
+        question: 'Pick one?',
+        multi_select: false,
+        options: [{ label: 'A' }, { label: 'B' }, { label: 'Others' }],
+      },
+    ]);
+    const { dialog } = makeDialog(pending);
+    const out = strip(dialog.render(80).join('\n'));
+    expect(out).toContain('A');
+    expect(out).toContain('B');
+    expect(out).toContain('Others');
+    expect(out).not.toMatch(/\bOther\b(?!s)/);
+  });
+
   it('multi-select uses space and number keys to toggle choices', () => {
     const pending = makePending([
       {

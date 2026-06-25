@@ -46,6 +46,15 @@ const DEFAULT_CONFIG_FILE_TEXT = `# ~/.spectre/config.toml
 # Runtime settings for Spectre.
 # This file starts empty so built-in defaults can apply.
 # Login will populate managed Kimi provider and model entries.
+
+# When true, Spectre automatically commits changes after a successful verification
+# command (test, lint, typecheck, build, etc.).
+autocommit = false
+
+# Context7 provides up-to-date library documentation via the Context7 API.
+# Set your API key below or use the CONTEXT7_API_KEY environment variable.
+[services.context7]
+api_key = "YOUR_CONTEXT7_API_KEY"
 `;
 
 export async function ensureConfigFile(filePath: string): Promise<void> {

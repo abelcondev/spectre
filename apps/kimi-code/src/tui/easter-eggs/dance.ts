@@ -22,7 +22,7 @@ export const DANCE_FRAME_MS = 110;
 export const DANCE_FLOW_MS = 3000;
 
 const DARK_RAINBOW = [
-  '#4FA8FF',
+  '#E94444',
   '#5BC0BE',
   '#4EC87E',
   '#E8A838',
@@ -33,7 +33,7 @@ const DARK_RAINBOW = [
 ] as const;
 
 const LIGHT_RAINBOW = [
-  '#1565C0',
+  '#E94444',
   '#00838F',
   '#0E7A38',
   '#92660A',
@@ -44,7 +44,7 @@ const LIGHT_RAINBOW = [
   '#354CB5',
 ] as const;
 
-function getDanceRainbowPalette(): readonly [string, ...string[]] {
+export function getDanceRainbowPalette(): readonly [string, ...string[]] {
   return currentTheme.palette.text === '#1A1A1A' ? LIGHT_RAINBOW : DARK_RAINBOW;
 }
 

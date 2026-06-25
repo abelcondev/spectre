@@ -693,22 +693,31 @@ export class QuestionDialogComponent extends Container implements Focusable {
     return this.cursors[questionIdx] ?? 0;
   }
 
+  private hasUserProvidedOther(questionIdx: number): boolean {
+    const question = this.request.data.questions[questionIdx];
+    if (question === undefined) return false;
+    return question.options.some((option) => /^\s*others?\s*$/iu.test(option.label));
+  }
+
   private displayOptions(questionIdx: number): DisplayOption[] {
     const question = this.request.data.questions[questionIdx];
     if (question === undefined) return [];
 
-    return [
-      ...question.options.map((option) => ({
-        label: option.label,
-        description: option.description,
-        kind: 'preset' as const,
-      })),
-      {
+    const options: DisplayOption[] = question.options.map((option) => ({
+      label: option.label,
+      description: option.description,
+      kind: 'preset' as const,
+    }));
+
+    if (!this.hasUserProvidedOther(questionIdx)) {
+      options.push({
         label: question.other_label?.length ? question.other_label : DEFAULT_OTHER_LABEL,
         description: question.other_description?.length ? question.other_description : undefined,
         kind: 'other' as const,
-      },
-    ];
+      });
+    }
+
+    return options;
   }
 
   private otherOptionIndex(questionIdx: number): number {

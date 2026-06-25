@@ -48,6 +48,7 @@ const appState: AppState = {
   streamingStartTime: 0,
   planMode: false,
   swarmMode: false,
+  autoCommit: false,
   theme: 'dark',
   editorCommand: null,
   notifications: { enabled: true, condition: 'unfocused' },

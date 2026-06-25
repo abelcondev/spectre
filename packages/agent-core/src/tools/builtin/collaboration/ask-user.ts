@@ -47,9 +47,9 @@ const QuestionItemSchema = z.object({
   options: z
     .array(QuestionOptionSchema)
     .min(2)
-    .max(4)
+    .max(5)
     .describe(
-      "2-4 meaningful, distinct options. Do NOT include an 'Other' option — the system adds one automatically.",
+      "2-5 meaningful, distinct options. Do NOT include an 'Other' option unless you intend it as a normal choice; the UI adds a fallback 'Other' automatically when none is provided.",
     ),
   multi_select: z
     .boolean()

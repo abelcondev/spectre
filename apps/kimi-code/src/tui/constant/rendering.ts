@@ -16,5 +16,11 @@ export const COMMAND_PREVIEW_LINES = 10;
 export const BRAILLE_SPINNER_FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 export const BRAILLE_SPINNER_INTERVAL_MS = 80;
 
-export const MOON_SPINNER_FRAMES = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
-export const MOON_SPINNER_INTERVAL_MS = 120;
+export const RAINBOW_TEXT_SPINNER_FRAMES = [
+  'Thinking...',
+  'Abeling...',
+  'Weaving code...',
+  'Plating answers...',
+  'Aligning neurons...',
+] as const;
+export const RAINBOW_TEXT_SPINNER_INTERVAL_MS = 110;

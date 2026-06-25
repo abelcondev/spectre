@@ -30,6 +30,7 @@ export interface AppState {
   permissionMode: PermissionMode;
   planMode: boolean;
   swarmMode: boolean;
+  autoCommit: boolean;
   thinking: boolean;
   contextUsage: number;
   contextTokens: number;

@@ -309,7 +309,7 @@ removed_flag = true
     const dir = makeTempDir();
     const configPath = join(dir, 'config.toml');
 
-    expect(readConfigFile(configPath)).toEqual({ providers: {} });
+    expect(readConfigFile(configPath)).toEqual({ providers: {}, autocommit: false });
 
     const config = parseConfigString(COMPLETE_TOML, configPath);
     const loopControl = config.loopControl;

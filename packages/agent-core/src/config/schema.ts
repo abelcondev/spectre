@@ -209,6 +209,7 @@ export const KimiConfigSchema = z.object({
   thinking: ThinkingConfigSchema.optional(),
   planMode: z.boolean().optional(),
   yolo: z.boolean().optional(),
+  autocommit: z.boolean().optional(),
   defaultThinking: z.boolean().optional(),
   defaultPermissionMode: PermissionModeSchema.optional(),
   defaultPlanMode: z.boolean().optional(),
@@ -248,6 +249,7 @@ export const KimiConfigPatchSchema = z
     thinking: ThinkingConfigPatchSchema.optional(),
     planMode: z.boolean().optional(),
     yolo: z.boolean().optional(),
+    autocommit: z.boolean().optional(),
     defaultThinking: z.boolean().optional(),
     defaultPermissionMode: PermissionModeSchema.optional(),
     defaultPlanMode: z.boolean().optional(),
@@ -268,6 +270,7 @@ export type KimiConfigPatch = z.infer<typeof KimiConfigPatchSchema>;
 export function getDefaultConfig(): KimiConfig {
   return {
     providers: {},
+    autocommit: false,
   };
 }
 

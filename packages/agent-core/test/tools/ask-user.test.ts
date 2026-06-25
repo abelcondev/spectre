@@ -105,7 +105,7 @@ describe('AskUserQuestionTool', () => {
 
     const optionsSchema = params.properties.questions.items.properties.options;
     expect(optionsSchema.description).toContain("Do NOT include an 'Other' option");
-    expect(optionsSchema.description).toContain('the system adds one automatically');
+    expect(optionsSchema.description).toContain('the UI adds a fallback');
 
     const labelSchema = optionsSchema.items.properties.label;
     expect(labelSchema.description).toContain("append '(Recommended)'");
