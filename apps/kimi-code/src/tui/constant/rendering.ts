@@ -23,4 +23,7 @@ export const RAINBOW_TEXT_SPINNER_FRAMES = [
   'Plating answers...',
   'Aligning neurons...',
 ] as const;
-export const RAINBOW_TEXT_SPINNER_INTERVAL_MS = 110;
+/** How fast the rainbow color phase advances (matches the /dance animation). */
+export const RAINBOW_TEXT_PHASE_INTERVAL_MS = 110;
+/** How long each text phrase stays on screen before switching to the next one. */
+export const RAINBOW_TEXT_FRAME_INTERVAL_MS = 1_000;

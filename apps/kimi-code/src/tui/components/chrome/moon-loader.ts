@@ -5,7 +5,8 @@ import {
   BRAILLE_SPINNER_FRAMES,
   BRAILLE_SPINNER_INTERVAL_MS,
   RAINBOW_TEXT_SPINNER_FRAMES,
-  RAINBOW_TEXT_SPINNER_INTERVAL_MS,
+  RAINBOW_TEXT_PHASE_INTERVAL_MS,
+  RAINBOW_TEXT_FRAME_INTERVAL_MS,
 } from '#/tui/constant/rendering';
 import { getDanceRainbowPalette, rainbowText } from '#/tui/easter-eggs/dance';
 
@@ -14,6 +15,8 @@ export type SpinnerStyle = 'braille' | 'rainbow-text';
 export class MoonLoader extends Text {
   private currentFrame = 0;
   private phase = 0;
+  private ticks = 0;
+  private ticksPerFrame = 1;
   private intervalId: ReturnType<typeof setInterval> | null = null;
   private ui: TUI;
   private frames: string[];
@@ -35,9 +38,11 @@ export class MoonLoader extends Text {
     if (style === 'braille') {
       this.frames = [...BRAILLE_SPINNER_FRAMES];
       this.interval = BRAILLE_SPINNER_INTERVAL_MS;
+      this.ticksPerFrame = 1;
     } else {
       this.frames = [...RAINBOW_TEXT_SPINNER_FRAMES];
-      this.interval = RAINBOW_TEXT_SPINNER_INTERVAL_MS;
+      this.interval = RAINBOW_TEXT_PHASE_INTERVAL_MS;
+      this.ticksPerFrame = Math.ceil(RAINBOW_TEXT_FRAME_INTERVAL_MS / RAINBOW_TEXT_PHASE_INTERVAL_MS);
     }
     this.colorFn = colorFn;
     this.label = label;
@@ -47,7 +52,11 @@ export class MoonLoader extends Text {
   start(): void {
     this.updateDisplay();
     this.intervalId = setInterval(() => {
-      this.currentFrame = (this.currentFrame + 1) % this.frames.length;
+      this.ticks += 1;
+      if (this.ticks >= this.ticksPerFrame) {
+        this.ticks = 0;
+        this.currentFrame = (this.currentFrame + 1) % this.frames.length;
+      }
       this.updateDisplay();
     }, this.interval);
   }
