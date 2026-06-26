@@ -181,7 +181,9 @@ function openInMacApp(
     return { command: 'open', args: ['-a', appName, absolutePath] };
   }
   // These apps are macOS-only in the UI; fall back to the platform default.
-  return openFileCommandFor(absolutePath, undefined, process.env, platform);
+  // Pass an empty env to avoid picking up $EDITOR / $VISUAL — the user
+  // asked for a specific app, not their default editor.
+  return openFileCommandFor(absolutePath, undefined, {}, platform);
 }
 
 export async function launchDetached(cmd: LaunchCommand): Promise<void> {

@@ -3723,6 +3723,12 @@ function makePermissionManager(
     },
   } as unknown as Agent;
   manager = new PermissionManager(agent, options);
+  // Tests default to manual mode — the production fallback is 'yolo',
+  // but most test scenarios expect manual-mode semantics. Skip when a
+  // parent is present so the child can derive from it naturally.
+  if (!options.parent) {
+    manager.mode = 'manual';
+  }
   Object.assign(agent, { permission: manager });
   return { manager, record, requestApproval, telemetryTrack };
 }

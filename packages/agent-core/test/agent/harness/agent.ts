@@ -198,6 +198,13 @@ export class AgentTestContext {
       log: options.log,
       experimentalFlags: options.experimentalFlags,
     });
+    // Tests default to manual mode — the production PermissionManager
+    // fallback is 'yolo', but most test scenarios expect manual-mode
+    // semantics (approval flows, default-tool-approve, etc.). Skip when
+    // a parent is present so the child derives from it naturally.
+    if (options.permission?.parent === undefined) {
+      this.agent.permission.mode = 'manual';
+    }
     if (options.goal !== undefined) {
       (this.agent as unknown as { goal: GoalMode }).goal = options.goal;
     }

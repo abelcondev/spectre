@@ -213,7 +213,7 @@ const sleep = (ms: number): Promise<void> =>
   new Promise((r) => setTimeout(r, ms));
 
 /** Time we give chokidar to register newly-watched paths before we mutate. */
-const WATCH_SETTLE_MS = 150;
+const WATCH_SETTLE_MS = 200;
 
 describe('WS fs watch (W12 / Chain 14)', () => {
   it('AC #1: subscribe /src → create file → receive event.fs.changed', async () => {
@@ -271,12 +271,16 @@ describe('WS fs watch (W12 / Chain 14)', () => {
     );
     await receiveType(conn, 'ack', 1000);
 
-    await sleep(WATCH_SETTLE_MS);
-
-    // Slam 600 files into a fresh dir; chokidar emits >500 add events well
-    // inside one 200ms window.
+    // Pre-create the burst directory so chokidar discovers it before we
+    // write files. Without this, chokidar may need extra time to register
+    // the new subdir on CI where filesystem events are slower, causing
+    // the burst to span multiple 200ms debounce windows.
     const burstDir = join(workspace, 'burst');
     mkdirSync(burstDir, { recursive: true });
+    await sleep(WATCH_SETTLE_MS);
+
+    // Slam 600 files into the pre-created dir; chokidar emits >500 add
+    // events well inside one 200ms window.
     for (let i = 0; i < 600; i++) {
       writeFileSync(join(burstDir, `f${i}.txt`), `x${i}`);
     }
