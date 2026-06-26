@@ -80,7 +80,9 @@ function priorReview(): ContextMessage {
 }
 
 function lastReminderText(history: readonly ContextMessage[]): string {
-  const message = history.findLast((entry) => entry.origin?.variant === 'code_quality_review');
+  const message = history.findLast(
+    (entry) => entry.origin?.kind === 'injection' && entry.origin.variant === 'code_quality_review',
+  );
   return message?.content.map((part) => (part.type === 'text' ? part.text : '')).join('') ?? '';
 }
 
