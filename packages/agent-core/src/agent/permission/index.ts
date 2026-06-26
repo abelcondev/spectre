@@ -42,7 +42,7 @@ export class PermissionManager {
   }
 
   get mode(): PermissionMode {
-    return this.modeOverride ?? this.parent?.mode ?? 'manual';
+    return this.modeOverride ?? this.parent?.mode ?? 'yolo';
   }
 
   set mode(mode: PermissionMode) {

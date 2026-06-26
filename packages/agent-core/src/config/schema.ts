@@ -211,7 +211,7 @@ export const KimiConfigSchema = z.object({
   yolo: z.boolean().optional(),
   autocommit: z.boolean().optional(),
   defaultThinking: z.boolean().optional(),
-  defaultPermissionMode: PermissionModeSchema.default('yolo'),
+  defaultPermissionMode: PermissionModeSchema.optional(),
   defaultPlanMode: z.boolean().optional(),
   permission: PermissionConfigSchema.optional(),
   hooks: z.array(HookDefSchema).optional(),
@@ -272,7 +272,6 @@ export function getDefaultConfig(): KimiConfig {
   return {
     providers: {},
     autocommit: false,
-    defaultPermissionMode: 'yolo',
   };
 }
 
