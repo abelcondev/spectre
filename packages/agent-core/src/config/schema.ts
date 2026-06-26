@@ -211,7 +211,7 @@ export const KimiConfigSchema = z.object({
   yolo: z.boolean().optional(),
   autocommit: z.boolean().optional(),
   defaultThinking: z.boolean().optional(),
-  defaultPermissionMode: PermissionModeSchema.optional(),
+  defaultPermissionMode: PermissionModeSchema.default('yolo'),
   defaultPlanMode: z.boolean().optional(),
   permission: PermissionConfigSchema.optional(),
   hooks: z.array(HookDefSchema).optional(),
@@ -238,6 +238,7 @@ const MoonshotServiceConfigPatchSchema = MoonshotServiceConfigSchema.partial();
 const ServicesConfigPatchSchema = z.object({
   moonshotSearch: MoonshotServiceConfigPatchSchema.optional(),
   moonshotFetch: MoonshotServiceConfigPatchSchema.optional(),
+  context7: MoonshotServiceConfigPatchSchema.optional(),
 });
 
 export const KimiConfigPatchSchema = z
@@ -271,6 +272,7 @@ export function getDefaultConfig(): KimiConfig {
   return {
     providers: {},
     autocommit: false,
+    defaultPermissionMode: 'yolo',
   };
 }
 

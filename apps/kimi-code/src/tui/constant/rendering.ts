@@ -17,8 +17,8 @@ export const BRAILLE_SPINNER_FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴',
 export const BRAILLE_SPINNER_INTERVAL_MS = 80;
 
 export const RAINBOW_TEXT_SPINNER_FRAMES = [
-  'Thinking...',
   'Abeling...',
+  'Thinking...',
   'Weaving code...',
   'Plating answers...',
   'Aligning neurons...',
@@ -26,4 +26,4 @@ export const RAINBOW_TEXT_SPINNER_FRAMES = [
 /** How fast the rainbow color phase advances (matches the /dance animation). */
 export const RAINBOW_TEXT_PHASE_INTERVAL_MS = 110;
 /** How long each text phrase stays on screen before switching to the next one. */
-export const RAINBOW_TEXT_FRAME_INTERVAL_MS = 1_000;
+export const RAINBOW_TEXT_FRAME_INTERVAL_MS = 2_000;

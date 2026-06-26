@@ -1008,13 +1008,12 @@ async function createRuntimeConfig(input: {
             defaultHeaders: input.kimiRequestHeaders,
             ...serviceCredentials(searchService, input.resolveOAuthTokenProvider),
           }),
-    context7:
-      context7Service === undefined
-        ? undefined
-        : new Context7ApiProvider({
-            baseUrl: context7Service.baseUrl,
-            ...serviceCredentials(context7Service, input.resolveOAuthTokenProvider),
-          }),
+    context7: new Context7ApiProvider({
+      baseUrl: context7Service?.baseUrl,
+      ...(context7Service !== undefined
+        ? serviceCredentials(context7Service, input.resolveOAuthTokenProvider)
+        : {}),
+    }),
   };
 }
 

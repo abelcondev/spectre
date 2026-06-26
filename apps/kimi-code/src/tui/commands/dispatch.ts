@@ -38,6 +38,7 @@ import { handleGoalCommand } from './goal';
 import { handleFeedbackCommand, showMcpServers, showStatusReport, showUsage } from './info';
 import { parseSlashInput } from './parse';
 import { handlePluginsCommand } from './plugins';
+import { handleContext7Command } from './context7';
 import { handleProviderCommand } from './provider';
 import type { BuiltinSlashCommandName } from './registry';
 import { handleReloadCommand, handleReloadTuiCommand } from './reload';
@@ -73,6 +74,7 @@ export {
   showPermissionPicker,
   showSettingsSelector,
 } from './config';
+export { handleContext7Command } from './context7';
 export { handleSwarmCommand } from './swarm';
 export { handleFeedbackCommand, showMcpServers, showStatusReport, showUsage } from './info';
 export { handlePluginsCommand } from './plugins';
@@ -268,6 +270,9 @@ async function handleBuiltInSlashCommand(
       return;
     case 'provider':
       await handleProviderCommand(host);
+      return;
+    case 'context7':
+      await handleContext7Command(host);
       return;
     case 'permission':
       showPermissionPicker(host);

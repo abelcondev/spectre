@@ -85,7 +85,7 @@ export class MoonLoader extends Text {
   private updateDisplay(): void {
     if (this.style === 'rainbow-text') {
       const text = this.frames[this.currentFrame] ?? '';
-      this.displayText = rainbowText(text, getDanceRainbowPalette(), this.phase, true);
+      this.displayText = rainbowText(text, getDanceRainbowPalette(), this.phase, false);
       this.phase += 1;
     } else {
       const frame = this.frames[this.currentFrame]!;

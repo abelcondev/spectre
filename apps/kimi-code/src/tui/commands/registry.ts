@@ -100,6 +100,13 @@ export const BUILTIN_SLASH_COMMANDS = [
     availability: 'always',
   },
   {
+    name: 'context7',
+    aliases: [],
+    description: 'Configure Context7 API key for library documentation',
+    priority: 90,
+    availability: 'always',
+  },
+  {
     name: 'btw',
     aliases: [],
     description: 'Ask a forked side agent a question',

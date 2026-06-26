@@ -96,7 +96,10 @@ export class Context7ApiProvider {
       return envKey;
     }
     throw new Error(
-      'Context7 API is not configured. Add [services.context7] apiKey = "YOUR_KEY" to config.toml or set the CONTEXT7_API_KEY environment variable.',
+      'Context7 API key not configured. To enable library documentation lookups, add your API key to ~/.spectre/config.toml:\n\n' +
+        '  [services.context7]\n' +
+        '  api_key = "YOUR_CONTEXT7_API_KEY"\n\n' +
+        'Or set the CONTEXT7_API_KEY environment variable.',
     );
   }
 }

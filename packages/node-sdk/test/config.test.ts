@@ -318,6 +318,7 @@ describe('KimiHarness config API', () => {
     await expect(harness.getConfig()).resolves.toEqual({
       providers: {},
       autocommit: false,
+      defaultPermissionMode: 'yolo',
     });
   });
 

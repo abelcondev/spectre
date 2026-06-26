@@ -42,7 +42,7 @@ export class UserMessageComponent implements Component {
     }
 
     // Text — re-dye on every render so theme switches are reflected
-    const coloredText = currentTheme.boldFg('roleUser', this.text);
+    const coloredText = currentTheme.fg('roleUser', this.text);
     const textLines = new Text(coloredText, 0, 0).render(contentWidth);
     for (let i = 0; i < textLines.length; i++) {
       const prefix = i === 0 ? bullet : ' '.repeat(bulletWidth);

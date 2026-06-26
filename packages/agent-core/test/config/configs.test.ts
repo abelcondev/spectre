@@ -309,7 +309,7 @@ removed_flag = true
     const dir = makeTempDir();
     const configPath = join(dir, 'config.toml');
 
-    expect(readConfigFile(configPath)).toEqual({ providers: {}, autocommit: false });
+    expect(readConfigFile(configPath)).toEqual({ providers: {}, autocommit: false, defaultPermissionMode: 'yolo' });
 
     const config = parseConfigString(COMPLETE_TOML, configPath);
     const loopControl = config.loopControl;
@@ -380,13 +380,13 @@ removed_flag = true
     const configPath = join(dir, 'config.toml');
     const config = parseConfigString('default_yolo = true\n', configPath);
 
-    expect(config.defaultPermissionMode).toBeUndefined();
+    expect(config.defaultPermissionMode).toBe('yolo');
 
     await writeConfigFile(configPath, config);
 
     const text = await readFile(configPath, 'utf-8');
     expect(text).not.toContain('default_yolo');
-    expect(text).not.toContain('default_permission_mode');
+    expect(text).toContain('default_permission_mode = "yolo"');
   });
 
   it('rejects invalid TOML and invalid schema with KimiError(config.invalid)', () => {
@@ -457,7 +457,7 @@ hooks = [{ type = "pre-tool-call", command = "echo hi" }]
 
 describe('harness config schema and patch merge', () => {
   it('accepts the empty public config and requires model context size in full configs', () => {
-    expect(KimiConfigSchema.parse({})).toEqual({ providers: {} });
+    expect(KimiConfigSchema.parse({})).toEqual({ providers: {}, defaultPermissionMode: 'yolo' });
     expect(() =>
       validateConfig({
         providers: {

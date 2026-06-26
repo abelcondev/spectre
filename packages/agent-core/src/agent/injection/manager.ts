@@ -1,4 +1,5 @@
 import type { Agent } from '..';
+import { CodeQualityReviewInjector } from './code-quality-review';
 import { GoalInjector } from './goal';
 import type { DynamicInjector } from './injector';
 import { PermissionModeInjector } from './permission-mode';
@@ -21,6 +22,7 @@ export class InjectionManager {
       new TodoListReminderInjector(agent),
       new PlanModeInjector(agent),
       new PermissionModeInjector(agent),
+      new CodeQualityReviewInjector(agent),
     ];
     this.goalInjector = agent.type === 'main' ? new GoalInjector(agent) : null;
   }

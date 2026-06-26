@@ -606,15 +606,18 @@ function permissionRuleToToml(
 
 function servicesToToml(services: ServicesConfig, rawServices: unknown): Record<string, unknown> {
   const out = cloneRecord(rawServices);
-  if (services.moonshotSearch !== undefined) {
-    out['moonshot_search'] = serviceToToml(services.moonshotSearch);
-  } else {
-    delete out['moonshot_search'];
-  }
-  if (services.moonshotFetch !== undefined) {
-    out['moonshot_fetch'] = serviceToToml(services.moonshotFetch);
-  } else {
-    delete out['moonshot_fetch'];
+  const serviceKeys: { key: keyof ServicesConfig; tomlKey: string }[] = [
+    { key: 'moonshotSearch', tomlKey: 'moonshot_search' },
+    { key: 'moonshotFetch', tomlKey: 'moonshot_fetch' },
+    { key: 'context7', tomlKey: 'context7' },
+  ];
+  for (const { key, tomlKey } of serviceKeys) {
+    const service = services[key];
+    if (service !== undefined) {
+      out[tomlKey] = serviceToToml(service);
+    } else {
+      delete out[tomlKey];
+    }
   }
   return out;
 }

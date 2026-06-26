@@ -195,7 +195,7 @@ reason = "no rm"
     const created = await rpc.createSession({ workDir });
 
     await expect(rpc.getPermission({ sessionId: created.id, agentId: 'main' })).resolves.toEqual({
-      mode: 'manual',
+      mode: 'yolo',
       rules: [
         {
           decision: 'deny',
@@ -211,7 +211,7 @@ reason = "no rm"
     await expect(
       freshRpc.getPermission({ sessionId: created.id, agentId: 'main' }),
     ).resolves.toEqual({
-      mode: 'manual',
+      mode: 'yolo',
       rules: [
         {
           decision: 'deny',
@@ -335,6 +335,7 @@ max_context_size = 1000000
       model: 'kimi-code/kimi-for-coding',
     });
 
+    await createRpc.setPermission({ sessionId: created.id, agentId: 'main', mode: 'manual' });
     await createRpc.setPermission({ sessionId: created.id, agentId: 'main', mode: 'yolo' });
 
     expect(createRecords).toContainEqual({
@@ -433,6 +434,7 @@ max_context_size = 1000000
       },
     });
 
+    await rpc.setPermission({ sessionId: created.id, agentId: 'main', mode: 'manual' });
     await rpc.setPermission({ sessionId: created.id, agentId: 'main', mode: 'yolo' });
 
     expect(records).toContainEqual({
