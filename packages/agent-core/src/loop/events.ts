@@ -63,6 +63,8 @@ export interface LoopToolCallEvent {
   readonly args: unknown;
   readonly description?: string | undefined;
   readonly display?: ToolInputDisplay | undefined;
+  /** True when the args were repaired by the validate-then-repair layer. */
+  readonly repaired?: boolean | undefined;
 }
 
 export interface LoopToolResultEvent {

@@ -101,7 +101,7 @@ export class TurnFlow {
   private steerBuffer: BufferedSteer[] = [];
   private turnId = -1;
   private activeTurn: 'resuming' | ActiveTurn | null = null;
-  private readonly toolCallStartedAt = new Map<string, { name: string; startedAt: number }>();
+  private readonly toolCallStartedAt = new Map<string, { name: string; startedAt: number; repaired?: boolean }>();
   private readonly toolCallDupType = new Map<string, 'normal' | 'cross_step'>();
   private readonly stepToolCallKeys = new Map<number, Set<string>>();
   private readonly telemetryModeByTurn = new Map<number, 'agent' | 'plan'>();
@@ -832,6 +832,7 @@ export class TurnFlow {
       this.toolCallStartedAt.set(event.toolCallId, {
         name: event.name,
         startedAt: Date.now(),
+        repaired: event.repaired,
       });
       return;
     }
@@ -847,10 +848,14 @@ export class TurnFlow {
         outcome,
         duration_ms: Date.now() - started.startedAt,
         dup_type: dupType,
+        model: this.agent.config.model,
       };
       const errorType = outcome === 'error' ? telemetryToolErrorType(event.result) : undefined;
       if (errorType !== undefined) {
         properties['error_type'] = errorType;
+      }
+      if (started.repaired === true) {
+        properties['repaired'] = true;
       }
       this.agent.telemetry.track('tool_call', properties);
     }

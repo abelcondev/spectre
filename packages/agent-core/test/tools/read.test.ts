@@ -184,7 +184,7 @@ describe('ReadTool', () => {
     expect(result).toEqual({
       output: withReadStatus(
         '',
-        'No lines read from file. Total lines in file: 2. End of file reached.',
+        'No lines read from file. Total lines in file: 2. End of file reached. Note: n_lines was not provided; defaulted to 1000 lines.',
       ),
     });
   });
@@ -197,7 +197,7 @@ describe('ReadTool', () => {
     expect(result).toEqual({
       output: withReadStatus(
         '3\tc\n4\td\n5\te',
-        '3 lines read from file starting from line 3. Total lines in file: 5. End of file reached.',
+        '3 lines read from file starting from line 3. Total lines in file: 5. End of file reached. Note: n_lines was not provided; defaulted to 1000 lines.',
       ),
     });
   });

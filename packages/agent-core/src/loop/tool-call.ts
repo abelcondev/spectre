@@ -22,6 +22,7 @@ import {
   type JsonType,
   type ToolArgsValidator,
 } from '../tools/args-validator';
+import { repairToolArgs } from '../tools/args-repair';
 import { PathSecurityError } from '../tools/policies/path-access';
 
 import { isUserCancellation } from '../utils/abort';
@@ -84,6 +85,7 @@ interface RunnableToolCall {
   readonly toolName: string;
   readonly tool: ExecutableTool;
   readonly args: unknown;
+  readonly repaired?: boolean | undefined;
 }
 
 interface RejectedToolCall {
@@ -198,8 +200,29 @@ function preflightToolCall(
       output: `Invalid args for tool "${toolName}": malformed JSON in arguments: ${parsedArgs.error}`,
     };
   }
-  const validationError = validateExecutableToolArgs(tool, parsedArgs.data);
+  const validator = getOrCompileValidator(tool);
+  if (typeof validator === 'string') {
+    return {
+      kind: 'rejected',
+      toolCall,
+      toolName,
+      args: parsedArgs.data,
+      output: `Invalid args for tool "${toolName}": ${validator}`,
+    };
+  }
+
+  let validationError = validateToolArgs(validator, parsedArgs.data as JsonType);
   if (validationError !== null) {
+    // Validate-then-repair: try targeted fixes on the paths AJV complained
+    // about. Valid inputs never reach this branch.
+    const ajvErrors = validator.errors;
+    const repaired = ajvErrors ? repairToolArgs(parsedArgs.data, ajvErrors) : null;
+    if (repaired !== null) {
+      validationError = validateToolArgs(validator, repaired as JsonType);
+      if (validationError === null) {
+        return { kind: 'runnable', toolCall, toolName, tool, args: repaired, repaired: true };
+      }
+    }
     return {
       kind: 'rejected',
       toolCall,
@@ -226,7 +249,9 @@ function parseToolCallArguments(
   }
 }
 
-function validateExecutableToolArgs(tool: ExecutableTool, args: unknown): string | null {
+function getOrCompileValidator(
+  tool: ExecutableTool,
+): ToolArgsValidator | string {
   let validator = validators.get(tool);
   if (validator === undefined) {
     try {
@@ -236,6 +261,12 @@ function validateExecutableToolArgs(tool: ExecutableTool, args: unknown): string
       return error instanceof Error ? error.message : String(error);
     }
   }
+  return validator;
+}
+
+function validateExecutableToolArgs(tool: ExecutableTool, args: unknown): string | null {
+  const validator = getOrCompileValidator(tool);
+  if (typeof validator === 'string') return validator;
   return validateToolArgs(validator, args as JsonType);
 }
 
@@ -711,6 +742,7 @@ async function dispatchToolCall(
   displayFields?: ToolCallDisplayFields | undefined,
 ): Promise<void> {
   const { toolCall, toolName } = call;
+  const repaired = call.kind === 'runnable' ? call.repaired : undefined;
   await step.dispatchEvent({
     type: 'tool.call',
     uuid: toolCall.id,
@@ -722,5 +754,6 @@ async function dispatchToolCall(
     args,
     description: displayFields?.description,
     display: displayFields?.display,
+    repaired,
   });
 }

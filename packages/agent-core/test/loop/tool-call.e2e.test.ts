@@ -692,6 +692,96 @@ describe('runTurn — tool-call behaviour', () => {
     expect(callIds).toEqual(['tc-bad-args', 'tc-fail', 'tc-good', 'tc-missing']);
     expect(resultIds).toEqual(callIds);
   });
+
+  it('repairs tool args with null optional field and executes successfully', async () => {
+    const tool = new RepairableTool();
+    const { context } = await runTurn({
+      tools: [tool],
+      responses: [
+        makeToolUseResponse([makeToolCall('repairable', { path: '/foo.ts', mode: null }, 'tc-1')]),
+        makeEndTurnResponse('done'),
+      ],
+    });
+    expect(tool.calls.length).toBe(1);
+    expect(tool.calls[0]?.args).toEqual({ path: '/foo.ts' });
+    expect(context.toolResults()[0]?.result.isError).toBeUndefined();
+  });
+
+  it('repairs tool args with stringified array and executes successfully', async () => {
+    const tool = new RepairableTool();
+    const { context } = await runTurn({
+      tools: [tool],
+      responses: [
+        makeToolUseResponse([
+          makeToolCall('repairable', { path: '/foo.ts', items: '["a","b"]' }, 'tc-1'),
+        ]),
+        makeEndTurnResponse('done'),
+      ],
+    });
+    expect(tool.calls.length).toBe(1);
+    expect(tool.calls[0]?.args).toEqual({ path: '/foo.ts', items: ['a', 'b'] });
+    expect(context.toolResults()[0]?.result.isError).toBeUndefined();
+  });
+
+  it('repairs tool args with bare string where array expected and executes successfully', async () => {
+    const tool = new RepairableTool();
+    const { context } = await runTurn({
+      tools: [tool],
+      responses: [
+        makeToolUseResponse([
+          makeToolCall('repairable', { path: '/foo.ts', items: 'single' }, 'tc-1'),
+        ]),
+        makeEndTurnResponse('done'),
+      ],
+    });
+    expect(tool.calls.length).toBe(1);
+    expect(tool.calls[0]?.args).toEqual({ path: '/foo.ts', items: ['single'] });
+    expect(context.toolResults()[0]?.result.isError).toBeUndefined();
+  });
+
+  it('still rejects tool args that cannot be repaired', async () => {
+    const tool = new RepairableTool();
+    const { sink } = await runTurn({
+      tools: [tool],
+      responses: [
+        makeToolUseResponse([makeToolCall('repairable', { path: 42 }, 'tc-1')]),
+        makeEndTurnResponse('done'),
+      ],
+    });
+    expect(tool.calls.length).toBe(0);
+    const results = sink.byType('tool.result');
+    expect(results.length).toBe(1);
+    expect(results[0]?.result.isError).toBe(true);
+    expect(expectTextOutput(results[0]?.result.output).toLowerCase()).toContain('invalid args');
+  });
+
+  it('marks tool.call event with repaired=true when args were repaired', async () => {
+    const tool = new RepairableTool();
+    const { context } = await runTurn({
+      tools: [tool],
+      responses: [
+        makeToolUseResponse([makeToolCall('repairable', { path: '/foo.ts', mode: null }, 'tc-1')]),
+        makeEndTurnResponse('done'),
+      ],
+    });
+    const toolCalls = context.toolCalls();
+    expect(toolCalls.length).toBe(1);
+    expect(toolCalls[0]?.repaired).toBe(true);
+  });
+
+  it('does not mark tool.call event with repaired when args were valid', async () => {
+    const tool = new RepairableTool();
+    const { context } = await runTurn({
+      tools: [tool],
+      responses: [
+        makeToolUseResponse([makeToolCall('repairable', { path: '/foo.ts' }, 'tc-1')]),
+        makeEndTurnResponse('done'),
+      ],
+    });
+    const toolCalls = context.toolCalls();
+    expect(toolCalls.length).toBe(1);
+    expect(toolCalls[0]?.repaired).toBeUndefined();
+  });
 });
 
 interface PathLockedInput {
@@ -790,6 +880,38 @@ class StopSuccessTool implements ExecutableTool<Record<string, unknown>> {
       execute: async (ctx): Promise<ExecutableToolResult> => {
         this.calls.push({ id: ctx.toolCallId });
         return { output: 'stopped', stopTurn: true };
+      },
+    };
+  }
+}
+
+interface RepairableInput {
+  path: string;
+  mode?: string;
+  items?: string[];
+}
+
+class RepairableTool implements ExecutableTool<RepairableInput> {
+  readonly name = 'repairable';
+  readonly description = 'A tool with optional and array fields to test argument repair.';
+  readonly parameters: Record<string, unknown> = {
+    type: 'object',
+    properties: {
+      path: { type: 'string' },
+      mode: { type: 'string', enum: ['overwrite', 'append'] },
+      items: { type: 'array', items: { type: 'string' } },
+    },
+    required: ['path'],
+    additionalProperties: false,
+  };
+  readonly calls: Array<{ readonly id: string; readonly args: RepairableInput }> = [];
+
+  resolveExecution(args: RepairableInput): ToolExecution {
+    return {
+      approvalRule: this.name,
+      execute: async (ctx): Promise<ExecutableToolResult> => {
+        this.calls.push({ id: ctx.toolCallId, args });
+        return { output: `processed ${args.path}` };
       },
     };
   }

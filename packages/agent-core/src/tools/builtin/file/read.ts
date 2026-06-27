@@ -77,6 +77,8 @@ interface FinishReadResultInput {
   readonly startLine: number;
   readonly totalLines: number;
   readonly requestedLines: number;
+  /** Informational note when one of line_offset/n_lines was omitted. */
+  readonly defaultedField?: 'line_offset' | 'n_lines' | undefined;
 }
 
 type TextPreviewKaos = Kaos & {
@@ -241,6 +243,15 @@ export class ReadTool implements BuiltinTool<ReadInput> {
       const requestedLines = args.n_lines ?? MAX_LINES;
       const effectiveLimit = Math.min(requestedLines, MAX_LINES);
 
+      // Detect when exactly one of the relational pair was omitted,
+      // so the result can inform the model about the applied default.
+      const defaultedField: 'line_offset' | 'n_lines' | undefined =
+        args.line_offset === undefined && args.n_lines !== undefined
+          ? 'line_offset'
+          : args.line_offset !== undefined && args.n_lines === undefined
+            ? 'n_lines'
+            : undefined;
+
       if (lineOffset < 0) {
         return await this.readTail(
           safePath,
@@ -248,6 +259,7 @@ export class ReadTool implements BuiltinTool<ReadInput> {
           lineOffset,
           effectiveLimit,
           requestedLines,
+          defaultedField,
         );
       }
       return await this.readForward(
@@ -256,6 +268,7 @@ export class ReadTool implements BuiltinTool<ReadInput> {
         lineOffset,
         effectiveLimit,
         requestedLines,
+        defaultedField,
       );
     } catch (error) {
       if (isTextDecodeError(error)) {
@@ -274,6 +287,7 @@ export class ReadTool implements BuiltinTool<ReadInput> {
     lineOffset: number,
     effectiveLimit: number,
     requestedLines: number,
+    defaultedField?: 'line_offset' | 'n_lines' | undefined,
   ): Promise<ExecutableToolResult> {
     const selectedEntries: ReadLineEntry[] = [];
     const flags: LineEndingFlags = { hasCrLf: false, hasLf: false, hasLoneCr: false };
@@ -344,6 +358,7 @@ export class ReadTool implements BuiltinTool<ReadInput> {
       startLine: renderedLines.length > 0 ? lineOffset : 0,
       totalLines: currentLineNo,
       requestedLines,
+      defaultedField,
     });
   }
 
@@ -353,6 +368,7 @@ export class ReadTool implements BuiltinTool<ReadInput> {
     lineOffset: number,
     effectiveLimit: number,
     requestedLines: number,
+    defaultedField?: 'line_offset' | 'n_lines' | undefined,
   ): Promise<ExecutableToolResult> {
     const tailCount = Math.abs(lineOffset);
     const entries: ReadLineEntry[] = [];
@@ -418,6 +434,7 @@ export class ReadTool implements BuiltinTool<ReadInput> {
       startLine: renderedCandidates[0]?.entry.lineNo ?? 0,
       totalLines: currentLineNo,
       requestedLines,
+      defaultedField,
     });
   }
 
@@ -458,6 +475,11 @@ export class ReadTool implements BuiltinTool<ReadInput> {
       parts.push(
         'Mixed or lone carriage-return line endings are shown as \\r. Use exact \\r\\n or \\r escapes in Edit.old_string for those lines.',
       );
+    }
+    if (input.defaultedField === 'line_offset') {
+      parts.push(`Note: line_offset was not provided; defaulted to 1.`);
+    } else if (input.defaultedField === 'n_lines') {
+      parts.push(`Note: n_lines was not provided; defaulted to ${String(MAX_LINES)} lines.`);
     }
     return parts.join(' ');
   }
