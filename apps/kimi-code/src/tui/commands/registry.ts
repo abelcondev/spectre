@@ -75,6 +75,13 @@ export const BUILTIN_SLASH_COMMANDS = [
     availability: 'always',
   },
   {
+    name: 'pr',
+    aliases: ['pull-request'],
+    description: 'Create a pull request with preview',
+    priority: 100,
+    availability: 'always',
+  },
+  {
     name: 'permission',
     aliases: [],
     description: 'Select permission mode',

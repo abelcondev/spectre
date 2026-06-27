@@ -39,6 +39,7 @@ import { handleGoalCommand } from './goal';
 import { handleFeedbackCommand, showMcpServers, showStatusReport, showUsage } from './info';
 import { parseSlashInput } from './parse';
 import { handlePluginsCommand } from './plugins';
+import { handlePrCommand } from './pr';
 import { handleContext7Command } from './context7';
 import { handleProviderCommand } from './provider';
 import type { BuiltinSlashCommandName } from './registry';
@@ -76,6 +77,7 @@ export {
   showPermissionPicker,
   showSettingsSelector,
 } from './config';
+export { handlePrCommand } from './pr';
 export { handleContext7Command } from './context7';
 export { handleSwarmCommand } from './swarm';
 export { handleFeedbackCommand, showMcpServers, showStatusReport, showUsage } from './info';
@@ -305,6 +307,9 @@ async function handleBuiltInSlashCommand(
       return;
     case 'autocommit':
       await handleAutocommitCommand(host, args);
+      return;
+    case 'pr':
+      await handlePrCommand(host, args);
       return;
     case 'plan':
       await handlePlanCommand(host, args);
