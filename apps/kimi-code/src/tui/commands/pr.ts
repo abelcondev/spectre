@@ -70,7 +70,7 @@ export async function handlePrCommand(host: SlashCommandHost, args: string): Pro
     }
 
     // Create the PR
-    const prUrl = await createPullRequest(preview, options);
+    const prUrl = await createPullRequest(preview, options, host);
     
     if (prUrl) {
       host.showNotice(`PR created successfully!`, prUrl);
@@ -329,8 +329,23 @@ async function showPreviewAndConfirm(host: SlashCommandHost, preview: PrPreview)
   return true;
 }
 
-async function createPullRequest(preview: PrPreview, options: PrOptions): Promise<string | null> {
+async function createPullRequest(preview: PrPreview, options: PrOptions, host: SlashCommandHost): Promise<string | null> {
   try {
+    // Check if remote branch has new commits
+    const hasNewRemoteCommits = checkRemoteHasNewCommits(preview.currentBranch);
+    if (hasNewRemoteCommits && !options.yes) {
+      host.showNotice(
+        `⚠️  Warning: Remote branch has new commits`,
+        `The remote branch 'origin/${preview.currentBranch}' has commits that are not in your local branch.\n\n` +
+        `Pushing might result in a force push or merge conflicts.\n\n` +
+        `Options:\n` +
+        `  1. Pull first: git pull origin ${preview.currentBranch}\n` +
+        `  2. Use --yes to force push anyway\n` +
+        `  3. Cancel and review manually`
+      );
+      return null;
+    }
+
     const args: string[] = [
       'gh',
       'pr',
@@ -359,5 +374,27 @@ async function createPullRequest(preview: PrPreview, options: PrOptions): Promis
   } catch (error) {
     console.error('Error creating PR:', error);
     return null;
+  }
+}
+
+function checkRemoteHasNewCommits(branch: string): boolean {
+  try {
+    // Fetch latest from remote
+    execSync('git fetch origin', { stdio: 'ignore' });
+    
+    // Check if remote branch exists
+    try {
+      execSync(`git rev-parse --verify origin/${branch}`, { stdio: 'ignore' });
+    } catch {
+      // Remote branch doesn't exist, so no new commits
+      return false;
+    }
+    
+    // Check if remote has commits that local doesn't have
+    const output = execSync(`git log HEAD..origin/${branch} --oneline`, { encoding: 'utf-8' }).trim();
+    return output.length > 0;
+  } catch {
+    // If anything fails, assume it's safe to proceed
+    return false;
   }
 }
