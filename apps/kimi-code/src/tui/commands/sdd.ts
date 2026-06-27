@@ -74,6 +74,30 @@ const TEMPLATES: { path: string; content: string }[] = [
 <!-- Concrete actions to take once approved. -->
 `,
   },
+  {
+    path: 'tasks/_template.md',
+    content: `# Task: (feature name)
+
+<!-- One file per feature task. Delete this template after creating your first task. -->
+
+## Description
+
+(2-3 sentences describing the feature)
+
+## Acceptance criteria
+
+- Given (precondition), When (action), Then (expected result)
+- Given ..., When ..., Then ...
+
+## Status: pending
+
+<!-- Status: pending | in-progress | done -->
+
+## Dependencies
+
+- (other task files or external requirements)
+`,
+  },
 ];
 
 const REQUIRED_DIRS = ['tasks', 'decisions'];
