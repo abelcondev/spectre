@@ -97,7 +97,7 @@ function hasSequentialIntegerKeys(obj: Record<string, unknown>): boolean {
  * @returns A deep-cloned repaired args object, or `null` if no repair
  *          could be applied.
  */
-export function repairToolArgs(args: unknown, errors: readonly ErrorObject[]): unknown | null {
+export function repairToolArgs(args: unknown, errors: readonly ErrorObject[]): unknown {
   if (args === null || args === undefined || typeof args !== 'object') return null;
   if (errors.length === 0) return null;
 
