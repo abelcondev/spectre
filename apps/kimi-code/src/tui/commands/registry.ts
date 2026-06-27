@@ -22,6 +22,11 @@ const SWARM_ARG_COMPLETIONS: readonly ArgCompletionSpec[] = [
   { value: 'off', description: 'Turn swarm mode off' },
 ];
 
+const AUTOCOMMIT_ARG_COMPLETIONS: readonly ArgCompletionSpec[] = [
+  { value: 'on', description: 'Enable automatic git commits' },
+  { value: 'off', description: 'Disable automatic git commits' },
+];
+
 /** Argument autocompletion for the `/goal` command (subcommands). */
 export function goalArgumentCompletions(argumentPrefix: string): AutocompleteItem[] | null {
   const nextMatch = argumentPrefix.match(/^next\s+(\S*)$/i);
@@ -41,6 +46,11 @@ export function swarmArgumentCompletions(argumentPrefix: string): AutocompleteIt
   return completeLeadingArg(SWARM_ARG_COMPLETIONS, argumentPrefix);
 }
 
+/** Argument autocompletion for the `/autocommit` command (subcommands). */
+export function autocommitArgumentCompletions(argumentPrefix: string): AutocompleteItem[] | null {
+  return completeLeadingArg(AUTOCOMMIT_ARG_COMPLETIONS, argumentPrefix);
+}
+
 export const BUILTIN_SLASH_COMMANDS = [
   {
     name: 'yolo',
@@ -54,6 +64,14 @@ export const BUILTIN_SLASH_COMMANDS = [
     aliases: [],
     description: 'Toggle auto permission mode',
     priority: 100,
+    availability: 'always',
+  },
+  {
+    name: 'autocommit',
+    aliases: [],
+    description: 'Toggle automatic git commits after verification',
+    priority: 100,
+    completeArgs: autocommitArgumentCompletions,
     availability: 'always',
   },
   {

@@ -362,6 +362,7 @@ export class ToolManager {
       toolServices,
       config: { cwd, provider, modelCapabilities },
       background,
+      kimiConfig,
     } = this.agent;
     const videoUploader = this.createVideoUploader(provider);
     const workspace = extendWorkspaceWithSkillRoots(
@@ -376,6 +377,10 @@ export class ToolManager {
       this.enabledTools.has('TaskOutput') &&
       this.enabledTools.has('TaskStop');
     const goalToolsEnabled = this.agent.type === 'main';
+    
+    // Create SddWriteTool - will check if sdd/ exists when used
+    const sddWriteTool = new b.SddWriteTool(kaos, workspace, kimiConfig?.autocommit ?? false);
+    
     this.builtinTools = new Map(
       [
         new b.ReadTool(kaos, workspace),
@@ -423,6 +428,7 @@ export class ToolManager {
         toolServices?.webSearcher && new b.WebSearchTool(toolServices.webSearcher),
         toolServices?.urlFetcher && new b.FetchURLTool(toolServices.urlFetcher),
         toolServices?.context7 && new b.Context7Tool(toolServices.context7),
+        sddWriteTool,
       ]
         .filter((tool) => !!tool)
         .map((tool) => [tool.name, tool] as const),

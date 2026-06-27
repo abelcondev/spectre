@@ -48,8 +48,8 @@ const DEFAULT_CONFIG_FILE_TEXT = `# ~/.spectre/config.toml
 # Login will populate managed Kimi provider and model entries.
 
 # When true, Spectre automatically commits changes after a successful verification
-# command (test, lint, typecheck, build, etc.).
-autocommit = false
+# command (test, lint, typecheck, build, etc.) and when using SddWrite tool.
+autocommit = true
 
 # Context7 provides up-to-date library documentation via the Context7 API.
 # Set your API key below or use the CONTEXT7_API_KEY environment variable.

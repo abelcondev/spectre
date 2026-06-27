@@ -23,6 +23,7 @@ import { handleLoginCommand, handleLogoutCommand } from './auth';
 import { handleBtwCommand } from './btw';
 import {
   handleAutoCommand,
+  handleAutocommitCommand,
   handleCompactCommand,
   handleEditorCommand,
   handleModelCommand,
@@ -63,6 +64,7 @@ export { handleLoginCommand, handleLogoutCommand } from './auth';
 export { handleBtwCommand } from './btw';
 export {
   handleAutoCommand,
+  handleAutocommitCommand,
   handleCompactCommand,
   handleEditorCommand,
   handleModelCommand,
@@ -300,6 +302,9 @@ async function handleBuiltInSlashCommand(
       return;
     case 'auto':
       await handleAutoCommand(host, args);
+      return;
+    case 'autocommit':
+      await handleAutocommitCommand(host, args);
       return;
     case 'plan':
       await handlePlanCommand(host, args);

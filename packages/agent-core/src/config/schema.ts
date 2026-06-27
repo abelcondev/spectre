@@ -271,7 +271,7 @@ export type KimiConfigPatch = z.infer<typeof KimiConfigPatchSchema>;
 export function getDefaultConfig(): KimiConfig {
   return {
     providers: {},
-    autocommit: false,
+    autocommit: true,
   };
 }
 
