@@ -46,6 +46,7 @@ import type { BuiltinSlashCommandName } from './registry';
 import { handleReloadCommand, handleReloadTuiCommand } from './reload';
 import { resolveSlashCommandInput, slashBusyMessage } from './resolve';
 import { handleSddSetupCommand, handleSddStatusCommand } from './sdd';
+import { handleReferencesCommand } from './references';
 import {
   handleExportDebugZipCommand,
   handleExportMdCommand,
@@ -250,6 +251,9 @@ async function handleBuiltInSlashCommand(
       return;
     case 'mcp':
       void showMcpServers(host);
+      return;
+    case 'references':
+      await handleReferencesCommand(host);
       return;
     case 'plugins':
       void handlePluginsCommand(host, args);

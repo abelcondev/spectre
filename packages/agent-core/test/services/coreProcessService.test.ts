@@ -276,8 +276,10 @@ describe('singleton registry composition', () => {
     const { eventService, approvalService, questionService } = makePeers();
     const moduleEntries = getSingletonServiceDescriptors();
     expect(moduleEntries.length).toBeGreaterThanOrEqual(1);
-    expect(moduleEntries[0]![0]).toBe(ICoreProcessService);
-    expect(moduleEntries[0]![1]).toBeInstanceOf(SyncDescriptor);
+    const coreEntry = moduleEntries.find(([id]) => id === ICoreProcessService);
+    expect(coreEntry).toBeDefined();
+    expect(coreEntry![0]).toBe(ICoreProcessService);
+    expect(coreEntry![1]).toBeInstanceOf(SyncDescriptor);
 
     const ix = new TestInstantiationService();
     for (const [id, desc] of moduleEntries) {

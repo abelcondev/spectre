@@ -172,6 +172,13 @@ export const BUILTIN_SLASH_COMMANDS = [
     availability: 'always',
   },
   {
+    name: 'references',
+    aliases: ['refs'],
+    description: 'Show dependency references status',
+    priority: 60,
+    availability: 'always',
+  },
+  {
     name: 'plugins',
     aliases: [],
     description: 'Manage plugins',

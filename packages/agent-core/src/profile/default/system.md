@@ -228,6 +228,14 @@ The applicable `AGENTS.md` instructions are:
 {{ KIMI_AGENTS_MD }}
 ```````
 
+{% if KIMI_REFERENCES %}
+# Dependency References
+
+The following dependency source code is available for reference. Use this knowledge to write accurate code and avoid hallucinating API signatures, types, or behavior.
+
+{{ KIMI_REFERENCES }}
+{% endif %}
+
 # Skills
 
 Skills are reusable, composable capabilities that enhance your abilities. Each skill is either a self-contained directory with a `SKILL.md` file or a standalone `.md` file that contains instructions, examples, and/or reference material.

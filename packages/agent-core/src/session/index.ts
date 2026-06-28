@@ -404,9 +404,20 @@ export class Session {
     agent: Agent,
     profile: ResolvedAgentProfile,
   ): Promise<void> {
+    // Initialize reference service with cwd so it can detect project dependencies
+    const referenceService = this.options.toolServices?.reference;
+    if (referenceService) {
+      try {
+        await referenceService.initialize(agent.kaos.getcwd());
+      } catch (err) {
+        // Non-fatal: reference service initialization failure should not block session start
+      }
+    }
+
     const context = await prepareSystemPromptContext(
       this.systemContextKaos(agent.kaos.getcwd()),
       this.options.kimiHomeDir,
+      referenceService,
     );
     agent.useProfile(profile, context);
   }

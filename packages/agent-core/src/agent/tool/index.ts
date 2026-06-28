@@ -428,6 +428,7 @@ export class ToolManager {
         toolServices?.webSearcher && new b.WebSearchTool(toolServices.webSearcher),
         toolServices?.urlFetcher && new b.FetchURLTool(toolServices.urlFetcher),
         toolServices?.context7 && new b.Context7Tool(toolServices.context7),
+        toolServices?.reference && new b.ReferenceTool(toolServices.reference),
         sddWriteTool,
       ]
         .filter((tool) => !!tool)

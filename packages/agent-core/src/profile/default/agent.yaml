@@ -22,9 +22,10 @@ tools:
   - TodoList
   - Skill
   - WebSearch
+  - FetchURL
+  - Reference
   - Agent
   - AgentSwarm
-  - FetchURL
   - AskUserQuestion
   - EnterPlanMode
   - ExitPlanMode

@@ -210,3 +210,15 @@ export type {
   TerminalSpawnOptions,
 } from './terminal/terminal';
 export { NodePtyTerminalBackend, TerminalService } from './terminal/terminalService';
+
+export {
+  IReferenceService,
+} from './reference/reference';
+export type {
+  ReferenceDetail,
+  ReferenceManifest,
+  ReferenceSummary,
+  SearchResult,
+  CachedReference,
+} from './reference/types';
+export { ReferenceService } from './reference/referenceService';

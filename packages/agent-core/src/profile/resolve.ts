@@ -160,6 +160,7 @@ function buildTemplateVars(
     KIMI_AGENTS_MD: context.agentsMd ?? '',
     KIMI_SKILLS: skills,
     KIMI_ADDITIONAL_DIRS_INFO: context.additionalDirsInfo ?? '',
+    KIMI_REFERENCES: context.references ?? '',
     ROLE_ADDITIONAL:
       context.roleAdditional ?? promptVars['ROLE_ADDITIONAL'] ?? promptVars['roleAdditional'] ?? '',
   };

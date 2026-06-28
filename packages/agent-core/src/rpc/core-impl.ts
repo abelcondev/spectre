@@ -108,6 +108,7 @@ import type { SDKRPC } from './sdk-api';
 import { proxyWithExtraPayload } from './types';
 import { KaosShellNotFoundError, LocalKaos, type Kaos } from '@moonshot-ai/kaos';
 import type { ToolServices } from '../tools/support/services';
+import { ReferenceService } from '../services/reference/referenceService';
 
 const KIMI_CODE_PROVIDER_NAME = 'managed:kimi-code';
 const KIMI_CODE_BASE_URL_ENV = 'KIMI_CODE_BASE_URL';
@@ -818,6 +819,7 @@ export class KimiCore implements PromisableMethods<CoreAPI> {
       config,
       kimiRequestHeaders: this.kimiRequestHeaders,
       resolveOAuthTokenProvider: this.resolveOAuthTokenProvider,
+      homeDir: this.homeDir,
     });
     this.runtime = runtime;
     return runtime;
@@ -984,6 +986,7 @@ async function createRuntimeConfig(input: {
   readonly config: KimiConfig;
   readonly kimiRequestHeaders?: Record<string, string> | undefined;
   readonly resolveOAuthTokenProvider?: OAuthTokenProviderResolver | undefined;
+  readonly homeDir: string;
 }): Promise<ToolServices> {
   const localFetcher = new LocalFetchURLProvider();
   const searchService = input.config.services?.moonshotSearch;
@@ -1014,6 +1017,7 @@ async function createRuntimeConfig(input: {
         ? serviceCredentials(context7Service, input.resolveOAuthTokenProvider)
         : {}),
     }),
+    reference: ReferenceService.createStandalone(input.homeDir),
   };
 }
 
