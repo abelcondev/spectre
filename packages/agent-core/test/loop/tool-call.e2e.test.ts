@@ -782,6 +782,21 @@ describe('runTurn — tool-call behaviour', () => {
     expect(toolCalls.length).toBe(1);
     expect(toolCalls[0]?.repaired).toBeUndefined();
   });
+
+  it('marks tool.call event with repairFailed=true when args cannot be repaired', async () => {
+    const tool = new RepairableTool();
+    const { context } = await runTurn({
+      tools: [tool],
+      responses: [
+        makeToolUseResponse([makeToolCall('repairable', { path: 42 }, 'tc-1')]),
+        makeEndTurnResponse('done'),
+      ],
+    });
+    const toolCalls = context.toolCalls();
+    expect(toolCalls.length).toBe(1);
+    expect(toolCalls[0]?.repairFailed).toBe(true);
+    expect(toolCalls[0]?.repaired).toBeUndefined();
+  });
 });
 
 interface PathLockedInput {

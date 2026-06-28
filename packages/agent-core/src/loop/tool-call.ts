@@ -94,6 +94,8 @@ interface RejectedToolCall {
   readonly toolName: string;
   readonly args: unknown;
   readonly output: string;
+  /** True when args failed schema validation and repair could not salvage them. */
+  readonly repairFailed?: boolean | undefined;
 }
 
 type PrepareToolExecutionDecision =
@@ -229,6 +231,7 @@ function preflightToolCall(
       toolName,
       args: parsedArgs.data,
       output: `Invalid args for tool "${toolName}": ${validationError}`,
+      repairFailed: true,
     };
   }
   return { kind: 'runnable', toolCall, toolName, tool, args: parsedArgs.data };
@@ -743,6 +746,7 @@ async function dispatchToolCall(
 ): Promise<void> {
   const { toolCall, toolName } = call;
   const repaired = call.kind === 'runnable' ? call.repaired : undefined;
+  const repairFailed = call.kind === 'rejected' ? call.repairFailed : undefined;
   await step.dispatchEvent({
     type: 'tool.call',
     uuid: toolCall.id,
@@ -755,5 +759,6 @@ async function dispatchToolCall(
     description: displayFields?.description,
     display: displayFields?.display,
     repaired,
+    repairFailed,
   });
 }

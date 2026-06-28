@@ -169,6 +169,32 @@ describe('repairToolArgs', () => {
       const result = validateAndRepair(itemsSchema, args);
       expect(result.repaired).toBe(false);
     });
+
+    it('converts an empty object placeholder to an empty array', () => {
+      const args = { items: {}, label: 'test' };
+      const result = validateAndRepair(itemsSchema, args);
+      expect(result.repaired).toBe(true);
+      expect(result.args).toEqual({ items: [], label: 'test' });
+      expect(itemsSchema.validate(result.args)).toBe(true);
+    });
+  });
+
+  describe('type-scoped repairs', () => {
+    it('does not parse a stringified array into a string field', () => {
+      // `label` expects a string; a JSON-array-shaped string that fails a
+      // *different* constraint must not be rewritten into an array.
+      const enumSchema = compileTest({
+        type: 'object',
+        properties: { label: { type: 'string', enum: ['a', 'b'] } },
+        required: ['label'],
+        additionalProperties: false,
+      });
+      const args = { label: '["a","b"]' };
+      const result = validateAndRepair(enumSchema, args);
+      // The only error is an enum mismatch (not a type error), so no
+      // structured-type repair applies; the string is left untouched.
+      expect(result.repaired).toBe(false);
+    });
   });
 
   describe('repair ordering', () => {

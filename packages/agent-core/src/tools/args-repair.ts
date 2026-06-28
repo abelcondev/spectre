@@ -12,10 +12,16 @@
  *    `'["a","b"]'` → `["a","b"]`
  * 2. Bare string where an array is expected
  *    `"foo"` → `["foo"]`
- * 3. Plain object with integer keys where an array is expected
- *    `{"0":"a","1":"b"}` → `["a","b"]`
+ * 3. Object placeholder where an array is expected
+ *    `{"0":"a","1":"b"}` → `["a","b"]`, and the empty `{}` → `[]`
  * 4. `null` for an optional field instead of omitting it
  *    `{ path: "/foo", mode: null }` → `{ path: "/foo" }`
+ *
+ * Repairs are scoped to the type the validator actually expected at each
+ * failing path: a string→array repair only fires where the schema asked for
+ * an array, a stringified-JSON parse only where it asked for a structured
+ * type. This keeps the repair budget at exactly the paths (and shapes) AJV
+ * disagreed with.
  *
  * Repair order matters: stringified-JSON parse must run before bare-string
  * wrap, or `'["a","b"]'` becomes `['["a","b"]']`.
@@ -29,15 +35,18 @@
 
 import type { ErrorObject } from 'ajv';
 
+interface PathLocation {
+  parent: Record<string, unknown> | unknown[];
+  key: string | number;
+  value: unknown;
+}
+
 /**
  * Walk an AJV `instancePath` (e.g. `/questions/0/options`) into the args
  * tree and return the parent container, the final key, and the value at
  * that path. Returns `undefined` if the path cannot be navigated.
  */
-function navigateToPath(
-  root: unknown,
-  instancePath: string,
-): { parent: Record<string, unknown> | unknown[]; key: string | number; value: unknown } | undefined {
+function navigateToPath(root: unknown, instancePath: string): PathLocation | undefined {
   if (instancePath.length === 0) return undefined;
 
   const segments = instancePath.split('/').filter((s) => s.length > 0);
@@ -60,10 +69,13 @@ function navigateToPath(
   return { parent, key, value };
 }
 
+function setAt(nav: PathLocation, value: unknown): void {
+  (nav.parent as Record<string, unknown>)[nav.key as string] = value;
+}
+
 /**
- * Deep-clone a JSON-compatible value. Only handles the JSON subset that
- * tool arguments can contain (objects, arrays, strings, numbers, booleans,
- * null). Falls back to structuredClone for anything unexpected.
+ * Deep-clone a JSON-compatible value (objects, arrays, strings, numbers,
+ * booleans, null) — the only shapes tool arguments can contain.
  */
 function deepClone<T>(value: T): T {
   if (value === null || typeof value !== 'object') return value;
@@ -90,6 +102,26 @@ function hasSequentialIntegerKeys(obj: Record<string, unknown>): boolean {
 }
 
 /**
+ * The JSON type(s) the schema expected at a failing path, taken from a `type`
+ * keyword error. `undefined` for non-type errors (required, enum, etc.).
+ */
+function expectedTypesFor(error: ErrorObject): readonly string[] | undefined {
+  if (error.keyword !== 'type') return undefined;
+  const type = (error.params as Record<string, unknown>)['type'];
+  if (typeof type === 'string') return [type];
+  if (Array.isArray(type)) return type.filter((t): t is string => typeof t === 'string');
+  return undefined;
+}
+
+function expects(types: readonly string[] | undefined, wanted: string): boolean {
+  return types !== undefined && types.includes(wanted);
+}
+
+function expectsStructured(types: readonly string[] | undefined): boolean {
+  return expects(types, 'array') || expects(types, 'object');
+}
+
+/**
  * Try to apply repairs to the given args based on AJV validation errors.
  *
  * @param args - The parsed (but invalid) tool arguments.
@@ -106,66 +138,72 @@ export function repairToolArgs(args: unknown, errors: readonly ErrorObject[]): u
 
   for (const error of errors) {
     const nav = navigateToPath(cloned, error.instancePath);
+    if (nav === undefined) continue;
 
-    // stripNullOptionals: `null` where the field should have been omitted
-    if (nav !== undefined && nav.value === null) {
-      if (Array.isArray(nav.parent)) {
-        // Don't splice from arrays — only strip null keys from objects
-      } else {
-        delete (nav.parent as Record<string, unknown>)[nav.key as string];
+    const expectedTypes = expectedTypesFor(error);
+
+    // stripNullOptionals: `null` where the field should have been omitted.
+    if (nav.value === null) {
+      // Only strip null keys from objects — never splice array elements, as
+      // that would shift indices and invalidate the other error paths.
+      if (!Array.isArray(nav.parent)) {
+        delete nav.parent[nav.key];
+        repaired = true;
+      }
+      continue;
+    }
+
+    // parseStringifiedJson: a string that is valid JSON for the structured
+    // type the schema expected (`'["a","b"]'` → `["a","b"]`).
+    if (
+      typeof nav.value === 'string' &&
+      expectsStructured(expectedTypes) &&
+      (nav.value.startsWith('[') || nav.value.startsWith('{'))
+    ) {
+      try {
+        const parsed: unknown = JSON.parse(nav.value);
+        if (parsed !== null && typeof parsed === 'object') {
+          setAt(nav, parsed);
+          repaired = true;
+          continue;
+        }
+      } catch {
+        // not valid JSON — fall through to other repairs
+      }
+    }
+
+    // wrapBareStringToArray: a bare string where an array is expected.
+    if (typeof nav.value === 'string' && expects(expectedTypes, 'array')) {
+      setAt(nav, [nav.value]);
+      repaired = true;
+      continue;
+    }
+
+    // unwrapObjectToArray: an object placeholder where an array is expected.
+    if (
+      expects(expectedTypes, 'array') &&
+      typeof nav.value === 'object' &&
+      nav.value !== null &&
+      !Array.isArray(nav.value)
+    ) {
+      const obj = nav.value as Record<string, unknown>;
+      if (hasSequentialIntegerKeys(obj)) {
+        const arr = Object.keys(obj)
+          .map((k) => obj[k])
+          .filter((v): v is unknown => v !== undefined);
+        setAt(nav, arr);
+        repaired = true;
+        continue;
+      }
+      if (Object.keys(obj).length === 0) {
+        // The model emitted an empty `{}` placeholder for an empty array.
+        setAt(nav, []);
         repaired = true;
         continue;
       }
     }
 
-    // parseStringifiedJson: string that is valid JSON for an array/object
-    if (nav !== undefined && typeof nav.value === 'string') {
-      const str = nav.value;
-      if (str.startsWith('[') || str.startsWith('{')) {
-        try {
-          const parsed: unknown = JSON.parse(str);
-          if (typeof parsed !== 'string') {
-            (nav.parent as Record<string, unknown>)[nav.key as string] = parsed;
-            repaired = true;
-            continue;
-          }
-        } catch {
-          // not valid JSON — fall through to other repairs
-        }
-      }
-    }
-
-    // wrapBareStringToArray: string where array is expected
-    if (
-      nav !== undefined &&
-      typeof nav.value === 'string' &&
-      error.keyword === 'type' &&
-      (error.params as Record<string, unknown>)['type'] === 'array'
-    ) {
-      (nav.parent as Record<string, unknown>)[nav.key as string] = [nav.value];
-      repaired = true;
-      continue;
-    }
-
-    // unwrapObjectToArray: object with integer keys where array expected
-    if (
-      nav !== undefined &&
-      typeof nav.value === 'object' &&
-      nav.value !== null &&
-      !Array.isArray(nav.value) &&
-      hasSequentialIntegerKeys(nav.value as Record<string, unknown>)
-    ) {
-      const obj = nav.value as Record<string, unknown>;
-      const arr = Object.keys(obj)
-        .map((k) => obj[k])
-        .filter((v): v is unknown => v !== undefined);
-      (nav.parent as Record<string, unknown>)[nav.key as string] = arr;
-      repaired = true;
-      continue;
-    }
-
-    // If we reach here for any error, no repair was applicable for this
-    // particular error — but others may still apply.
+    // No repair was applicable for this error — others may still apply.
   }
 
   return repaired ? cloned : null;
