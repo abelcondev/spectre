@@ -132,6 +132,21 @@ describe('listActive', () => {
     expect(list[1]?.size).toBeUndefined();
   });
 
+  it('excludes devDependencies from the active set', async () => {
+    const home = tmpHome();
+    writeManifest(home, { 'zod@3.22.4': indexed('zod', '3.22.4', 10, 2048) });
+    const project = tmpProject({
+      dependencies: { zod: '^3.22.4' },
+      devDependencies: { eslint: '^9.0.0', typescript: '^6.0.0' },
+    });
+
+    const svc = ReferenceService.createStandalone(home);
+    await svc.initialize(project);
+
+    const list = await svc.listActive();
+    expect(list.map((r) => r.package)).toEqual(['zod']);
+  });
+
   it('cleans version ranges and skips workspace/file dependencies', async () => {
     const home = tmpHome();
     writeManifest(home, {

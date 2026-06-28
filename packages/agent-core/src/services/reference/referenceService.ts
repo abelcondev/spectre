@@ -25,6 +25,9 @@ const MANIFEST_FILENAME = 'manifest.json';
 const SEARCH_TIMEOUT_MS = 10_000;
 const CLONE_TIMEOUT_MS = 60_000;
 const BACKGROUND_INDEX_CONCURRENCY = 3;
+// Above this, a git clone is discarded in favor of the version-scoped npm
+// tarball — keeps the cache from filling up with large standalone repos.
+const MAX_INDEX_BYTES = 50 * 1024 * 1024;
 
 interface PackageDep {
   readonly name: string;
@@ -95,10 +98,10 @@ export class ReferenceService implements IReferenceService {
       return;
     }
 
-    const ranges: Record<string, string | undefined> = {
-      ...getProductionDependencies(pkg),
-      ...pkg.devDependencies,
-    };
+    // Only production + peer dependencies. devDependencies are build/lint
+    // tooling (eslint, typescript, type stubs) the agent rarely needs grounded
+    // against, and pulling their source is mostly noise.
+    const ranges: Record<string, string | undefined> = getProductionDependencies(pkg);
 
     const deps = new Map<string, PackageDep>();
     for (const [name, range] of Object.entries(ranges)) {
@@ -383,18 +386,27 @@ export class ReferenceService implements IReferenceService {
     let repo: string | undefined;
     let source: 'npm' | 'git' | 'local' = 'npm';
 
-    try {
-      repo = await this.resolveRepoUrl(name);
-    } catch {
-      // npm view failed; fall through to npm pack
-    }
+    const repository = await this.resolveRepository(name).catch(
+      (): { url?: string; directory?: string } => ({}),
+    );
 
-    if (repo) {
-      const cloned = await this.tryGitClone(repo, version, cachePath);
+    // Monorepo subpackages (npm reports a `directory`) would each clone the
+    // entire monorepo — frequently the same huge repo many times over. For
+    // those, npm pack fetches only the published, version-exact package.
+    if (repository.url && !repository.directory) {
+      const cloned = await this.tryGitClone(repository.url, version, cachePath);
       if (cloned) {
-        source = 'git';
-      } else {
-        repo = undefined;
+        const stats = await computeDirStats(cachePath);
+        if (stats.size <= MAX_INDEX_BYTES) {
+          source = 'git';
+          repo = repository.url;
+        } else {
+          this.logger.debug('git clone exceeds size cap; using npm pack', {
+            name,
+            size: stats.size,
+          });
+          await this.resetDir(cachePath);
+        }
       }
     }
 
@@ -424,9 +436,11 @@ export class ReferenceService implements IReferenceService {
     return entry;
   }
 
-  private async resolveRepoUrl(name: string): Promise<string | undefined> {
-    return new Promise<string | undefined>((resolve) => {
-      const proc = spawn('npm', ['view', name, 'repository.url', '--json'], {
+  private async resolveRepository(
+    name: string,
+  ): Promise<{ url?: string; directory?: string }> {
+    return new Promise((resolve) => {
+      const proc = spawn('npm', ['view', name, 'repository', '--json'], {
         stdio: ['ignore', 'pipe', 'ignore'],
         timeout: CLONE_TIMEOUT_MS,
       });
@@ -438,27 +452,30 @@ export class ReferenceService implements IReferenceService {
 
       proc.on('close', (code) => {
         if (code !== 0 || !stdout.trim()) {
-          resolve(undefined);
+          resolve({});
           return;
         }
         try {
           const parsed = JSON.parse(stdout.trim());
-          const url = typeof parsed === 'string' ? parsed : undefined;
-          if (
-            url &&
-            (url.startsWith('git+') || url.startsWith('git://') || url.includes('github.com'))
-          ) {
-            resolve(normalizeGitUrl(url));
-          } else {
-            resolve(undefined);
+          if (typeof parsed === 'string') {
+            resolve(isCloneableUrl(parsed) ? { url: normalizeGitUrl(parsed) } : {});
+            return;
           }
+          if (parsed && typeof parsed === 'object') {
+            const url = typeof parsed.url === 'string' ? parsed.url : undefined;
+            const directory =
+              typeof parsed.directory === 'string' ? parsed.directory : undefined;
+            resolve(url && isCloneableUrl(url) ? { url: normalizeGitUrl(url), directory } : {});
+            return;
+          }
+          resolve({});
         } catch {
-          resolve(undefined);
+          resolve({});
         }
       });
 
       proc.on('error', () => {
-        resolve(undefined);
+        resolve({});
       });
     });
   }
@@ -627,6 +644,10 @@ function isIndexableRange(range: string): boolean {
   if (/^(git\+|git:|file:|link:|portal:|https?:|ssh:)/.test(r)) return false;
   if (r.includes('://')) return false;
   return true;
+}
+
+function isCloneableUrl(url: string): boolean {
+  return url.startsWith('git+') || url.startsWith('git://') || url.includes('github.com');
 }
 
 function normalizeGitUrl(url: string): string {
