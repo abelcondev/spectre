@@ -52,7 +52,7 @@ export default defineConfig({
   },
   define: {
     [BUILT_IN_CATALOG_DEFINE]: builtInCatalogDefine(),
-    __SPECTRE_VERSION__: JSON.stringify(packageJson.version),
+    __SPECTRE_VERSION__: JSON.stringify(process.env['SPECTRE_VERSION'] || packageJson.version),
     __SPECTRE_CHANNEL__: JSON.stringify(process.env['SPECTRE_CHANNEL'] ?? process.env['KIMI_CODE_CHANNEL'] ?? ''),
     __SPECTRE_COMMIT__: JSON.stringify(process.env['SPECTRE_COMMIT'] ?? process.env['KIMI_CODE_COMMIT'] ?? ''),
     __SPECTRE_BUILD_TARGET__: JSON.stringify(buildTarget()),

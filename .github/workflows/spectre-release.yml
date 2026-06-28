@@ -69,6 +69,7 @@ jobs:
       upload-artifact-prefix: spectre-native
       retention-days: 7
       sign-macos: false
+      version: ${{ needs.resolve-version.outputs.version }}
 
   publish-release:
     name: Publish GitHub Release

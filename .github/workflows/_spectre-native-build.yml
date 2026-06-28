@@ -18,6 +18,11 @@ on:
         required: false
         type: boolean
         default: false
+      version:
+        description: 'Version string to embed in the binary (e.g. 0.2.13). Falls back to package.json if omitted.'
+        required: false
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -77,10 +82,14 @@ jobs:
 
       - name: Build native executable (release profile, macOS signed)
         if: runner.os == 'macOS' && inputs.sign-macos
+        env:
+          SPECTRE_VERSION: ${{ inputs.version }}
         run: pnpm --filter @abelcondev/spectre run build:native:release
 
       - name: Build native executable (local profile)
         if: '!(runner.os == ''macOS'' && inputs.sign-macos)'
+        env:
+          SPECTRE_VERSION: ${{ inputs.version }}
         run: pnpm --filter @abelcondev/spectre run build:native:sea
 
       - name: Notarize macOS binary
