@@ -38,8 +38,8 @@ export function getProductionDependencies(
   pkg: PackageJson,
 ): Record<string, string> {
   return {
-    ...(pkg.dependencies ?? {}),
-    ...(pkg.peerDependencies ?? {}),
+    ...pkg.dependencies,
+    ...pkg.peerDependencies,
   };
 }
 

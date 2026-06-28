@@ -409,7 +409,7 @@ export class Session {
     if (referenceService) {
       try {
         await referenceService.initialize(agent.kaos.getcwd());
-      } catch (err) {
+      } catch {
         // Non-fatal: reference service initialization failure should not block session start
       }
     }

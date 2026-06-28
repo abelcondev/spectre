@@ -8,7 +8,7 @@ import type { SlashCommandHost } from './dispatch';
  * dependencies are indexed and manage the cache.
  */
 export async function handleReferencesCommand(host: SlashCommandHost): Promise<void> {
-  const session = host.requireSession();
+  host.requireSession();
   
   // For now, show a simple status message. The ReferenceService is initialized
   // in the session, but we don't have direct RPC access to list references yet.
