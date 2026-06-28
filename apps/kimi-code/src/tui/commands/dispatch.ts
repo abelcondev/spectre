@@ -253,7 +253,7 @@ async function handleBuiltInSlashCommand(
       void showMcpServers(host);
       return;
     case 'references':
-      await handleReferencesCommand(host);
+      await handleReferencesCommand(host, args);
       return;
     case 'plugins':
       void handlePluginsCommand(host, args);

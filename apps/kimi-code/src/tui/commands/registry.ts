@@ -27,6 +27,11 @@ const AUTOCOMMIT_ARG_COMPLETIONS: readonly ArgCompletionSpec[] = [
   { value: 'off', description: 'Disable automatic git commits' },
 ];
 
+const REFERENCES_ARG_COMPLETIONS: readonly ArgCompletionSpec[] = [
+  { value: 'refresh', description: 'Re-index cached dependency references' },
+  { value: 'clear', description: 'Remove cached dependency references' },
+];
+
 /** Argument autocompletion for the `/goal` command (subcommands). */
 export function goalArgumentCompletions(argumentPrefix: string): AutocompleteItem[] | null {
   const nextMatch = argumentPrefix.match(/^next\s+(\S*)$/i);
@@ -49,6 +54,11 @@ export function swarmArgumentCompletions(argumentPrefix: string): AutocompleteIt
 /** Argument autocompletion for the `/autocommit` command (subcommands). */
 export function autocommitArgumentCompletions(argumentPrefix: string): AutocompleteItem[] | null {
   return completeLeadingArg(AUTOCOMMIT_ARG_COMPLETIONS, argumentPrefix);
+}
+
+/** Argument autocompletion for the `/references` command (subcommands). */
+export function referencesArgumentCompletions(argumentPrefix: string): AutocompleteItem[] | null {
+  return completeLeadingArg(REFERENCES_ARG_COMPLETIONS, argumentPrefix);
 }
 
 export const BUILTIN_SLASH_COMMANDS = [
@@ -176,6 +186,7 @@ export const BUILTIN_SLASH_COMMANDS = [
     aliases: ['refs'],
     description: 'Show dependency references status',
     priority: 60,
+    completeArgs: referencesArgumentCompletions,
     availability: 'always',
   },
   {

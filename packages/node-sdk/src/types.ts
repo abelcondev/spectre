@@ -54,6 +54,7 @@ export type {
   ProviderConfig,
   ProviderType,
   QuestionBackgroundTaskInfo,
+  ReferenceInfo,
   ReloadSummary,
   ResumedAgentState,
   ServicesConfig,

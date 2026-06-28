@@ -253,6 +253,24 @@ export interface ReconnectMcpServerPayload {
   readonly name: string;
 }
 
+export interface ReferenceInfo {
+  readonly package: string;
+  readonly version: string;
+  readonly status: 'indexed' | 'pending' | 'error';
+  readonly indexedAt?: string;
+  readonly size?: number;
+  readonly fileCount?: number;
+  readonly source?: string;
+}
+
+export interface RefreshReferencesPayload {
+  readonly package?: string;
+}
+
+export interface ClearReferencesPayload {
+  readonly package?: string;
+}
+
 export interface InstallPluginPayload {
   readonly source: string;
 }
@@ -371,6 +389,9 @@ export interface SessionAPI extends AgentAPIWithId {
   listMcpServers: (payload: EmptyPayload) => readonly McpServerInfo[];
   getMcpStartupMetrics: (payload: EmptyPayload) => McpStartupMetrics;
   reconnectMcpServer: (payload: ReconnectMcpServerPayload) => void;
+  listReferences: (payload: EmptyPayload) => readonly ReferenceInfo[];
+  refreshReferences: (payload: RefreshReferencesPayload) => void;
+  clearReferences: (payload: ClearReferencesPayload) => void;
   generateAgentsMd: (payload: EmptyPayload) => void;
 }
 

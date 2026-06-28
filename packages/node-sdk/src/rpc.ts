@@ -39,6 +39,7 @@ import type {
   PermissionMode,
   PluginInfo,
   PluginSummary,
+  ReferenceInfo,
   ReloadSummary,
   CompactOptions,
   SessionPlan,
@@ -96,6 +97,10 @@ export interface ActivateSkillRpcInput extends SessionIdRpcInput {
 
 export interface ReconnectMcpServerRpcInput extends SessionIdRpcInput {
   readonly name: string;
+}
+
+export interface ReferenceManageRpcInput extends SessionIdRpcInput {
+  readonly package?: string;
 }
 
 type ResolvedCoreAPI = RPCMethods<CoreAPI>;
@@ -538,6 +543,21 @@ export abstract class SDKRpcClientBase {
   async reconnectMcpServer(input: ReconnectMcpServerRpcInput): Promise<void> {
     const rpc = await this.getRpc();
     return rpc.reconnectMcpServer({ sessionId: input.sessionId, name: input.name });
+  }
+
+  async listReferences(input: SessionIdRpcInput): Promise<readonly ReferenceInfo[]> {
+    const rpc = await this.getRpc();
+    return rpc.listReferences({ sessionId: input.sessionId });
+  }
+
+  async refreshReferences(input: ReferenceManageRpcInput): Promise<void> {
+    const rpc = await this.getRpc();
+    return rpc.refreshReferences({ sessionId: input.sessionId, package: input.package });
+  }
+
+  async clearReferences(input: ReferenceManageRpcInput): Promise<void> {
+    const rpc = await this.getRpc();
+    return rpc.clearReferences({ sessionId: input.sessionId, package: input.package });
   }
 
   async listPlugins(): Promise<readonly PluginSummary[]> {

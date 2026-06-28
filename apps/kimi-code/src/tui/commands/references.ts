@@ -1,29 +1,77 @@
+import type { Session } from '@moonshot-ai/kimi-code-sdk';
+
+import { formatErrorMessage } from '../utils/event-payload';
 import type { SlashCommandHost } from './dispatch';
 
+type ReferenceInfo = Awaited<ReturnType<Session['listReferences']>>[number];
+
 /**
- * `/references` — show information about cached dependency references.
+ * `/references` — show and manage cached dependency references.
  *
- * This command displays which packages have their source code cached and
- * available for the Reference tool. Users can use this to understand what
- * dependencies are indexed and manage the cache.
+ *   /references              list active dependencies and their cache status
+ *   /references refresh [pkg] re-index all references, or just one package
+ *   /references clear   [pkg] remove cached references, or just one package
  */
-export async function handleReferencesCommand(host: SlashCommandHost): Promise<void> {
-  host.requireSession();
-  
-  // For now, show a simple status message. The ReferenceService is initialized
-  // in the session, but we don't have direct RPC access to list references yet.
-  // In a future iteration, we can add a proper RPC method to list/manage references.
-  
+export async function handleReferencesCommand(
+  host: SlashCommandHost,
+  args = '',
+): Promise<void> {
+  const session = host.requireSession();
+  const tokens = args.trim().split(/\s+/).filter(Boolean);
+  const sub = tokens[0];
+  const pkg = tokens.slice(1).join(' ').trim() || undefined;
+
+  try {
+    if (sub === 'refresh') {
+      host.showStatus(pkg ? `Refreshing reference for ${pkg}…` : 'Refreshing all references…');
+      await session.refreshReferences(pkg);
+      await showReferenceList(host, session);
+      return;
+    }
+    if (sub === 'clear') {
+      await session.clearReferences(pkg);
+      host.showStatus(
+        pkg ? `Cleared cached reference for ${pkg}.` : 'Cleared all cached references.',
+      );
+      return;
+    }
+    await showReferenceList(host, session);
+  } catch (error) {
+    host.showError(`References command failed: ${formatErrorMessage(error)}`);
+  }
+}
+
+async function showReferenceList(host: SlashCommandHost, session: Session): Promise<void> {
+  const refs = await session.listReferences();
+  if (refs.length === 0) {
+    host.showStatus('No referenceable dependencies detected in this workspace.');
+    return;
+  }
+
+  const indexed = refs.filter((r) => r.status === 'indexed').length;
+  host.showStatus(`Dependency references (${indexed}/${refs.length} indexed):`);
+  for (const ref of refs) {
+    host.showStatus(formatReferenceLine(ref));
+  }
   host.showStatus(
-    'Reference system is active. Use the Reference tool to search dependency source code.',
+    'Use `/references refresh [pkg]` to re-index or `/references clear [pkg]` to remove.',
   );
-  host.showStatus(
-    'Run `/references refresh` to re-index, or `/references clear` to remove cached references.',
-  );
-  
-  // TODO: Add proper RPC integration to list and manage references
-  // This would involve:
-  // 1. Adding a listReferences() method to Session RPC
-  // 2. Building a panel similar to showMcpServers
-  // 3. Supporting subcommands like refresh, clear, etc.
+}
+
+function formatReferenceLine(ref: ReferenceInfo): string {
+  const name = `${ref.package}@${ref.version}`;
+  switch (ref.status) {
+    case 'indexed':
+      return `  [indexed] ${name} — ${ref.fileCount ?? 0} files, ${formatBytes(ref.size ?? 0)}${ref.source ? `, ${ref.source}` : ''}`;
+    case 'error':
+      return `  [error]   ${name} — failed to index`;
+    case 'pending':
+      return `  [pending] ${name}`;
+  }
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }

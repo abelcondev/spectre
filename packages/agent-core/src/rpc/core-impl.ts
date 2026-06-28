@@ -80,6 +80,9 @@ import type {
   PluginSummary,
   PromptPayload,
   ReconnectMcpServerPayload,
+  ReferenceInfo,
+  RefreshReferencesPayload,
+  ClearReferencesPayload,
   RegisterToolPayload,
   ReloadSessionPayload,
   ReloadPluginsResult,
@@ -692,6 +695,27 @@ export class KimiCore implements PromisableMethods<CoreAPI> {
     return this.sessionApi(sessionId).getMcpStartupMetrics(payload);
   }
 
+  listReferences({
+    sessionId,
+    ...payload
+  }: SessionScopedPayload<EmptyPayload>): Promise<readonly ReferenceInfo[]> {
+    return this.sessionApi(sessionId).listReferences(payload);
+  }
+
+  refreshReferences({
+    sessionId,
+    ...payload
+  }: SessionScopedPayload<RefreshReferencesPayload>): Promise<void> {
+    return this.sessionApi(sessionId).refreshReferences(payload);
+  }
+
+  clearReferences({
+    sessionId,
+    ...payload
+  }: SessionScopedPayload<ClearReferencesPayload>): Promise<void> {
+    return this.sessionApi(sessionId).clearReferences(payload);
+  }
+
   reconnectMcpServer({
     sessionId,
     ...payload
@@ -1017,7 +1041,10 @@ async function createRuntimeConfig(input: {
         ? serviceCredentials(context7Service, input.resolveOAuthTokenProvider)
         : {}),
     }),
-    reference: ReferenceService.createStandalone(input.homeDir),
+    reference: ReferenceService.createStandalone(
+      input.homeDir,
+      log.createChild({ component: 'reference' }),
+    ),
   };
 }
 

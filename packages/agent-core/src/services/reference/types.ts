@@ -31,6 +31,10 @@ export interface CachedReference {
   readonly size: number;
   readonly fileCount: number;
   readonly indexedAt?: string;
+  /** Absent on entries written before this field existed; treat as 'indexed'. */
+  readonly status?: 'indexed' | 'error';
+  /** Failure reason, present only when status is 'error'. */
+  readonly error?: string;
 }
 
 export interface ReferenceManifest {

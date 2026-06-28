@@ -5,8 +5,7 @@
  * detects monorepo tooling (pnpm workspaces, Turborepo, Nx), and resolves
  * the active workspace package within a monorepo.
  */
-import { stat } from 'node:fs/promises';
-import { readFile } from 'node:fs/promises';
+import { readFile, stat } from 'node:fs/promises';
 import { dirname, join, normalize } from 'pathe';
 import { load as loadYaml } from 'js-yaml';
 

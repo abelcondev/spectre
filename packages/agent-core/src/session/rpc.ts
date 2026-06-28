@@ -15,6 +15,9 @@ import type {
   McpStartupMetrics,
   PromptPayload,
   ReconnectMcpServerPayload,
+  ReferenceInfo,
+  RefreshReferencesPayload,
+  ClearReferencesPayload,
   RenameSessionPayload,
   RegisterToolPayload,
   SessionAPI,
@@ -85,6 +88,20 @@ export class SessionAPIImpl implements PromisableMethods<SessionAPI> {
 
   async reconnectMcpServer(payload: ReconnectMcpServerPayload): Promise<void> {
     await this.session.mcp.reconnect(payload.name);
+  }
+
+  async listReferences(_payload: EmptyPayload): Promise<readonly ReferenceInfo[]> {
+    const reference = this.session.options.toolServices?.reference;
+    if (!reference) return [];
+    return reference.listActive();
+  }
+
+  async refreshReferences(payload: RefreshReferencesPayload): Promise<void> {
+    await this.session.options.toolServices?.reference?.refresh(payload.package);
+  }
+
+  async clearReferences(payload: ClearReferencesPayload): Promise<void> {
+    await this.session.options.toolServices?.reference?.clear(payload.package);
   }
 
   generateAgentsMd(_payload: EmptyPayload): Promise<void> {

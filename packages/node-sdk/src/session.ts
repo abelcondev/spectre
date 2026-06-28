@@ -20,6 +20,7 @@ import type {
   PluginInfo,
   PluginSummary,
   PromptInput,
+  ReferenceInfo,
   ReloadSummary,
   ResumedSessionState,
   ResumedSessionSummary,
@@ -363,6 +364,21 @@ export class Session {
   async reconnectMcpServer(name: string): Promise<void> {
     this.ensureOpen();
     await this.rpc.reconnectMcpServer({ sessionId: this.id, name });
+  }
+
+  async listReferences(): Promise<readonly ReferenceInfo[]> {
+    this.ensureOpen();
+    return this.rpc.listReferences({ sessionId: this.id });
+  }
+
+  async refreshReferences(packageName?: string): Promise<void> {
+    this.ensureOpen();
+    await this.rpc.refreshReferences({ sessionId: this.id, package: packageName });
+  }
+
+  async clearReferences(packageName?: string): Promise<void> {
+    this.ensureOpen();
+    await this.rpc.clearReferences({ sessionId: this.id, package: packageName });
   }
 
   async listPlugins(): Promise<readonly PluginSummary[]> {
