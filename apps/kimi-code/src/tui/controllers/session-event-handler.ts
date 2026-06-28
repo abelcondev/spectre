@@ -65,7 +65,6 @@ import {
   type McpServerStatusSnapshot,
   selectMcpStartupStatusRows,
 } from '../utils/mcp-server-status';
-import { autoCommitChanges, isVerificationCommand } from '#/utils/git/auto-commit';
 import { openUrl } from '#/utils/open-url';
 import { currentTheme } from '#/tui/theme';
 import type { ColorToken } from '#/tui/theme';
@@ -143,7 +142,6 @@ export class SessionEventHandler {
   private queuedGoalPromotionPending = false;
   private queuedGoalPromotionInFlight = false;
   private queuedGoalPromotionTimer: ReturnType<typeof setTimeout> | undefined;
-  private verificationSucceededThisTurn = false;
 
   resetRuntimeState(): void {
     this.backgroundTasks.clear();
@@ -158,7 +156,6 @@ export class SessionEventHandler {
     this.pendingModelBlockedFallback = undefined;
     this.queuedGoalPromotionPending = false;
     this.queuedGoalPromotionInFlight = false;
-    this.verificationSucceededThisTurn = false;
     this.clearQueuedGoalPromotionTimer();
     this.stopAllMcpServerStatusSpinners();
   }
@@ -338,21 +335,6 @@ export class SessionEventHandler {
     this.currentTurnHasAssistantText = false;
     this.goalCompletionTurnEnded = true;
     this.scheduleQueuedGoalPromotion();
-    void this.maybeAutoCommitAfterVerification();
-    this.verificationSucceededThisTurn = false;
-  }
-
-  private async maybeAutoCommitAfterVerification(): Promise<void> {
-    if (!this.host.state.appState.autoCommit || !this.verificationSucceededThisTurn) return;
-    try {
-      const result = autoCommitChanges(this.host.state.appState.workDir);
-      if (result.committed) {
-        this.host.showStatus(`Auto-committed after verification: ${result.message}`, 'success');
-      }
-    } catch (error) {
-      const msg = error instanceof Error ? error.message : String(error);
-      this.host.showStatus(`Auto-commit failed: ${msg}`, 'warning');
-    }
   }
 
   private handleStepBegin(event: TurnStepStartedEvent): void {
@@ -572,16 +554,7 @@ export class SessionEventHandler {
         streamingUI.setTodoList(sanitized);
       }
     }
-    if (matchedCall !== undefined && !event.isError && this.isVerificationToolCall(matchedCall)) {
-      this.verificationSucceededThisTurn = true;
-    }
     this.host.patchLivePane({ mode: 'waiting' });
-  }
-
-  private isVerificationToolCall(matchedCall: ToolCallBlockData): boolean {
-    if (matchedCall.name !== 'Bash') return false;
-    const command = (matchedCall.args['command'] as string | undefined) ?? '';
-    return isVerificationCommand(command);
   }
 
   private handleStatusUpdate(event: AgentStatusUpdatedEvent): void {

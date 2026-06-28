@@ -170,7 +170,6 @@ function createInitialAppState(input: KimiTUIStartupInput): AppState {
     permissionMode: startupPermission,
     planMode: input.cliOptions.plan,
     swarmMode: false,
-    autoCommit: false,
     thinking: false,
     contextUsage: 0,
     contextTokens: 0,

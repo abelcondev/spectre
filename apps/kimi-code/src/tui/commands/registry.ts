@@ -22,11 +22,6 @@ const SWARM_ARG_COMPLETIONS: readonly ArgCompletionSpec[] = [
   { value: 'off', description: 'Turn swarm mode off' },
 ];
 
-const AUTOCOMMIT_ARG_COMPLETIONS: readonly ArgCompletionSpec[] = [
-  { value: 'on', description: 'Enable automatic git commits' },
-  { value: 'off', description: 'Disable automatic git commits' },
-];
-
 const REFERENCES_ARG_COMPLETIONS: readonly ArgCompletionSpec[] = [
   { value: 'refresh', description: 'Re-index cached dependency references' },
   { value: 'clear', description: 'Remove cached dependency references' },
@@ -51,11 +46,6 @@ export function swarmArgumentCompletions(argumentPrefix: string): AutocompleteIt
   return completeLeadingArg(SWARM_ARG_COMPLETIONS, argumentPrefix);
 }
 
-/** Argument autocompletion for the `/autocommit` command (subcommands). */
-export function autocommitArgumentCompletions(argumentPrefix: string): AutocompleteItem[] | null {
-  return completeLeadingArg(AUTOCOMMIT_ARG_COMPLETIONS, argumentPrefix);
-}
-
 /** Argument autocompletion for the `/references` command (subcommands). */
 export function referencesArgumentCompletions(argumentPrefix: string): AutocompleteItem[] | null {
   return completeLeadingArg(REFERENCES_ARG_COMPLETIONS, argumentPrefix);
@@ -73,21 +63,6 @@ export const BUILTIN_SLASH_COMMANDS = [
     name: 'auto',
     aliases: [],
     description: 'Toggle auto permission mode',
-    priority: 100,
-    availability: 'always',
-  },
-  {
-    name: 'autocommit',
-    aliases: [],
-    description: 'Toggle automatic git commits after verification',
-    priority: 100,
-    completeArgs: autocommitArgumentCompletions,
-    availability: 'always',
-  },
-  {
-    name: 'pr',
-    aliases: ['pull-request'],
-    description: 'Create a pull request with preview',
     priority: 100,
     availability: 'always',
   },

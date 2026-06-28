@@ -163,47 +163,6 @@ export async function handleAutoCommand(host: SlashCommandHost, args: string): P
   }
 }
 
-export async function handleAutocommitCommand(host: SlashCommandHost, args: string): Promise<void> {
-  const subcmd = args.trim().toLowerCase();
-
-  try {
-    const config = await host.harness.getConfig({ reload: true });
-    const currentValue = config.autocommit ?? true;
-
-    let newValue: boolean;
-    if (subcmd === 'on') {
-      if (currentValue) {
-        host.showNotice('Autocommit is already enabled');
-        return;
-      }
-      newValue = true;
-    } else if (subcmd === 'off') {
-      if (!currentValue) {
-        host.showNotice('Autocommit is already disabled');
-        return;
-      }
-      newValue = false;
-    } else if (subcmd.length === 0) {
-      // toggle
-      newValue = !currentValue;
-    } else {
-      host.showError(`Unknown autocommit subcommand: ${subcmd}. Use /autocommit on|off`);
-      return;
-    }
-
-    await host.harness.setConfig({ autocommit: newValue });
-    host.track('autocommit_toggle', { enabled: newValue });
-    
-    if (newValue) {
-      host.showNotice('Autocommit: ON', 'Git commits after successful verification and SddWrite operations.');
-    } else {
-      host.showNotice('Autocommit: OFF', 'Git operations require manual commits.');
-    }
-  } catch (error) {
-    const msg = formatErrorMessage(error);
-    host.showError(`Failed to set autocommit: ${msg}`);
-  }
-}
 
 export async function handleCompactCommand(host: SlashCommandHost, args: string): Promise<void> {
   const session = host.session;

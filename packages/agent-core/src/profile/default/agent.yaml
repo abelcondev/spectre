@@ -33,7 +33,6 @@ tools:
   - GetGoal
   - SetGoalBudget
   - UpdateGoal
-  - SddWrite
   - mcp__*
 
 subagents:
