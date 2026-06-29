@@ -11,6 +11,7 @@ tools:
   - ReadMediaFile
   - Glob
   - Grep
+  - Reference
   - Write
   - Edit
   - WebSearch
