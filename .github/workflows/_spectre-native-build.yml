@@ -106,6 +106,8 @@ jobs:
         uses: ./.github/actions/macos-keychain-cleanup
 
       - name: Smoke test native executable
+        env:
+          SPECTRE_VERSION: ${{ inputs.version }}
         run: pnpm --filter @abelcondev/spectre run test:native:smoke
 
       - name: Package native artifact
