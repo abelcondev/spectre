@@ -23,7 +23,6 @@ tools:
   - Skill
   - WebSearch
   - FetchURL
-  - Context7
   - Reference
   - Knowledge
   - Agent
@@ -44,3 +43,5 @@ subagents:
     description: Fast codebase exploration with prompt-enforced read-only behavior.
   plan:
     description: Read-only implementation planning and architecture design.
+  stack:
+    description: Library and technology-stack research — latest stable versions and compatibility checks. Delegate stack decisions and "current version of X / is X compatible with Y" research here.

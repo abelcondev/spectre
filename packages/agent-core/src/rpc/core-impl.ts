@@ -1017,6 +1017,12 @@ async function createRuntimeConfig(input: {
   const searchService = input.config.services?.moonshotSearch;
   const fetchService = input.config.services?.moonshotFetch;
   const context7Service = input.config.services?.context7;
+  // Context7 is enabled by either a config block or the CONTEXT7_API_KEY env
+  // var (the provider falls back to it). When neither is present the tool is
+  // left out entirely so the `stack` subagent doesn't advertise a 401-only tool.
+  const context7Enabled =
+    context7Service !== undefined ||
+    (typeof process !== 'undefined' && nonEmptyString(process.env['CONTEXT7_API_KEY']) !== undefined);
 
   return {
     urlFetcher:
@@ -1036,12 +1042,19 @@ async function createRuntimeConfig(input: {
             defaultHeaders: input.kimiRequestHeaders,
             ...serviceCredentials(searchService, input.resolveOAuthTokenProvider),
           }),
-    context7: new Context7ApiProvider({
-      baseUrl: context7Service?.baseUrl,
-      ...(context7Service !== undefined
-        ? serviceCredentials(context7Service, input.resolveOAuthTokenProvider)
-        : {}),
-    }),
+    // Only construct the Context7 provider when Context7 is enabled (config
+    // block or CONTEXT7_API_KEY). Otherwise the `stack` subagent would
+    // advertise a Context7 tool that 401s on first call; leaving it undefined
+    // makes the tool gracefully absent so the subagent falls back to
+    // WebSearch/FetchURL.
+    context7: !context7Enabled
+      ? undefined
+      : new Context7ApiProvider({
+          baseUrl: context7Service?.baseUrl,
+          ...(context7Service !== undefined
+            ? serviceCredentials(context7Service, input.resolveOAuthTokenProvider)
+            : {}),
+        }),
     reference: ReferenceService.createStandalone(
       input.homeDir,
       log.createChild({ component: 'reference' }),

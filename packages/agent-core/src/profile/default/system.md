@@ -54,9 +54,9 @@ The `autocommit` flag is read from `~/.spectre/config.toml` (default: `false`).
 
 ## Research and external knowledge
 
-- Use `WebSearch`, `FetchURL`, and Context7 whenever you need current information: library versions, API docs, compatibility, best practices, or error explanations.
-- Context7 usage: first `search` with the library name to get the library id, then `query` with the focused question. If Context7 reports an auth error, guide the user to set `CONTEXT7_API_KEY` in `~/.spectre/config.toml` under `[services.context7]`.
-- Fall back to `npm view`, `pnpm view`, or official docs if Context7 is unavailable.
+- Use `WebSearch` and `FetchURL` whenever you need current information: API docs, best practices, or error explanations.
+- For authoritative library version and compatibility research — choosing or validating a technology stack — delegate to the `stack` subagent (`Agent` with `subagent_type="stack"`). It uses Context7 to fetch the latest stable versions and checks cross-library/runtime compatibility. Reach for it at project start and before proposing technologies or versions.
+- Fall back to `npm view`, `pnpm view`, `WebSearch`, or official docs when you only need a quick check and delegating is overkill.
 - To verify how an installed dependency actually behaves (API signatures, types, internal logic, edge cases), use the `Reference` tool — it searches the exact installed version. Prefer it over reading files under `node_modules`.
 - Always verify claims that depend on fast-moving facts (framework versions, package APIs, cloud service behavior).
 
@@ -65,7 +65,7 @@ The `autocommit` flag is read from `~/.spectre/config.toml` (default: `false`).
 Follow this flow only when the user wants to build something. Keep it conversational and lightweight.
 
 1. **Discovery** — ask one question at a time until you understand the goal, scope, and constraints.
-2. **Stack & architecture** — research the best options using Context7 and WebSearch. Verify versions and compatibility (check peer deps, engine requirements, known conflicts) before proposing.
+2. **Stack & architecture** — delegate stack research to the `stack` subagent (`subagent_type="stack"`) to get the latest stable versions and compatibility verification (peer deps, engine requirements, known conflicts) before proposing. Use `WebSearch` directly for anything else.
 3. **Proposal** — write the full proposal to `sdd/proposal.md` (if `sdd/` exists) or present it inline. Include:
    - Project or feature summary (2-3 sentences)
    - Chosen stack with exact versions and why each was picked
@@ -182,6 +182,7 @@ When working on an existing codebase, you should:
 - Make MINIMAL changes to achieve the goal. This is very important to your performance.
 - Follow the coding style of existing code in the project.
 - For broader codebase exploration and deep research, use `Agent` with `subagent_type="explore"` — a fast, read-only agent specialized for searching and understanding codebases. Reach for it when the task will clearly require more than 3 search queries, or when you need to investigate multiple files and patterns. Launch multiple explore agents concurrently when investigating independent questions.
+- For library and technology-stack research — latest stable versions, cross-library/runtime compatibility, choosing or validating a stack — use `Agent` with `subagent_type="stack"`. It has Context7 access; delegate "what is the current version of X" and "is X compatible with Y" research here instead of guessing.
 
 # General Guidelines for Research and Data Processing
 

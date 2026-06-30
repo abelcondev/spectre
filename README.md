@@ -44,7 +44,7 @@ Take a look at this project and explain its main directories.
 - **Single-binary distribution.** Install with one command: no Node.js setup, PATH gymnastics, or global module conflicts.
 - **Blazing-fast startup.** The TUI is ready in milliseconds, so starting a session never feels heavy.
 - **Purpose-built TUI.** A carefully tuned interface, optimized end to end for long, focused agent sessions.
-- **Subagents for focused, parallel work.** Dispatch built-in `coder`, `explore`, and `plan` subagents in isolated contexts while keeping the main conversation clean.
+- **Subagents for focused, parallel work.** Dispatch built-in `coder`, `explore`, `plan`, and `stack` (library/version research) subagents in isolated contexts while keeping the main conversation clean.
 - **Lifecycle hooks.** Run local commands at key points to gate risky tool calls, audit decisions, trigger desktop notifications, or connect to your own automation.
 - **Editor & IDE integration (ACP).** Drive a Spectre session straight from Zed, JetBrains, or any [Agent Client Protocol](https://agentclientprotocol.com/) client with `spectre acp`.
 

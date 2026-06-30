@@ -164,6 +164,9 @@ describe('default agent profiles', () => {
     expect(DEFAULT_AGENT_PROFILES['agent']?.subagents?.['plan']).toBe(
       DEFAULT_AGENT_PROFILES['plan'],
     );
+    expect(DEFAULT_AGENT_PROFILES['agent']?.subagents?.['stack']).toBe(
+      DEFAULT_AGENT_PROFILES['stack'],
+    );
 
     expect(DEFAULT_AGENT_PROFILES['agent']?.tools).toEqual(
       expect.arrayContaining([
@@ -183,6 +186,14 @@ describe('default agent profiles', () => {
     );
     expect(DEFAULT_AGENT_PROFILES['explore']?.tools).not.toContain('Write');
     expect(DEFAULT_AGENT_PROFILES['plan']?.tools).not.toContain('Bash');
+
+    // Context7 lives only on the `stack` subagent, not the main loop.
+    expect(DEFAULT_AGENT_PROFILES['agent']?.tools).not.toContain('Context7');
+    expect(DEFAULT_AGENT_PROFILES['stack']?.tools).toEqual(
+      expect.arrayContaining(['Context7', 'WebSearch', 'FetchURL', 'Read', 'Reference']),
+    );
+    expect(DEFAULT_AGENT_PROFILES['stack']?.tools).not.toContain('Write');
+    expect(DEFAULT_AGENT_PROFILES['stack']?.tools).not.toContain('Edit');
   });
 
   it('renders the model-invocable skill listing for bundled prompts', () => {
