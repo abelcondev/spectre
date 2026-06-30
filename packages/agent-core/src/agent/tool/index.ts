@@ -425,6 +425,7 @@ export class ToolManager {
         toolServices?.urlFetcher && new b.FetchURLTool(toolServices.urlFetcher),
         toolServices?.context7 && new b.Context7Tool(toolServices.context7),
         toolServices?.reference && new b.ReferenceTool(toolServices.reference),
+        toolServices?.knowledge && new b.KnowledgeTool(toolServices.knowledge),
       ]
         .filter((tool) => !!tool)
         .map((tool) => [tool.name, tool] as const),

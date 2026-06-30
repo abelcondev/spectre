@@ -112,6 +112,7 @@ import { proxyWithExtraPayload } from './types';
 import { KaosShellNotFoundError, LocalKaos, type Kaos } from '@moonshot-ai/kaos';
 import type { ToolServices } from '../tools/support/services';
 import { ReferenceService } from '../services/reference/referenceService';
+import { KnowledgeService } from '../services/knowledge/knowledgeService';
 
 const KIMI_CODE_PROVIDER_NAME = 'managed:kimi-code';
 const KIMI_CODE_BASE_URL_ENV = 'KIMI_CODE_BASE_URL';
@@ -1044,6 +1045,9 @@ async function createRuntimeConfig(input: {
     reference: ReferenceService.createStandalone(
       input.homeDir,
       log.createChild({ component: 'reference' }),
+    ),
+    knowledge: KnowledgeService.createStandalone(
+      log.createChild({ component: 'knowledge' }),
     ),
   };
 }

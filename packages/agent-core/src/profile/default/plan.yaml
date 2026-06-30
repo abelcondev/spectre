@@ -16,5 +16,6 @@ tools:
   - Glob
   - Grep
   - Reference
+  - Knowledge
   - WebSearch
   - FetchURL

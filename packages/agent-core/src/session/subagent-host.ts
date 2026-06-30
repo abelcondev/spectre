@@ -373,6 +373,7 @@ export class SessionSubagentHost {
       this.session.systemContextKaos(child.kaos.getcwd()),
       this.session.options.kimiHomeDir,
       this.session.options.toolServices?.reference,
+      this.session.options.toolServices?.knowledge,
     );
     child.useProfile(profile, context);
     child.tools.inheritUserTools(parent.tools);

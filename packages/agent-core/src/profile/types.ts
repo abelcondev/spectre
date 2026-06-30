@@ -43,6 +43,7 @@ export interface SystemPromptContext {
   readonly additionalDirsInfo?: string;
   readonly roleAdditional?: string;
   readonly references?: string;
+  readonly knowledge?: string;
 }
 
 export type SystemPromptRenderer = (context: SystemPromptContext) => string;

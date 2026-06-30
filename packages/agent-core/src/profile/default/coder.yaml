@@ -12,6 +12,7 @@ tools:
   - Glob
   - Grep
   - Reference
+  - Knowledge
   - Write
   - Edit
   - WebSearch

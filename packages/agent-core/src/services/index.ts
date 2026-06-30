@@ -222,3 +222,7 @@ export type {
   CachedReference,
 } from './reference/types';
 export { ReferenceService } from './reference/referenceService';
+
+export { IKnowledgeService } from './knowledge/knowledge';
+export type { KnowledgeConcept, KnowledgeSearchResult } from './knowledge/types';
+export { KnowledgeService } from './knowledge/knowledgeService';

@@ -415,10 +415,22 @@ export class Session {
       }
     }
 
+    // Initialize knowledge service so it can index the sdd/ OKF bundle. Unlike
+    // references this is a local-file scan, so its summary is ready immediately.
+    const knowledgeService = this.options.toolServices?.knowledge;
+    if (knowledgeService) {
+      try {
+        await knowledgeService.initialize(agent.kaos.getcwd());
+      } catch {
+        // Non-fatal: knowledge service initialization failure should not block session start
+      }
+    }
+
     const context = await prepareSystemPromptContext(
       this.systemContextKaos(agent.kaos.getcwd()),
       this.options.kimiHomeDir,
       referenceService,
+      knowledgeService,
     );
     agent.useProfile(profile, context);
 

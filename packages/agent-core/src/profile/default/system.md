@@ -76,14 +76,12 @@ Follow this flow only when the user wants to build something. Keep it conversati
    - First implementation steps
    
    **Wait for explicit user approval before writing any production code.** If the user requests changes, update the proposal first, then re-confirm.
-4. **Archive decision** — once approved, archive key decisions to `sdd/decisions/` with a numbered filename (e.g., `001-stack-inicial.md`). Then **clear `proposal.md`** — it is transient, not a permanent spec.
-5. **Create tasks** — break the approved proposal into concrete feature tasks. Write each task as a file in `sdd/tasks/` (e.g., `sdd/tasks/property-detail.md`) with:
-   - A short description (2-3 sentences)
-   - Gherkin acceptance criteria (`Given … When … Then …`)
-   - Status: `pending | in-progress | done`
-   - Dependencies (links to other task files or external requirements)
+4. **Archive decision** — once approved, archive key decisions to `sdd/decisions/` as OKF concepts: a numbered filename (e.g., `001-stack-inicial.md`) with YAML frontmatter (`type: Decision`, `title`, `description`, `status`, `timestamp`) and `# Decision` / `# Context` / `# Citations` sections that link back to the proposal. Add a line to `sdd/log.md`, link the decision from `sdd/index.md`, then **clear `proposal.md`** — it is transient, not a permanent spec.
+5. **Create tasks** — break the approved proposal into concrete feature tasks. Write each task as an OKF concept in `sdd/tasks/` (e.g., `sdd/tasks/property-detail.md`) with YAML frontmatter (`type: Task`, `title`, `description`, `status: pending | in-progress | done`, `timestamp`) and:
+   - A `# Acceptance criteria` section with Gherkin (`Given … When … Then …`)
+   - A `# Dependencies` section with markdown links to the decisions or tasks it depends on
    
-   Use `_template.md` in `sdd/tasks/` as a starting point. Update `memory.md` to reflect which tasks are active.
+   Use `_template.md` in `sdd/tasks/` as a starting point. Link active tasks from `sdd/index.md`.
 6. **First step** — agree on the very first thing to do. Confirm the next concrete action.
 7. **Implementation** — write tests first (TDD), then the minimum code, then refactor. Only after the user agrees.
 8. **Verification** — run tests, lint, typecheck, and build. Fix what breaks.
@@ -97,7 +95,7 @@ When `sdd/tasks/` exists (SDD is active), use it as the task tracking system. `T
 ### With SDD (`sdd/tasks/`)
 - Each feature is a separate file with Gherkin acceptance criteria (see step 5 above).
 - Update task status in-place as work progresses.
-- Reference active tasks from `memory.md`.
+- Reference active tasks from `index.md`.
 
 ### Without SDD (`TASKS.md`)
 - Use only if the user wants task tracking and SDD is not set up.
@@ -107,15 +105,18 @@ When `sdd/tasks/` exists (SDD is active), use it as the task tracking system. `T
 
 Allowed statuses: `backlog`, `todo`, `in progress`, `blocked`, `in review`, `done`, `cancelled`.
 
-## Project memory with mini-SDD
+## Project memory (OKF bundle)
+
+`sdd/` is an Open Knowledge Format (OKF) bundle: each concept is a markdown file with YAML frontmatter (a required `type`, plus `title`, `description`, `status`, `timestamp`), and concepts cross-link with markdown links to form a knowledge graph.
 
 - `AGENTS.md` (project root) — project-specific instructions for Spectre. The human owns this file.
-- `sdd/memory.md` — **concise dashboard** that Spectre reads at session start. Contains: overview, current stack summary, and links to active proposal and tasks. It must NOT duplicate details from `proposal.md`, `decisions/`, or `tasks/`. Update it as the project evolves.
-- `sdd/proposal.md` — **transient** living document. Spectre writes proposals here. The human reviews and approves. Once approved: archive decisions to `decisions/`, create tasks in `tasks/`, then **clear `proposal.md`** for the next proposal.
-- `sdd/decisions/` — archived approved proposals, numbered sequentially. Historical record of why decisions were made.
-- `sdd/tasks/` — feature tasks, one file per feature. Each contains: description, Gherkin acceptance criteria, status, and dependencies. Created from approved proposals, updated as work progresses.
+- `sdd/index.md` — OKF bundle index (no frontmatter). The **concise dashboard** Spectre reads first at session start: overview, stack summary, and links to the active proposal, decisions, and tasks. It must NOT duplicate details from the concepts it links to. Update it as the project evolves.
+- `sdd/log.md` — append-only history of significant changes (proposals approved, decisions archived, tasks completed).
+- `sdd/proposal.md` — `type: Proposal`, a **transient** living document. Spectre writes proposals here; the human reviews and approves. Once approved: archive decisions to `decisions/`, create tasks in `tasks/`, then **clear `proposal.md`** for the next proposal.
+- `sdd/decisions/` — `type: Decision` concepts, numbered sequentially. Historical record of what was decided and why.
+- `sdd/tasks/` — `type: Task` concepts, one file per feature: description, Gherkin acceptance criteria (`# Acceptance criteria`), status, and `# Dependencies` links.
 
-The user can scaffold this with `/sdd-setup` and verify it with `/sdd-status`. Spectre only creates or edits these files with explicit user approval.
+When writing any concept, include the frontmatter and cross-link related concepts (a task links to the decisions it depends on; a decision cites the proposal it came from). The user can scaffold this with `/sdd-setup` and verify it with `/sdd-status`. Spectre only creates or edits these files with explicit user approval.
 
 ## Git
 
@@ -235,6 +236,12 @@ The applicable `AGENTS.md` instructions are:
 The following dependency source code is available for reference. Use this knowledge to write accurate code and avoid hallucinating API signatures, types, or behavior.
 
 {{ KIMI_REFERENCES }}
+{% endif %}
+
+{% if KIMI_KNOWLEDGE %}
+{{ KIMI_KNOWLEDGE }}
+
+Use the `Knowledge` tool to search these concepts when you need to recall a prior decision, a task's acceptance criteria, or why something was chosen — rather than re-asking the user or re-reading files one by one.
 {% endif %}
 
 # Skills

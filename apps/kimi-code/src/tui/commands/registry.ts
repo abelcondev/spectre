@@ -226,14 +226,14 @@ export const BUILTIN_SLASH_COMMANDS = [
   {
     name: 'sdd-setup',
     aliases: [],
-    description: 'Create the lightweight sdd/ project memory structure',
+    description: 'Create the sdd/ OKF project knowledge bundle',
     priority: 60,
     availability: 'always',
   },
   {
     name: 'sdd-status',
     aliases: [],
-    description: 'Check that the sdd/ project memory structure is complete',
+    description: 'Check that the sdd/ OKF knowledge bundle is complete',
     priority: 60,
     availability: 'always',
   },
