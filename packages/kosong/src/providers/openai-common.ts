@@ -72,6 +72,32 @@ export interface OpenAIToolParam {
 }
 
 /**
+ * Guarantee that a function tool's `parameters` JSON Schema declares an object
+ * root.
+ *
+ * The OpenAI function-calling contract — and strict validators built on it such
+ * as Moonshot/Kimi — require `tools.function.parameters.type === "object"`. A
+ * zod `discriminatedUnion` (and some MCP `inputSchema`s) serializes to a
+ * typeless `oneOf`/`anyOf` root: lenient gateways (z.ai, many OpenAI-compatible
+ * proxies) accept it, but strict ones reject the request with
+ * `tools.function.parameters.type is required and must be "object"`.
+ *
+ * When the root omits a string `type`, this returns a shallow copy with
+ * `type: "object"` prepended. It does not otherwise rewrite the schema — an
+ * `oneOf`/`anyOf` of object branches stays valid alongside an explicit object
+ * type (every branch is itself an object). Schemas that already declare a
+ * `type` are returned untouched.
+ */
+export function ensureObjectRootParameters(
+  parameters: Record<string, unknown>,
+): Record<string, unknown> {
+  if (typeof parameters['type'] === 'string') {
+    return parameters;
+  }
+  return { type: 'object', ...parameters };
+}
+
+/**
  * Convert a kosong `Tool` to OpenAI tool format.
  */
 export function toolToOpenAI(tool: Tool): OpenAIToolParam {
@@ -80,7 +106,7 @@ export function toolToOpenAI(tool: Tool): OpenAIToolParam {
     function: {
       name: tool.name,
       description: tool.description,
-      parameters: tool.parameters,
+      parameters: ensureObjectRootParameters(tool.parameters),
     },
   };
 }

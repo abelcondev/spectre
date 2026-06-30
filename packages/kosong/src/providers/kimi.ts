@@ -21,6 +21,7 @@ import {
 import {
   convertContentPart,
   convertOpenAIError,
+  ensureObjectRootParameters,
   extractUsage,
   isFunctionToolCall,
   normalizeOpenAIFinishReason,
@@ -180,7 +181,9 @@ function convertTool(tool: Tool): OpenAIToolParam {
     ...converted,
     function: {
       ...converted.function,
-      parameters: normalizeKimiToolSchema(tool.parameters),
+      // normalizeKimiToolSchema fills nested missing `type`s but treats the
+      // root as a container, so guarantee the object root separately.
+      parameters: ensureObjectRootParameters(normalizeKimiToolSchema(tool.parameters)),
     },
   };
 }

@@ -133,6 +133,36 @@ const REF_ENUM_ONLY_TOOL: Tool = {
   },
 };
 
+// Mirrors a `z.discriminatedUnion` (e.g. the Context7 tool) serialized by
+// `z.toJSONSchema`: a typeless `oneOf` root that Moonshot rejects with
+// `tools.function.parameters.type is required and must be "object"`.
+const ONEOF_ROOT_TOOL: Tool = {
+  name: 'Context7',
+  description: 'Query Context7.',
+  parameters: {
+    $schema: 'http://json-schema.org/draft-07/schema#',
+    oneOf: [
+      {
+        type: 'object',
+        properties: {
+          operation: { type: 'string', const: 'search' },
+          query: { type: 'string' },
+        },
+        required: ['operation', 'query'],
+      },
+      {
+        type: 'object',
+        properties: {
+          operation: { type: 'string', const: 'query' },
+          libraryId: { type: 'string' },
+          query: { type: 'string' },
+        },
+        required: ['operation', 'libraryId', 'query'],
+      },
+    ],
+  },
+};
+
 describe('KimiChatProvider', () => {
   describe('message conversion', () => {
     it('simple user message with system prompt', async () => {
@@ -315,6 +345,25 @@ describe('KimiChatProvider', () => {
         },
       ]);
       expect(REF_ENUM_ONLY_TOOL.parameters).toEqual(originalParameters);
+    });
+
+    it('adds an object root type to a discriminated-union (oneOf) tool schema', async () => {
+      const provider = createProvider();
+      const originalParameters = structuredClone(ONEOF_ROOT_TOOL.parameters);
+      const history: Message[] = [
+        { role: 'user', content: [{ type: 'text', text: 'hola' }], toolCalls: [] },
+      ];
+
+      const body = await captureRequestBody(provider, '', [ONEOF_ROOT_TOOL], history);
+
+      const tools = body['tools'] as Array<{ function: { parameters: Record<string, unknown> } }>;
+      const params = tools[0]?.function.parameters;
+      // The exact error Moonshot raises is a missing root `type`; guarantee it.
+      expect(params?.['type']).toBe('object');
+      // The union branches are preserved untouched alongside the object type.
+      expect(params?.['oneOf']).toEqual(originalParameters['oneOf']);
+      // Source schema is never mutated.
+      expect(ONEOF_ROOT_TOOL.parameters).toEqual(originalParameters);
     });
 
     it('tool call and tool result', async () => {

@@ -21,6 +21,7 @@ import OpenAI from 'openai';
 import { usesOpenAIResponsesDeveloperRole } from './capability-registry';
 import {
   convertOpenAIError,
+  ensureObjectRootParameters,
   isMediaPart,
   TOOL_RESULT_MEDIA_PLACEHOLDER,
   TOOL_RESULT_MEDIA_PROMPT,
@@ -581,7 +582,7 @@ function convertTool(tool: Tool): ResponseToolParam {
     type: 'function',
     name: tool.name,
     description: tool.description,
-    parameters: tool.parameters,
+    parameters: ensureObjectRootParameters(tool.parameters),
     strict: false,
   };
 }

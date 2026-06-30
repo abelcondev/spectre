@@ -662,6 +662,30 @@ describe('OpenAIResponsesChatProvider', () => {
       ]);
     });
 
+    it('adds an object root type to a discriminated-union (oneOf) tool schema', async () => {
+      const provider = createProvider();
+      const oneOfTool: Tool = {
+        name: 'Context7',
+        description: 'Query Context7.',
+        parameters: {
+          $schema: 'http://json-schema.org/draft-07/schema#',
+          oneOf: [
+            { type: 'object', properties: { operation: { const: 'search' } } },
+            { type: 'object', properties: { operation: { const: 'query' } } },
+          ],
+        },
+      };
+      const history: Message[] = [
+        { role: 'user', content: [{ type: 'text', text: 'hola' }], toolCalls: [] },
+      ];
+
+      const body = await captureRequestBody(provider, '', [oneOfTool], history);
+
+      const tools = body['tools'] as Array<{ parameters: Record<string, unknown> }>;
+      expect(tools[0]?.parameters['type']).toBe('object');
+      expect(tools[0]?.parameters['oneOf']).toEqual(oneOfTool.parameters['oneOf']);
+    });
+
     it('tool call and tool result', async () => {
       const provider = createProvider();
       const toolCall: ToolCall = {
