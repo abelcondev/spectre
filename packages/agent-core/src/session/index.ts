@@ -27,6 +27,7 @@ import {
   prepareSystemPromptContext,
   type ResolvedAgentProfile,
 } from '../profile';
+import type { IReferenceService } from '../services/reference';
 import type { ProviderManager } from './provider-manager';
 import {
   registerBuiltinSkills,
@@ -420,6 +421,32 @@ export class Session {
       referenceService,
     );
     agent.useProfile(profile, context);
+
+    // Reference indexing runs in the background, so a cold cache leaves the
+    // prompt summary empty at session start. Once warm-up settles, inject the
+    // now-available sources so the agent knows to reach for the Reference tool
+    // instead of grepping node_modules.
+    if (referenceService && !context.references) {
+      void this.injectReferencesWhenWarm(agent, referenceService);
+    }
+  }
+
+  private async injectReferencesWhenWarm(
+    agent: Agent,
+    referenceService: IReferenceService,
+  ): Promise<void> {
+    try {
+      await referenceService.whenWarm();
+      const summary = await referenceService.getSummary();
+      if (summary.trim().length === 0) return;
+      agent.context.appendSystemReminder(referencesReadyReminder(summary), {
+        kind: 'injection',
+        variant: 'references',
+      });
+      await agent.records.flush();
+    } catch {
+      // Non-fatal: failing to refresh the reference summary must not break the session.
+    }
   }
 
   async generateAgentsMd(): Promise<void> {
@@ -709,6 +736,16 @@ export class Session {
 }
 
 export * from './subagent-host';
+
+function referencesReadyReminder(summary: string): string {
+  return [
+    'Dependency source code finished indexing and is now available for reference.',
+    'Use the `Reference` tool to inspect how these dependencies actually work',
+    '(API signatures, types, edge cases) instead of reading files under `node_modules`.',
+    '',
+    summary,
+  ].join('\n');
+}
 
 function initCompletionReminder(agentsMd: string): string {
   const latest =

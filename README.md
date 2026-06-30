@@ -40,7 +40,7 @@ Take a look at this project and explain its main directories.
 
 ## Key Features
 
-- **SDD-native orchestrator.** The default agent profile is the Spec-Driven Development orchestrator, with built-in product, design, tech-spec, developer, and auditor subagents.
+- **SDD-native orchestrator.** The default agent profile is the Spec-Driven Development orchestrator: it drafts proposals for your review, archives approved decisions, and tracks work as Gherkin tasks under `sdd/`.
 - **Single-binary distribution.** Install with one command: no Node.js setup, PATH gymnastics, or global module conflicts.
 - **Blazing-fast startup.** The TUI is ready in milliseconds, so starting a session never feels heavy.
 - **Purpose-built TUI.** A carefully tuned interface, optimized end to end for long, focused agent sessions.

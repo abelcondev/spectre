@@ -7,6 +7,13 @@ export interface IReferenceService {
   /** Initialize the service for the given working directory */
   initialize(cwd: string): Promise<void>;
 
+  /**
+   * Resolve once the background warm-up indexing kicked off by `initialize`
+   * has settled. Resolves immediately when nothing is pending. Used to refresh
+   * the prompt's reference summary after a cold start finishes indexing.
+   */
+  whenWarm(): Promise<void>;
+
   /** List all active references for the current project */
   listActive(): Promise<ReferenceSummary[]>;
 

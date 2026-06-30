@@ -8,9 +8,10 @@ import { ReferenceService } from '../../../src/services/reference/referenceServi
 import type { CachedReference } from '../../../src/services/reference/types';
 
 // Keep the suite hermetic: no real `git` / `npm` / `tar` / `rg` processes. The
-// fake child never emits, so any accidental indexing hangs harmlessly (and
-// never mutates the manifest) instead of hitting the network. `vi.mock` is
-// hoisted above the imports above by vitest regardless of placement.
+// fake child exits non-zero on the next tick, so any spawn-based step (repo
+// lookup, git clone, npm pack, rg) resolves as "unavailable" instead of hitting
+// the network — letting indexing fall through to the local node_modules path.
+// `vi.mock` is hoisted above the imports by vitest regardless of placement.
 vi.mock('node:child_process', () => ({
   spawn: vi.fn(() => {
     const child = new EventEmitter() as EventEmitter & {
@@ -19,6 +20,7 @@ vi.mock('node:child_process', () => ({
     };
     child.stdout = new EventEmitter();
     child.stderr = new EventEmitter();
+    setImmediate(() => child.emit('close', 1));
     return child;
   }),
 }));
@@ -167,6 +169,62 @@ describe('listActive', () => {
 
     const list = (await svc.listActive()).toSorted((x, y) => x.package.localeCompare(y.package));
     expect(list.map((r) => `${r.package}@${r.version}`)).toEqual(['left-pad@2.0.0', 'zod@3.22.4']);
+  });
+});
+
+describe('node_modules-first indexing', () => {
+  it('indexes from an installed node_modules copy without git/npm, skipping nested node_modules', async () => {
+    const home = tmpHome();
+    const project = tmpProject({ dependencies: { mylib: '^1.0.0' } });
+
+    const libDir = join(project, 'node_modules', 'mylib');
+    mkdirSync(libDir, { recursive: true });
+    writeFileSync(join(libDir, 'index.js'), 'export const hello = () => 42;', 'utf8');
+    // Nested node_modules must be pruned from the cached copy.
+    mkdirSync(join(libDir, 'node_modules', 'dep'), { recursive: true });
+    writeFileSync(join(libDir, 'node_modules', 'dep', 'x.js'), 'nested', 'utf8');
+
+    const svc = ReferenceService.createStandalone(home);
+    await svc.initialize(project);
+    // Background warm-up copies from node_modules (no child processes involved).
+    await svc.whenWarm();
+
+    const list = await svc.listActive();
+    expect(list).toHaveLength(1);
+    expect(list[0]).toMatchObject({ package: 'mylib', status: 'indexed', source: 'local' });
+    // Only index.js — the nested node_modules file was filtered out.
+    expect(list[0]?.fileCount).toBe(1);
+  });
+});
+
+describe('monorepo dependency aggregation', () => {
+  it('grounds against dependencies from every workspace, not just the active one', async () => {
+    const root = mkdtempSync(join(tmpdir(), 'ref-mono-'));
+    homes.push(root);
+    // `.git` so findProjectRoot stops here; pnpm-workspace marks it a monorepo.
+    mkdirSync(join(root, '.git'), { recursive: true });
+    writeFileSync(join(root, 'pnpm-workspace.yaml'), 'packages:\n  - "packages/*"\n', 'utf8');
+    writeFileSync(join(root, 'package.json'), JSON.stringify({ name: 'root' }), 'utf8');
+
+    const pkgA = join(root, 'packages', 'a');
+    const pkgB = join(root, 'packages', 'b');
+    mkdirSync(pkgA, { recursive: true });
+    mkdirSync(pkgB, { recursive: true });
+    writeFileSync(join(pkgA, 'package.json'), JSON.stringify({ dependencies: { zod: '^3.22.4' } }));
+    writeFileSync(join(pkgB, 'package.json'), JSON.stringify({ dependencies: { react: '^18.2.0' } }));
+
+    const home = tmpHome();
+    writeManifest(home, {
+      'zod@3.22.4': indexed('zod', '3.22.4', 10, 2048),
+      'react@18.2.0': indexed('react', '18.2.0', 50, 100_000),
+    });
+
+    const svc = ReferenceService.createStandalone(home);
+    // Initialize from workspace A — react (declared only in B) must still be active.
+    await svc.initialize(pkgA);
+
+    const list = (await svc.listActive()).toSorted((x, y) => x.package.localeCompare(y.package));
+    expect(list.map((r) => r.package)).toEqual(['react', 'zod']);
   });
 });
 

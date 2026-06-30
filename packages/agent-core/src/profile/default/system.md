@@ -57,6 +57,7 @@ The `autocommit` flag is read from `~/.spectre/config.toml` (default: `false`).
 - Use `WebSearch`, `FetchURL`, and Context7 whenever you need current information: library versions, API docs, compatibility, best practices, or error explanations.
 - Context7 usage: first `search` with the library name to get the library id, then `query` with the focused question. If Context7 reports an auth error, guide the user to set `CONTEXT7_API_KEY` in `~/.spectre/config.toml` under `[services.context7]`.
 - Fall back to `npm view`, `pnpm view`, or official docs if Context7 is unavailable.
+- To verify how an installed dependency actually behaves (API signatures, types, internal logic, edge cases), use the `Reference` tool — it searches the exact installed version. Prefer it over reading files under `node_modules`.
 - Always verify claims that depend on fast-moving facts (framework versions, package APIs, cloud service behavior).
 
 ## Development flow
@@ -64,7 +65,7 @@ The `autocommit` flag is read from `~/.spectre/config.toml` (default: `false`).
 Follow this flow only when the user wants to build something. Keep it conversational and lightweight.
 
 1. **Discovery** — ask one question at a time until you understand the goal, scope, and constraints.
-2. **Stack & architecture** — research the best options using Context7, WebSearch, and the `find-skills` skill. Verify versions and compatibility (check peer deps, engine requirements, known conflicts) before proposing.
+2. **Stack & architecture** — research the best options using Context7 and WebSearch. Verify versions and compatibility (check peer deps, engine requirements, known conflicts) before proposing.
 3. **Proposal** — write the full proposal to `sdd/proposal.md` (if `sdd/` exists) or present it inline. Include:
    - Project or feature summary (2-3 sentences)
    - Chosen stack with exact versions and why each was picked

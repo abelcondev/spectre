@@ -23,6 +23,7 @@ tools:
   - Skill
   - WebSearch
   - FetchURL
+  - Context7
   - Reference
   - Agent
   - AgentSwarm
