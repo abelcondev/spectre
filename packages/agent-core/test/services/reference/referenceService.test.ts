@@ -4,7 +4,10 @@ import { tmpdir } from 'node:os';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { join } from 'pathe';
 
-import { ReferenceService } from '../../../src/services/reference/referenceService';
+import {
+  buildSearchPattern,
+  ReferenceService,
+} from '../../../src/services/reference/referenceService';
 import type { CachedReference } from '../../../src/services/reference/types';
 
 // Keep the suite hermetic: no real `git` / `npm` / `tar` / `rg` processes. The
@@ -74,6 +77,31 @@ function errored(pkg: string, version: string): CachedReference {
 
 afterEach(() => {
   while (homes.length > 0) rmSync(homes.pop()!, { recursive: true, force: true });
+});
+
+describe('buildSearchPattern', () => {
+  it('passes a single term through untouched so it can act as a regex', () => {
+    expect(buildSearchPattern('GlassView')).toBe('GlassView');
+    expect(buildSearchPattern('useEffect.*cleanup')).toBe('useEffect.*cleanup');
+    expect(buildSearchPattern('  trimmed  ')).toBe('trimmed');
+  });
+
+  it('OR-joins multiple keywords instead of matching them as one literal phrase', () => {
+    // This is the regression: the whole space-joined string used to reach rg as
+    // a single pattern and match nothing.
+    expect(buildSearchPattern('GlassView GlassContainer isLiquidGlassAvailable')).toBe(
+      'GlassView|GlassContainer|isLiquidGlassAvailable',
+    );
+  });
+
+  it('escapes regex metacharacters in each OR-ed term', () => {
+    expect(buildSearchPattern('z.object parse()')).toBe('z\\.object|parse\\(\\)');
+    expect(buildSearchPattern('foo[] bar+')).toBe('foo\\[\\]|bar\\+');
+  });
+
+  it('collapses arbitrary whitespace between terms', () => {
+    expect(buildSearchPattern('a\t b\n  c')).toBe('a|b|c');
+  });
 });
 
 describe('getSummary', () => {

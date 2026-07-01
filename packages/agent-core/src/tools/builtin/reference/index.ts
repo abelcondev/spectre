@@ -20,7 +20,11 @@ import DESCRIPTION from './reference.md?raw';
 
 export const ReferenceInputSchema = z.object({
   package: z.string().describe('Package name to search in, e.g. "zod", "react", "@tanstack/react-query".'),
-  query: z.string().describe('What to search for in the package source, e.g. "parse function signature", "useState implementation", "discriminatedUnion types".'),
+  query: z
+    .string()
+    .describe(
+      'What to search for. Best results come from a single symbol or short identifier — e.g. "GlassView", "useState", "discriminatedUnion". Multiple words are matched as OR (any term), so prefer specific API names over natural-language phrases. Supports regex when you pass a single term (e.g. "useEffect.*cleanup").',
+    ),
 });
 
 export type ReferenceInput = z.infer<typeof ReferenceInputSchema>;
@@ -55,12 +59,7 @@ export class ReferenceTool implements BuiltinTool<ReferenceInput> {
       const builder = new ToolResultBuilder({ maxLineLength: null });
 
       if (results.length === 0) {
-        builder.write(`No results found in ${args.package} for "${args.query}".`);
-        builder.write('');
-        builder.write('This could mean:');
-        builder.write('- The package is not indexed yet (use /references to check status)');
-        builder.write('- The search query does not match any code in the package');
-        builder.write('- Try a different search term or check the package name');
+        await this.writeEmptyExplanation(builder, args);
         return builder.ok();
       }
 
@@ -81,5 +80,43 @@ export class ReferenceTool implements BuiltinTool<ReferenceInput> {
         output: `Reference search failed: ${msg}`,
       };
     }
+  }
+
+  /**
+   * Explain an empty result accurately. The service returns no results in three
+   * very different situations; conflating them (the old generic message) sent
+   * callers chasing "maybe it's not indexed" when the real cause was the query.
+   */
+  private async writeEmptyExplanation(
+    builder: ToolResultBuilder,
+    args: ReferenceInput,
+  ): Promise<void> {
+    const active = await this.service.listActive().catch(() => []);
+    const entry = active.find((r) => r.package === args.package);
+
+    if (!entry) {
+      builder.write(`"${args.package}" is not a tracked dependency of this project.`);
+      builder.write('');
+      builder.write('Only production/peer dependencies are indexed. Run /references to see');
+      builder.write('the available packages, and check the package name for typos.');
+      return;
+    }
+
+    if (entry.status === 'pending') {
+      builder.write(`"${args.package}" is still being indexed. Try the search again shortly.`);
+      return;
+    }
+
+    if (entry.status === 'error') {
+      builder.write(`"${args.package}" failed to index, so its source is not searchable.`);
+      builder.write('Run /references to inspect status, or refresh it and retry.');
+      return;
+    }
+
+    builder.write(`No matches for "${args.query}" in ${args.package} (v${entry.version}).`);
+    builder.write('');
+    builder.write('The package is indexed — this is a query miss, not a missing source.');
+    builder.write('Try a single API symbol or identifier (e.g. one export name) rather than a');
+    builder.write('phrase; multiple words match as OR, and a lone term can be a regex.');
   }
 }

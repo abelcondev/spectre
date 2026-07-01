@@ -26,6 +26,10 @@ import type {
 
 const MANIFEST_FILENAME = 'manifest.json';
 const SEARCH_TIMEOUT_MS = 10_000;
+// Total matches returned to the caller across all files. `rg --max-count` is
+// per-file, so a common symbol in a large package (e.g. react-native) would
+// otherwise flood the result; we cap the aggregate and stop the process early.
+const MAX_SEARCH_RESULTS = 40;
 const CLONE_TIMEOUT_MS = 60_000;
 const BACKGROUND_INDEX_CONCURRENCY = 3;
 // Above this, a git clone is discarded in favor of the version-scoped npm
@@ -208,14 +212,31 @@ export class ReferenceService implements IReferenceService {
       return [];
     }
 
+    // The model's query is a set of keywords, not a single regex. Passing it
+    // verbatim makes rg search for the whole space-joined string as one pattern
+    // (literal spaces and all), which matches nothing. Tokenize + OR the terms.
+    const pattern = buildSearchPattern(query);
+
     return new Promise<SearchResult[]>((resolve) => {
       const results: SearchResult[] = [];
-      const proc = spawn(rgBinary, ['--json', '--max-count', '25', query, cachePath], {
-        stdio: ['ignore', 'pipe', 'ignore'],
-        timeout: SEARCH_TIMEOUT_MS,
-      });
+      // `-S` (smart-case): case-insensitive unless the query has an uppercase
+      // letter, so a loosely-cased keyword query still hits code symbols.
+      const proc = spawn(
+        rgBinary,
+        ['--json', '-S', '--max-count', '25', '-e', pattern, cachePath],
+        {
+          stdio: ['ignore', 'pipe', 'ignore'],
+          timeout: SEARCH_TIMEOUT_MS,
+        },
+      );
 
       let buffer = '';
+      let settled = false;
+      const finish = (): void => {
+        if (settled) return;
+        settled = true;
+        resolve(results.slice(0, MAX_SEARCH_RESULTS));
+      };
 
       proc.stdout.on('data', (chunk: Buffer) => {
         buffer += chunk.toString('utf8');
@@ -225,6 +246,10 @@ export class ReferenceService implements IReferenceService {
           const parsed = parseRgLine(line, dep.name, dep.version);
           if (parsed) results.push(parsed);
         }
+        if (results.length >= MAX_SEARCH_RESULTS) {
+          proc.kill();
+          finish();
+        }
       });
 
       proc.on('close', () => {
@@ -232,12 +257,12 @@ export class ReferenceService implements IReferenceService {
           const parsed = parseRgLine(buffer, dep.name, dep.version);
           if (parsed) results.push(parsed);
         }
-        resolve(results);
+        finish();
       });
 
       proc.on('error', (err) => {
         this.logger.warn('rg process failed during reference search', { err: String(err) });
-        resolve(results);
+        finish();
       });
     });
   }
@@ -711,6 +736,26 @@ export class ReferenceService implements IReferenceService {
 
 function manifestKey(name: string, version: string): string {
   return `${name}@${version}`;
+}
+
+/**
+ * Turn a natural-language keyword query into a ripgrep pattern.
+ *
+ * The model queries like a search engine — several space-separated terms
+ * ("GlassView isLiquidGlassAvailable glassEffectStyle"). Ripgrep treats that as
+ * a single regex with literal spaces, which never matches a line of code. So we
+ * split into terms and OR them, escaping each so code symbols (`z.object`,
+ * `foo[]`) are matched literally. A single term is passed through untouched so
+ * an intentional regex (`useState.*Effect`) still works.
+ */
+export function buildSearchPattern(query: string): string {
+  const terms = query.trim().split(/\s+/).filter(Boolean);
+  if (terms.length <= 1) return query.trim();
+  return terms.map(escapeRegExp).join('|');
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function referenceStatus(cached: CachedReference | undefined): 'indexed' | 'pending' | 'error' {
