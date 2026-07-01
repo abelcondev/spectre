@@ -56,8 +56,13 @@ main() {
   trap 'rm -rf "$tmpdir"' EXIT
 
   echo "Downloading ${zip} ..."
-  curl -fsSL -o "${tmpdir}/${zip}" "${url}"
-  curl -fsSL -o "${tmpdir}/${zip}.sha256" "${checksum_url}"
+  # Show a progress bar (the binary is ~45MB — a silent download looks hung on
+  # slow connections) and stay resilient: retry transient stalls, fail fast on
+  # connect timeouts instead of hanging forever, and resume partial downloads.
+  curl -fL --retry 3 --retry-delay 2 --connect-timeout 30 -C - \
+    --progress-bar -o "${tmpdir}/${zip}" "${url}"
+  curl -fsSL --retry 3 --connect-timeout 30 \
+    -o "${tmpdir}/${zip}.sha256" "${checksum_url}"
 
   echo "Verifying checksum ..."
   verify_checksum "${tmpdir}/${zip}" "${tmpdir}/${zip}.sha256"
