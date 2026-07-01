@@ -14,7 +14,8 @@ export interface PackageJson {
   readonly types?: string;
   readonly exports?: Record<string, unknown> | string;
   readonly repository?: string | { type?: string; url?: string };
-  readonly workspaces?: readonly string[];
+  // npm/bun use a string array; yarn classic uses `{ packages: [...] }`.
+  readonly workspaces?: readonly string[] | { readonly packages?: readonly string[] };
 }
 
 /**

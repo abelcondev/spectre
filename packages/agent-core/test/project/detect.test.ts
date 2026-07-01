@@ -61,8 +61,51 @@ describe('detectMonorepo', () => {
     expect((await detectMonorepo(lerna))?.type).toBe('lerna');
   });
 
+  it('detects an npm/bun workspaces array in the root package.json', async () => {
+    const root = tmpRoot();
+    writeFileSync(
+      join(root, 'package.json'),
+      JSON.stringify({ name: 'monorepo', workspaces: ['mobile', 'web', 'alf', 'packages/*'] }),
+      'utf8',
+    );
+    const info = await detectMonorepo(root);
+    expect(info?.type).toBe('npm');
+    expect(info?.workspaceGlobs).toEqual(['mobile', 'web', 'alf', 'packages/*']);
+  });
+
+  it('detects the yarn-classic workspaces object form', async () => {
+    const root = tmpRoot();
+    writeFileSync(
+      join(root, 'package.json'),
+      JSON.stringify({ name: 'monorepo', workspaces: { packages: ['packages/*'] } }),
+      'utf8',
+    );
+    const info = await detectMonorepo(root);
+    expect(info?.type).toBe('npm');
+    expect(info?.workspaceGlobs).toEqual(['packages/*']);
+  });
+
+  it('fills turborepo workspace globs from the root package.json workspaces', async () => {
+    const root = tmpRoot();
+    writeFileSync(join(root, 'turbo.json'), '{}', 'utf8');
+    writeFileSync(
+      join(root, 'package.json'),
+      JSON.stringify({ name: 'monorepo', workspaces: ['apps/*'] }),
+      'utf8',
+    );
+    const info = await detectMonorepo(root);
+    expect(info?.type).toBe('turborepo');
+    expect(info?.workspaceGlobs).toEqual(['apps/*']);
+  });
+
   it('returns null for a non-monorepo', async () => {
     expect(await detectMonorepo(tmpRoot())).toBeNull();
+  });
+
+  it('returns null when package.json has no workspaces field', async () => {
+    const root = tmpRoot();
+    writeFileSync(join(root, 'package.json'), JSON.stringify({ name: 'solo' }), 'utf8');
+    expect(await detectMonorepo(root)).toBeNull();
   });
 });
 

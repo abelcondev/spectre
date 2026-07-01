@@ -9,8 +9,10 @@ import { readFile, stat } from 'node:fs/promises';
 import { dirname, join, normalize } from 'pathe';
 import { load as loadYaml } from 'js-yaml';
 
+import { parsePackageJson } from './dependencies';
+
 export interface MonorepoInfo {
-  readonly type: 'pnpm' | 'turborepo' | 'nx' | 'lerna';
+  readonly type: 'pnpm' | 'turborepo' | 'nx' | 'lerna' | 'npm';
   readonly root: string;
   readonly workspaceGlobs: readonly string[];
 }
@@ -36,34 +38,67 @@ export async function findProjectRoot(cwd: string): Promise<string> {
  * Returns `null` if none of the known monorepo markers are found.
  */
 export async function detectMonorepo(projectRoot: string): Promise<MonorepoInfo | null> {
+  // Workspace globs declared in the root `package.json` (`workspaces` field,
+  // used by npm/yarn/bun). Read up front because it is both a monorepo marker
+  // on its own AND the source of workspace globs for task-runner monorepos
+  // (turbo/nx/lerna) that otherwise expose none.
+  const pkgGlobs = await readPackageJsonWorkspaceGlobs(projectRoot);
+
   // Check pnpm-workspace.yaml first (most common in this project's ecosystem)
   const pnpmWorkspacePath = join(projectRoot, 'pnpm-workspace.yaml');
   if (await pathExists(pnpmWorkspacePath)) {
     const content = await readFile(pnpmWorkspacePath, 'utf-8');
     const parsed = loadYaml(content) as { packages?: string[] } | null;
+    const globs = parsed?.packages ?? [];
     return {
       type: 'pnpm',
       root: projectRoot,
-      workspaceGlobs: parsed?.packages ?? [],
+      workspaceGlobs: globs.length > 0 ? globs : pkgGlobs,
     };
   }
 
   // Check turbo.json
   if (await pathExists(join(projectRoot, 'turbo.json'))) {
-    return { type: 'turborepo', root: projectRoot, workspaceGlobs: [] };
+    return { type: 'turborepo', root: projectRoot, workspaceGlobs: pkgGlobs };
   }
 
   // Check nx.json
   if (await pathExists(join(projectRoot, 'nx.json'))) {
-    return { type: 'nx', root: projectRoot, workspaceGlobs: [] };
+    return { type: 'nx', root: projectRoot, workspaceGlobs: pkgGlobs };
   }
 
   // Check lerna.json
   if (await pathExists(join(projectRoot, 'lerna.json'))) {
-    return { type: 'lerna', root: projectRoot, workspaceGlobs: [] };
+    return { type: 'lerna', root: projectRoot, workspaceGlobs: pkgGlobs };
+  }
+
+  // No task-runner marker, but a `workspaces` field alone still defines a
+  // monorepo (npm/yarn/bun). This is what lets references resolve globally
+  // from the repo root instead of only from inside a workspace package.
+  if (pkgGlobs.length > 0) {
+    return { type: 'npm', root: projectRoot, workspaceGlobs: pkgGlobs };
   }
 
   return null;
+}
+
+/**
+ * Read the workspace globs declared in a root `package.json` `workspaces`
+ * field. Handles both the npm/bun array form (`["a", "packages/*"]`) and the
+ * yarn-classic object form (`{ packages: [...] }`). Returns `[]` when absent.
+ */
+async function readPackageJsonWorkspaceGlobs(projectRoot: string): Promise<string[]> {
+  const pkg = await parsePackageJson(projectRoot);
+  return extractWorkspaceGlobs(pkg?.workspaces);
+}
+
+function extractWorkspaceGlobs(ws: unknown): string[] {
+  const raw = Array.isArray(ws)
+    ? ws
+    : ws !== null && typeof ws === 'object' && Array.isArray((ws as { packages?: unknown }).packages)
+      ? (ws as { packages: unknown[] }).packages
+      : [];
+  return raw.filter((g): g is string => typeof g === 'string' && g.length > 0);
 }
 
 /**
