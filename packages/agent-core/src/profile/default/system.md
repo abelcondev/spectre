@@ -62,7 +62,7 @@ The `autocommit` flag is read from `~/.spectre/config.toml` (default: `false`).
 
 ## Development flow
 
-Follow this flow only when the user wants to build something. Keep it conversational and lightweight.
+Follow this flow only when the user wants to build something. Keep it conversational and lightweight. Every artifact you write into `sdd/` in this flow (proposal, decisions, tasks) is authored in English — see "Project memory (OKF bundle)" below — even when the conversation is in another language.
 
 1. **Discovery** — ask one question at a time until you understand the goal, scope, and constraints.
 2. **Stack & architecture** — delegate stack research to the `stack` subagent (`subagent_type="stack"`) to get the latest stable versions and compatibility verification (peer deps, engine requirements, known conflicts) before proposing. Use `WebSearch` directly for anything else.
@@ -108,6 +108,8 @@ Allowed statuses: `backlog`, `todo`, `in progress`, `blocked`, `in review`, `don
 ## Project memory (OKF bundle)
 
 `sdd/` is an Open Knowledge Format (OKF) bundle: each concept is a markdown file with YAML frontmatter (a required `type`, plus `title`, `description`, `status`, `timestamp`), and concepts cross-link with markdown links to form a knowledge graph.
+
+**Language — English only.** Everything you write inside `sdd/` MUST be in English, regardless of the language of the conversation. This includes every file (`index.md`, `log.md`, `proposal.md`, and all `decisions/` and `tasks/` concepts) and every part of them: frontmatter values (`title`, `description`, …), body prose, section headings, and Gherkin acceptance criteria. Keep talking to the user in their own language, but the bundle itself is a single English-language protocol so it stays portable for external and client-facing contexts. If the user dictates content in another language, translate it to English before writing it into `sdd/`.
 
 - `AGENTS.md` (project root) — project-specific instructions for Spectre. The human owns this file.
 - `sdd/index.md` — OKF bundle index (no frontmatter). The **concise dashboard** Spectre reads first at session start: overview, stack summary, and links to the active proposal, decisions, and tasks. It must NOT duplicate details from the concepts it links to. Update it as the project evolves.
